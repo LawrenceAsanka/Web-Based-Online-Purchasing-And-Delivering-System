@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>lk.bit.web</groupId>
-    <artifactId>BIT_final-year-project</artifactId>
+    <artifactId>BIT-final-year-project</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
 
