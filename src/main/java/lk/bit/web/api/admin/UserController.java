@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/users")
-public class UserRegistrationController {
+public class UserController {
 
     @GetMapping
     public static String test(){
