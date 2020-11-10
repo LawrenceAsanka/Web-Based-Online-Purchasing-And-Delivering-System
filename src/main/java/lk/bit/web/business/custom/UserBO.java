@@ -5,7 +5,7 @@ import lk.bit.web.dto.UserDTO;
 
 import java.util.List;
 
-public interface User extends SuperBO {
+public interface UserBO extends SuperBO {
 
     List<UserDTO> getAllUsers();
 
