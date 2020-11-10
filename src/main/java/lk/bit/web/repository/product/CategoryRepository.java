@@ -1,4 +1,6 @@
 package lk.bit.web.repository.product;
 
-public class CategoryRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CategoryRepository extends JpaRepository<CategoryRepository, String> {
 }
