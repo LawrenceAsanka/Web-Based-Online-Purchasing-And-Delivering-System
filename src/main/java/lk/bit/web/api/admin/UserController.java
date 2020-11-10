@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping(value = "/{id}")
+@DeleteMapping(value = "/{id}")
     public void deleteUser(@PathVariable("id") String userId) {
         if (!userBO.existUser(userId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
