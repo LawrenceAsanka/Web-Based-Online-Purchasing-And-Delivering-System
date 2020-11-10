@@ -1,5 +1,6 @@
 package lk.bit.web.dto;
 
+import lk.bit.web.entity.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class UserDTO {
     private String contactTwo;
     private String username;
     private String password;
-    private String userRole;
+    private UserRole userRole;
     private String status;
+
 }

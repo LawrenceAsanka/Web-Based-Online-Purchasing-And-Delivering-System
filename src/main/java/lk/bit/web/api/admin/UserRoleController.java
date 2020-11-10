@@ -20,7 +20,7 @@ public class UserRoleController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<UserRoleDTO> getUserRole(){
+    public List<UserRoleDTO> getUserRoles(){
         return userRoleBO.getAllUserRoles();
     }
 
