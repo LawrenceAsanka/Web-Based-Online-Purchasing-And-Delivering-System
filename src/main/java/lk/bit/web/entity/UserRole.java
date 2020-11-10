@@ -19,4 +19,8 @@ public class UserRole implements SuperEntity{
     private String id;
     @Column(name = "role_name")
     private String name;
+
+    public UserRole(String id) {
+        this.id = id;
+    }
 }

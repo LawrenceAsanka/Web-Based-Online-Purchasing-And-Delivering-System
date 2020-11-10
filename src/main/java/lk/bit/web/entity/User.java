@@ -1,11 +1,14 @@
 package lk.bit.web.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
-@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "user")
 public class User implements SuperEntity {
 
@@ -28,4 +31,21 @@ public class User implements SuperEntity {
     referencedColumnName = "id",nullable = false)
     private UserRole userRole;
     private String status;
+
+
+    public User(String id, String firstName, String lastName, String nic, String contactOne,
+                String contactTwo, String username, String password, String userRole, String status) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nic = nic;
+        this.contactOne = contactOne;
+        this.contactTwo = contactTwo;
+        this.username = username;
+        this.password = password;
+        this.userRole = new UserRole(userRole);
+        this.status = status;
+    }
+
+
 }

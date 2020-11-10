@@ -20,7 +20,7 @@ public class UserDTO {
     private String contactTwo;
     private String username;
     private String password;
-    private UserRole userRole;
+    private String userRoleId;
     private String status;
 
 }
