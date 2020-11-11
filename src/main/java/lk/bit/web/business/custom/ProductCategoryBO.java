@@ -1,16 +1,16 @@
 package lk.bit.web.business.custom;
 
-import lk.bit.web.dto.product_dto.ProductCategoryDTO;
+import lk.bit.web.dto.product_dto.CategoryDTO;
 
 import java.util.List;
 
 public interface ProductCategoryBO {
 
-    List<ProductCategoryDTO> getAllCategories();
+    List<CategoryDTO> getAllCategories();
 
-    void saveCategory(ProductCategoryDTO category);
+    void saveCategory(CategoryDTO category);
 
-    void updateCategory(ProductCategoryDTO category, String categoryId);
+    void updateCategory(CategoryDTO category, String categoryId);
 
     void deleteCategory(String categoryId);
 

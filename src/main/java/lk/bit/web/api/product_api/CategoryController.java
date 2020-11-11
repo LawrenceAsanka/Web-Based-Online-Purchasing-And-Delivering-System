@@ -1,7 +1,7 @@
 package lk.bit.web.api.product_api;
 
 import lk.bit.web.business.custom.ProductCategoryBO;
-import lk.bit.web.dto.product_dto.ProductCategoryDTO;
+import lk.bit.web.dto.product_dto.CategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,13 +20,13 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<ProductCategoryDTO> getAllCategories(){
+    public List<CategoryDTO> getAllCategories(){
         return categoryBO.getAllCategories();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveCategory(@RequestBody ProductCategoryDTO category){
+    public void saveCategory(@RequestBody CategoryDTO category){
         if (categoryBO.existCategory(category.getCategoryId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
@@ -35,7 +35,7 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(value ="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void updateCategory(@PathVariable("id") String categoryId, @RequestBody ProductCategoryDTO category){
+    public void updateCategory(@PathVariable("id") String categoryId, @RequestBody CategoryDTO category){
         if (!categoryBO.existCategory(categoryId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

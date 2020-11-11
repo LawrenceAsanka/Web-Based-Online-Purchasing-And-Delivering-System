@@ -1,7 +1,7 @@
 package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.ProductCategoryBO;
-import lk.bit.web.dto.product_dto.ProductCategoryDTO;
+import lk.bit.web.dto.product_dto.CategoryDTO;
 import lk.bit.web.entity.ProductCategory;
 import lk.bit.web.repository.product_repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,24 +17,24 @@ public class ProductCategoryBoImpl implements ProductCategoryBO {
     private CategoryRepository categoryRepository;
 
     @Override
-    public List<ProductCategoryDTO> getAllCategories() {
+    public List<CategoryDTO> getAllCategories() {
         List<ProductCategory> allCategories = categoryRepository.findAll();
-        List<ProductCategoryDTO> categories = new ArrayList<>();
+        List<CategoryDTO> categories = new ArrayList<>();
         for (ProductCategory category : allCategories) {
-            categories.add(new ProductCategoryDTO(category.getCategoryId(), category.getCategoryName(),
+            categories.add(new CategoryDTO(category.getCategoryId(), category.getCategoryName(),
                     category.getStatus()));
         }
         return categories;
     }
 
     @Override
-    public void saveCategory(ProductCategoryDTO category) {
+    public void saveCategory(CategoryDTO category) {
         categoryRepository.save(new ProductCategory(category.getCategoryId(), category.getCategoryName(),
                 category.getStatus()));
     }
 
     @Override
-    public void updateCategory(ProductCategoryDTO category, String categoryId) {
+    public void updateCategory(CategoryDTO category, String categoryId) {
         categoryRepository.save(new ProductCategory(categoryId, category.getCategoryName(),
                 category.getStatus()));
     }
