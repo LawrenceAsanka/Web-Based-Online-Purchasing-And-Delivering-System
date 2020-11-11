@@ -1,4 +1,4 @@
-package lk.bit.web.repository.product;
+package lk.bit.web.repository.product_repository;
 
 import lk.bit.web.entity.ProductCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
