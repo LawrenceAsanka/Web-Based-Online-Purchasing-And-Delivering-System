@@ -5,10 +5,12 @@ import lk.bit.web.dto.ProductCategoryDTO;
 import lk.bit.web.entity.ProductCategory;
 import lk.bit.web.repository.product.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class ProductCategoryBoImpl implements ProductCategoryBO {
 
     @Autowired
