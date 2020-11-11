@@ -1,4 +1,4 @@
-package lk.bit.web.api.product;
+package lk.bit.web.api.product_api;
 
 import lk.bit.web.business.custom.ProductCategoryBO;
 import lk.bit.web.dto.product_dto.ProductCategoryDTO;
