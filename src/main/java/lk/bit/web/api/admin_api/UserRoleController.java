@@ -1,4 +1,4 @@
-package lk.bit.web.api.admin;
+package lk.bit.web.api.admin_api;
 
 import lk.bit.web.business.custom.UserRoleBO;
 import lk.bit.web.dto.admin_dto.UserRoleDTO;
