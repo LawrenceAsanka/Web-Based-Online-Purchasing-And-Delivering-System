@@ -1,6 +1,5 @@
-package lk.bit.web.dto;
+package lk.bit.web.dto.admin_dto;
 
-import lk.bit.web.entity.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

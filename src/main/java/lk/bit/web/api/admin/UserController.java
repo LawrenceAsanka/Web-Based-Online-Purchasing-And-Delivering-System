@@ -1,7 +1,7 @@
 package lk.bit.web.api.admin;
 
 import lk.bit.web.business.custom.UserBO;
-import lk.bit.web.dto.UserDTO;
+import lk.bit.web.dto.admin_dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

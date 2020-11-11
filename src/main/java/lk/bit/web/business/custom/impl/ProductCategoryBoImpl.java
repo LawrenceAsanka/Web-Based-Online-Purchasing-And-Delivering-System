@@ -1,7 +1,7 @@
 package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.ProductCategoryBO;
-import lk.bit.web.dto.ProductCategoryDTO;
+import lk.bit.web.dto.product_dto.ProductCategoryDTO;
 import lk.bit.web.entity.ProductCategory;
 import lk.bit.web.repository.product.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;

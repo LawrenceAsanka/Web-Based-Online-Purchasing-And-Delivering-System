@@ -1,4 +1,4 @@
-package lk.bit.web.dto;
+package lk.bit.web.dto.product_dto;
 
 import lombok.*;
 

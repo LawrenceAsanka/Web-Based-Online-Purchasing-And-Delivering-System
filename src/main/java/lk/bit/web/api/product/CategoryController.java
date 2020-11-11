@@ -1,7 +1,7 @@
 package lk.bit.web.api.product;
 
 import lk.bit.web.business.custom.ProductCategoryBO;
-import lk.bit.web.dto.ProductCategoryDTO;
+import lk.bit.web.dto.product_dto.ProductCategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

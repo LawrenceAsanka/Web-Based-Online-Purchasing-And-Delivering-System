@@ -1,7 +1,7 @@
 package lk.bit.web.business.custom;
 
 import lk.bit.web.business.SuperBO;
-import lk.bit.web.dto.UserRoleDTO;
+import lk.bit.web.dto.admin_dto.UserRoleDTO;
 
 import java.util.List;
 

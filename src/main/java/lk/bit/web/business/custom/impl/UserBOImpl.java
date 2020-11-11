@@ -1,7 +1,7 @@
 package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.UserBO;
-import lk.bit.web.dto.UserDTO;
+import lk.bit.web.dto.admin_dto.UserDTO;
 import lk.bit.web.entity.User;
 import lk.bit.web.repository.admin.UserRepository;
 import lk.bit.web.repository.admin.UserRoleRepository;
