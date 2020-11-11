@@ -14,4 +14,6 @@ public interface ProductSubCategoryBO extends SuperBO {
     void updateSubCategory(String name,String status,String categoryId,String subCategoryId);
 
     void deleteSubCategory(String subCategoryId);
+
+    boolean subCategoryExist(String subCategoryId);
 }
