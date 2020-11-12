@@ -20,10 +20,11 @@ import javax.persistence.Table;
 public class ProductCategory implements SuperEntity {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", length = 50, nullable = false)
     private String categoryId;
-    @Column(name = "name")
+    @Column(name = "name", length = 50, nullable = false)
     private String categoryName;
+    @Column(name = "status", length = 50, nullable = false)
     private String status;
 
     public ProductCategory(String categoryId){

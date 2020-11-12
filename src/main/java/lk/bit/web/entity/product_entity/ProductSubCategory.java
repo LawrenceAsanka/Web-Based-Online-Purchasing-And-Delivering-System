@@ -17,10 +17,11 @@ import javax.persistence.*;
 public class ProductSubCategory implements SuperEntity {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id",length = 50,nullable = false)
     private String subCategoryId;
-    @Column(name = "name")
+    @Column(name = "name", length = 50, nullable = false)
     private String subCategoryName;
+    @Column(name = "status", length = 50, nullable = false)
     private String status;
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
@@ -31,5 +32,9 @@ public class ProductSubCategory implements SuperEntity {
         this.subCategoryName = subCategoryName;
         this.status = status;
         this.productCategory = new ProductCategory(productCategoryId);
+    }
+
+    public ProductSubCategory(String subCategoryId){
+        this.subCategoryId = subCategoryId;
     }
 }

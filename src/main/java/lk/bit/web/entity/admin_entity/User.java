@@ -14,18 +14,21 @@ import javax.persistence.*;
 public class User implements SuperEntity {
 
     @Id
+    @Column(name = "id",length = 50,nullable = false)
     private String id;
-    @Column(name = "first_name")
+    @Column(name = "first_name",length = 100,nullable = false)
     private String firstName;
-    @Column(name = "last_name")
+    @Column(name = "last_name",length = 100,nullable = false)
     private String lastName;
+    @Column(length = 20)
     private String nic;
-    @Column(name = "contact_1")
+    @Column(name = "contact_1",length = 20,nullable = false)
     private String contactOne;
-    @Column(name = "contact_2")
+    @Column(name = "contact_2",length = 20,nullable = false)
     private String contactTwo;
-    @Column(unique = true)
+    @Column(unique = true,length = 20,nullable = false)
     private String username;
+    @Column(length = 20,nullable = false)
     private String password;
     @ManyToOne
     @JoinColumn(name = "user_role_id",
