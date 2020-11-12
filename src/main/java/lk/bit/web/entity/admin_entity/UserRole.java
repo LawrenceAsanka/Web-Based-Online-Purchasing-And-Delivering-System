@@ -1,5 +1,6 @@
-package lk.bit.web.entity;
+package lk.bit.web.entity.admin_entity;
 
+import lk.bit.web.entity.SuperEntity;
 import lombok.*;
 
 import javax.persistence.Column;
@@ -14,7 +15,7 @@ import javax.persistence.Table;
 @Setter
 @ToString
 @Table(name = "user_role")
-public class UserRole implements SuperEntity{
+public class UserRole implements SuperEntity {
     @Id
     private String id;
     @Column(name = "role_name")

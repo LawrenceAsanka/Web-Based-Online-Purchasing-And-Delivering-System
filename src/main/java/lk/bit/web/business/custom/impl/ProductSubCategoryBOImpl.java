@@ -2,7 +2,7 @@ package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.ProductSubCategoryBO;
 import lk.bit.web.dto.product_dto.SubCategoryDTO;
-import lk.bit.web.entity.ProductSubCategory;
+import lk.bit.web.entity.product_entity.ProductSubCategory;
 import lk.bit.web.repository.product_repository.SubCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

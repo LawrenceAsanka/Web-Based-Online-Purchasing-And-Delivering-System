@@ -2,7 +2,7 @@ package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.UserRoleBO;
 import lk.bit.web.dto.admin_dto.UserRoleDTO;
-import lk.bit.web.entity.UserRole;
+import lk.bit.web.entity.admin_entity.UserRole;
 import lk.bit.web.repository.admin_repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,5 +1,6 @@
-package lk.bit.web.entity;
+package lk.bit.web.entity.product_entity;
 
+import lk.bit.web.entity.SuperEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

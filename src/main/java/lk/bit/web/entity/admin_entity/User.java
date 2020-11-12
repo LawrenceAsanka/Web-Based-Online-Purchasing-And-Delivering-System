@@ -1,5 +1,6 @@
-package lk.bit.web.entity;
+package lk.bit.web.entity.admin_entity;
 
+import lk.bit.web.entity.SuperEntity;
 import lombok.*;
 
 import javax.persistence.*;
