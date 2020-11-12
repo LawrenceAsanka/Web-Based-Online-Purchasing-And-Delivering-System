@@ -21,9 +21,9 @@ public class ProductDTO {
     private String weight;
     private BigDecimal discountPerUnit;
     private int currentUnitCount;
-    private byte[] imageOne;
-    private byte[] imageTwo;
-    private byte[] imageThree;
+    private String imageOne;
+    private String imageTwo;
+    private String imageThree;
     private String status;
     private String productSubCategory;
 

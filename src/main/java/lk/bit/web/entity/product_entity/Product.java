@@ -40,10 +40,10 @@ public class Product implements SuperEntity {
     @Column(name = "image_1", columnDefinition = "MEDIUMBLOB", nullable = false)
     private byte[] imageOne;
     @Lob
-    @Column(name = "image_2", columnDefinition = "MEDIUMBLOB", nullable = false)
+    @Column(name = "image_2", columnDefinition = "MEDIUMBLOB")
     private byte[] imageTwo;
     @Lob
-    @Column(name = "image_3", columnDefinition = "MEDIUMBLOB", nullable = false)
+    @Column(name = "image_3", columnDefinition = "MEDIUMBLOB")
     private byte[] imageThree;
     @ManyToOne
     @JoinColumn(name = "sub_category_id",
