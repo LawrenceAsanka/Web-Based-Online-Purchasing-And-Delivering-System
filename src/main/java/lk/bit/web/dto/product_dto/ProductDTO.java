@@ -14,7 +14,6 @@ public class ProductDTO {
     private String productId;
     private String productName;
     private String productDescription;
-    private String productCategory;
     private int quantityPerUnit;
     private BigDecimal quantityBuyingPrice;
     private BigDecimal quantitySellingPrice;
@@ -25,6 +24,6 @@ public class ProductDTO {
     private String imageTwo;
     private String imageThree;
     private String status;
-    private String productSubCategory;
+    private String productSubCategoryId;
 
 }

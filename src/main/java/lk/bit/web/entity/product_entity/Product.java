@@ -22,8 +22,6 @@ public class Product implements SuperEntity {
     private String productName;
     @Column(name = "description", nullable = false)
     private String productDescription;
-    @Column(name = "category", length = 100, nullable = false)
-    private String productCategory;
     @Column(name = "quantity_per_unit", columnDefinition = "INT", nullable = false)
     private int quantityPerUnit;
     @Column(name = "quantity_buying_price", columnDefinition = "DECIMAL(10,2)", nullable = false)
@@ -32,7 +30,7 @@ public class Product implements SuperEntity {
     private BigDecimal quantitySellingPrice;
     @Column(name = "weight", length = 50, nullable = false)
     private String weight;
-    @Column(name = "discount_per_unit", columnDefinition = "DECIMAL(5,2) DEFAULT 0.00", nullable = false)
+    @Column(name = "discount_per_unit", columnDefinition = "DECIMAL(5,2)")
     private BigDecimal discountPerUnit;
     @Column(name = "current_quantity", columnDefinition = "INT", nullable = false)
     private int currentQuantity;
@@ -45,21 +43,22 @@ public class Product implements SuperEntity {
     @Lob
     @Column(name = "image_3", columnDefinition = "MEDIUMBLOB")
     private byte[] imageThree;
+    @Column(name = "status", length = 30, nullable = false)
+    private String status;
     @ManyToOne
     @JoinColumn(name = "sub_category_id",
             referencedColumnName = "id", nullable = false)
     private ProductSubCategory subCategory;
 
     public Product(String productId, String productName,
-                   String productDescription, String productCategory,
+                   String productDescription,
                    int quantityPerUnit, BigDecimal quantityBuyingPrice,
                    BigDecimal quantitySellingPrice, String weight, BigDecimal discountPerUnit,
                    int currentQuantity, byte[] imageOne, byte[] imageTwo, byte[] imageThree,
-                   String subCategoryId) {
+                   String status, String subCategoryId) {
         this.productId = productId;
         this.productName = productName;
         this.productDescription = productDescription;
-        this.productCategory = productCategory;
         this.quantityPerUnit = quantityPerUnit;
         this.quantityBuyingPrice = quantityBuyingPrice;
         this.quantitySellingPrice = quantitySellingPrice;
@@ -69,6 +68,8 @@ public class Product implements SuperEntity {
         this.imageOne = imageOne;
         this.imageTwo = imageTwo;
         this.imageThree = imageThree;
+        this.status = status;
         this.subCategory = new ProductSubCategory(subCategoryId);
     }
+
 }
