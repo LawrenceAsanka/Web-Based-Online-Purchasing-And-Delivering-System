@@ -2,6 +2,7 @@ package lk.bit.web.api;
 
 import lk.bit.web.business.custom.UserBO;
 import lk.bit.web.dto.UserDTO;
+import lk.bit.web.util.UserTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,7 +22,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<UserDTO> getUsers() {
+    public List<UserTM> getUsers() {
         return userBO.getAllUsers();
     }
 

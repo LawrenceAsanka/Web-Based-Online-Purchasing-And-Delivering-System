@@ -7,9 +7,11 @@ import lk.bit.web.entity.User;
 import lk.bit.web.entity.UserRole;
 import lk.bit.web.repository.UserRepository;
 import lk.bit.web.repository.UserRoleRepository;
+import lk.bit.web.util.UserTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -22,9 +24,14 @@ public class UserBOImpl implements UserBO {
     private UserRoleRepository userRoleRepository;
 
     @Override
-    public List<UserDTO> getAllUsers() {
+    public List<UserTM> getAllUsers() {
         List<CustomEntity> allUsers = userRepository.getAllUsers();
-        List<UserDTO> users  =
+        List<UserTM> users  = new ArrayList<>();
+        for (CustomEntity user : allUsers) {
+            users.add(new UserTM(user.getUserId(),user.getFirstName(),user.getLastName(),user.getAddress(),
+                    user.getNIC(),user.getContact(),user.getUsername(),user.getUserRole()));
+        }
+        return users;
     }
 
     @Override

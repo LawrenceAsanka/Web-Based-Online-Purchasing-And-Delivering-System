@@ -2,12 +2,13 @@ package lk.bit.web.business.custom;
 
 import lk.bit.web.business.SuperBO;
 import lk.bit.web.dto.UserDTO;
+import lk.bit.web.util.UserTM;
 
 import java.util.List;
 
 public interface UserBO extends SuperBO {
 
-    List<UserDTO> getAllUsers();
+    List<UserTM> getAllUsers();
 
     void saveUser(UserDTO user);
 
