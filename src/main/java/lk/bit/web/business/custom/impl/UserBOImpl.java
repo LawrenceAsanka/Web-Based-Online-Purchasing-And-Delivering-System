@@ -2,6 +2,7 @@ package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.UserBO;
 import lk.bit.web.dto.UserDTO;
+import lk.bit.web.entity.CustomEntity;
 import lk.bit.web.entity.User;
 import lk.bit.web.entity.UserRole;
 import lk.bit.web.repository.UserRepository;
@@ -22,7 +23,8 @@ public class UserBOImpl implements UserBO {
 
     @Override
     public List<UserDTO> getAllUsers() {
-        return null;
+        List<CustomEntity> allUsers = userRepository.getAllUsers();
+        List<UserDTO> users  =
     }
 
     @Override
