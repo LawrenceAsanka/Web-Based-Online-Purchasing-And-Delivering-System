@@ -1,4 +1,4 @@
-package lk.bit.web.dto.admin_dto;
+package lk.bit.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,11 +15,10 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String nic;
-    private String contactOne;
-    private String contactTwo;
+    private String contact;
+    private String address;
     private String username;
     private String password;
-    private String userRoleId;
-    private String status;
+    private String role;
 
 }

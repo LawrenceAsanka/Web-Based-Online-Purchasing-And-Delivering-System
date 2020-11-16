@@ -1,4 +1,4 @@
-package lk.bit.web.dto.admin_dto;
+package lk.bit.web.dto;
 
 import lombok.*;
 
@@ -9,6 +9,6 @@ import lombok.*;
 @ToString
 public class UserRoleDTO {
 
-    private String id;
+    private int id;
     private String roleName;
 }

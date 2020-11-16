@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @SpringBootApplication
 public class AppInitializer {
     public static void main(String[] args) {
-
         SpringApplication.run(AppInitializer.class, args);
     }
+
 }

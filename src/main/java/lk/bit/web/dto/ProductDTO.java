@@ -1,4 +1,4 @@
-package lk.bit.web.dto.product_dto;
+package lk.bit.web.dto;
 
 import lombok.*;
 
@@ -19,7 +19,7 @@ public class ProductDTO {
     private BigDecimal quantitySellingPrice;
     private String weight;
     private BigDecimal discountPerUnit;
-    private int currentUnitCount;
+    private int currentQuantity;
     private String imageOne;
     private String imageTwo;
     private String imageThree;

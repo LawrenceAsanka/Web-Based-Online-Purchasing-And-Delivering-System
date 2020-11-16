@@ -1,6 +1,6 @@
 package lk.bit.web.business.custom;
 
-import lk.bit.web.dto.product_dto.CategoryDTO;
+import lk.bit.web.dto.CategoryDTO;
 
 import java.util.List;
 

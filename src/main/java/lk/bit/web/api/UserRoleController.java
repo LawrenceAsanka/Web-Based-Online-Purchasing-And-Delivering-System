@@ -1,7 +1,7 @@
-package lk.bit.web.api.admin_api;
+package lk.bit.web.api;
 
 import lk.bit.web.business.custom.UserRoleBO;
-import lk.bit.web.dto.admin_dto.UserRoleDTO;
+import lk.bit.web.dto.UserRoleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,7 +24,7 @@ public class UserRoleController {
         return userRoleBO.getAllUserRoles();
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
+ /*   @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addUserRole(@RequestBody UserRoleDTO userRole) {
         if (userRoleBO.existUserRole(userRole.getId())) {
@@ -32,7 +32,7 @@ public class UserRoleController {
         }
         userRoleBO.saveUserRole(userRole.getId(), userRole.getRoleName()
         );
-    }
+    }*/
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(value = "/{id}")

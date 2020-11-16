@@ -1,7 +1,7 @@
-package lk.bit.web.api.product_api;
+package lk.bit.web.api;
 
 import lk.bit.web.business.custom.ProductSubCategoryBO;
-import lk.bit.web.dto.product_dto.SubCategoryDTO;
+import lk.bit.web.dto.SubCategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

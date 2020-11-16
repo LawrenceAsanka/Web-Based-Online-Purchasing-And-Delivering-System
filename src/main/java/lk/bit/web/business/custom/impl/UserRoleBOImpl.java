@@ -1,11 +1,12 @@
 package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.UserRoleBO;
-import lk.bit.web.dto.admin_dto.UserRoleDTO;
-import lk.bit.web.entity.admin_entity.UserRole;
-import lk.bit.web.repository.admin_repository.UserRoleRepository;
+import lk.bit.web.dto.UserRoleDTO;
+import lk.bit.web.entity.UserRole;
+import lk.bit.web.repository.UserRoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,46 @@ import java.util.List;
 public class UserRoleBOImpl implements UserRoleBO {
 
     @Autowired
+    private UserRoleRepository userRoleRepository;
+
+    @Override
+    public List<UserRoleDTO> getAllUserRoles() {
+        List<UserRole> allUserRoles = userRoleRepository.findAll();
+        List<UserRoleDTO> roles = new ArrayList<>();
+        for (UserRole role : allUserRoles) {
+            roles.add(new UserRoleDTO(role.getId(), role.getName()));
+        }
+        return roles;
+    }
+
+    @Override
+    public void saveUserRole(String id, String name) {
+
+    }
+
+    @Override
+    public void updateUserRole(String name, String id) {
+
+    }
+
+    @Override
+    public void deleteUserRole(String id) {
+
+    }
+
+    @Override
+    public boolean existUserRole(String id) {
+        return false;
+    }
+
+    @Override
+    public String getAllUserRoleNames() {
+
+        return null;
+
+    }
+
+/*    @Autowired
     private UserRoleRepository userRoleRepository;
 
     @Override
@@ -45,5 +86,5 @@ public class UserRoleBOImpl implements UserRoleBO {
     @Override
     public boolean existUserRole(String id) {
        return userRoleRepository.existsById(id);
-    }
+    }*/
 }
