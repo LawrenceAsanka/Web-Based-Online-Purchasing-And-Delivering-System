@@ -2,6 +2,7 @@ package lk.bit.web.business.custom;
 
 import lk.bit.web.business.SuperBO;
 import lk.bit.web.dto.UserRoleDTO;
+import lk.bit.web.entity.UserRole;
 
 import java.util.List;
 
@@ -9,13 +10,13 @@ public interface UserRoleBO extends SuperBO {
 
     List<UserRoleDTO> getAllUserRoles();
 
-    void saveUserRole(String id, String name);
+    void saveUserRole(String name);
 
-    void updateUserRole(String name, String id);
+    void updateUserRole(String name, int id);
 
-    void deleteUserRole(String id);
+    UserRole existUserRoleByName(String name);
 
-    boolean existUserRole(String id);
+    boolean existUserRoleById(int id);
 
-    String getAllUserRoleNames();
+
 }

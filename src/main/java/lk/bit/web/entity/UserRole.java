@@ -1,6 +1,5 @@
 package lk.bit.web.entity;
 
-import lk.bit.web.entity.SuperEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,7 +17,10 @@ public class UserRole implements SuperEntity {
     @Column(name = "auth_role_id",columnDefinition = "INT")
     private int id;
 
-    @Column(name = "role_name",length = 50,nullable = false)
+    @Column(name = "role_name",length = 50,nullable = false,unique = true)
     private String name;
 
+    public UserRole(String name) {
+        this.name = name;
+    }
 }
