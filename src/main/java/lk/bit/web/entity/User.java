@@ -3,6 +3,9 @@ package lk.bit.web.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,33 +19,45 @@ import java.util.Set;
 public class User implements SuperEntity {
 
     @Id
+    @NotEmpty
     @Column(name = "auth_user_id", length = 50, nullable = false)
     private String id;
 
+    @NotEmpty(message = "first name cannot be null")
+    @Size(min = 4)
     @Column(name = "first_name", length = 100, nullable = false)
     private String firstName;
 
+    @NotEmpty(message = "last name cannot be null")
+    @Size(min = 4)
     @Column(name = "last_name", length = 100, nullable = false)
     private String lastName;
 
+    @NotEmpty
     @Column(length = 20, nullable = false)
     private String nic;
 
+    @NotEmpty
     @Column(length = 100, nullable = false)
     private String address;
 
+    @NotEmpty
     @Column(length = 20, nullable = false)
     private String contact;
 
+    @NotEmpty
     @Column(unique = true, length = 20, nullable = false)
     private String username;
 
+    @NotNull
     @Column(nullable = false)
     private String password;
 
+    @NotEmpty
     @Column(length = 20, nullable = false)
     private String status;
 
+    @NotEmpty
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "auth_user_role",
             joinColumns=@JoinColumn(name = "auth_user_id",referencedColumnName = "auth_user_id"),
@@ -64,6 +79,21 @@ public class User implements SuperEntity {
         this.password = password;
         userRole.add(new UserRole(user.getId(),user.getName()));
         this.status = status;
+    }
+
+    public User(String id, String firstName, String lastName, String nic, String address,
+                String contact, String username, String password,UserRole user) {
+        userRole = new HashSet<UserRole>();
+
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nic = nic;
+        this.address = address;
+        this.contact = contact;
+        this.username = username;
+        this.password = password;
+        userRole.add(new UserRole(user.getId(),user.getName()));
     }
 
 

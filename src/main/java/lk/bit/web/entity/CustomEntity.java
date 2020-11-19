@@ -18,4 +18,6 @@ public interface CustomEntity {
 
     String getUserRole();
 
+    String getUserStatus();
+
 }

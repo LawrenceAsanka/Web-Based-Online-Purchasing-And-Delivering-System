@@ -17,4 +17,5 @@ public class UserTM {
     private String contact;
     private String username;
     private String userRole;
+    private String status;
 }

@@ -10,13 +10,15 @@ public interface UserBO extends SuperBO {
 
     List<UserTM> getAllUsers();
 
+    UserDTO getRequestedUser(String userId);
+
     void saveUser(UserDTO user);
 
-    void updateUser(UserDTO user, String id);
-
-    void deleteUser(String id);
+    void updateUser(UserDTO user,String status, String id);
 
     boolean existUser(String id);
 
     String getLastUserId();
+
+    void updateStatus(String userId, String status);
 }

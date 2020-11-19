@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     User findFirstLastCustomerIdByOrderByIdDesc();
 
     @Query(value = "SELECT u.id AS userId,u.firstName AS firstName,u.lastName AS lastName,u.address AS address," +
-            " u.nic as NIC,u.contact AS contact,u.username AS username,ur.name AS userRole" +
+            " u.nic as NIC,u.contact AS contact,u.username AS username,ur.name AS userRole,u.status AS userStatus" +
             " FROM User u INNER JOIN u.userRole ur ORDER BY u.id")
     List<CustomEntity> getAllUsers();
 

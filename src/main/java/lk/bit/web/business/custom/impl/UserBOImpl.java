@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class UserBOImpl implements UserBO {
@@ -26,32 +27,42 @@ public class UserBOImpl implements UserBO {
     @Override
     public List<UserTM> getAllUsers() {
         List<CustomEntity> allUsers = userRepository.getAllUsers();
-        List<UserTM> users  = new ArrayList<>();
+        List<UserTM> users = new ArrayList<>();
         for (CustomEntity user : allUsers) {
-            users.add(new UserTM(user.getUserId(),user.getFirstName(),user.getLastName(),user.getAddress(),
-                    user.getNIC(),user.getContact(),user.getUsername(),user.getUserRole()));
+            users.add(new UserTM(user.getUserId(), user.getFirstName(), user.getLastName(), user.getAddress(),
+                    user.getNIC(), user.getContact(), user.getUsername(), user.getUserRole(), user.getUserStatus()));
         }
         return users;
     }
 
     @Override
-    public void saveUser(UserDTO user) {
+    public UserDTO getRequestedUser(String userId) {
+        String roleName = "";
+        User user = userRepository.findById(userId).get();
+        Set<UserRole> role = user.getUserRole();
+        for (UserRole userRole : role) {
+            roleName = userRole.getName();
+        }
 
+        return new UserDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getNic(),
+                user.getContact(), user.getAddress(), user.getUsername(), user.getPassword(), roleName);
+    }
+
+    @Override
+    public void saveUser(UserDTO user) {
         UserRole userRole = userRoleRepository.findByName(user.getRole());
-        //System.out.println(userRole);
+
         userRepository.save(new User(user.getId(), user.getFirstName(), user.getLastName(), user.getNic(),
                 user.getAddress(), user.getContact(), user.getUsername(), user.getPassword(),
                 "ACTIVE", userRole));
     }
 
     @Override
-    public void updateUser(UserDTO user, String id) {
+    public void updateUser(UserDTO user, String status, String id) {
+        UserRole userRole = userRoleRepository.findByName(user.getRole());
 
-    }
-
-    @Override
-    public void deleteUser(String id) {
-
+        userRepository.save(new User(id, user.getFirstName(), user.getLastName(), user.getNic(),
+                user.getAddress(), user.getContact(), user.getUsername(), user.getPassword(), status, userRole));
     }
 
     @Override
@@ -79,40 +90,12 @@ public class UserBOImpl implements UserBO {
         }
     }
 
-   /* @Override
-    public List<UserDTO> getAllUsers() {
-        List<User> allUsers = userRepository.findAll();
-        List<UserDTO> users = new ArrayList<>();
-        for (User user : allUsers) {
-            users.add(new UserDTO(user.getId(), user.getFirstName(), user.getLastName(), user.getNic(),
-                    user.getAddress(), user.getContact(), user.getUsername(), user.getPassword(),
-                    user.getUserRole().getId(), user.getStatus()));
-        }
-        return users;
+    @Override
+    public void updateStatus(String userId, String status) {
+        User user = userRepository.findById(userId).get();
+        //UserRole userRole = userRoleRepository.findByName(user.getRole());
+        user.setStatus(status);
+        userRepository.save(user);
     }
 
-    @Override
-    public void saveUser(UserDTO user) {
-        userRepository.save(new User(user.getId(), user.getFirstName(), user.getLastName(), user.getNic(),
-                user.getAddress(), user.getContact(), user.getUsername(), user.getPassword(),
-                user.getUserRoleId(), user.getStatus()));
-    }
-
-    @Override
-    public void updateUser(UserDTO user, String id) {
-        userRepository.save(new User(id, user.getFirstName(), user.getLastName(), user.getNic(),
-                user.getAddress(), user.getContact(), user.getUsername(), user.getPassword(),
-                user.getUserRoleId(), user.getStatus()));
-    }
-
-    @Override
-    public void deleteUser(String id) {
-        userRepository.deleteById(id);
-
-    }
-
-    @Override
-    public boolean existUser(String id) {
-        return userRepository.existsById(id);
-    }*/
 }
