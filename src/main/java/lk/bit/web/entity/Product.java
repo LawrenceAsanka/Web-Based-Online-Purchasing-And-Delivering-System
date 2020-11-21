@@ -44,31 +44,6 @@ public class Product implements SuperEntity {
     private byte[] imageThree;
     @Column(name = "status", length = 30, nullable = false)
     private String status;
-    @ManyToOne
-    @JoinColumn(name = "sub_category_id",
-            referencedColumnName = "id", nullable = false)
-    private ProductSubCategory subCategory;
 
-    public Product(String productId, String productName,
-                   String productDescription,
-                   int quantityPerUnit, BigDecimal quantityBuyingPrice,
-                   BigDecimal quantitySellingPrice, String weight, BigDecimal discountPerUnit,
-                   int currentQuantity, byte[] imageOne, byte[] imageTwo, byte[] imageThree,
-                   String status, String subCategoryId) {
-        this.productId = productId;
-        this.productName = productName;
-        this.productDescription = productDescription;
-        this.quantityPerUnit = quantityPerUnit;
-        this.quantityBuyingPrice = quantityBuyingPrice;
-        this.quantitySellingPrice = quantitySellingPrice;
-        this.weight = weight;
-        this.discountPerUnit = discountPerUnit;
-        this.currentQuantity = currentQuantity;
-        this.imageOne = imageOne;
-        this.imageTwo = imageTwo;
-        this.imageThree = imageThree;
-        this.status = status;
-        this.subCategory = new ProductSubCategory(subCategoryId);
-    }
 
 }

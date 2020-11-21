@@ -41,7 +41,7 @@ public class UserRoleBOImpl implements UserRoleBO {
 
     @Override
     public UserRole existUserRoleByName(String name) {
-       return userRoleRepository.findByName(name);
+        return userRoleRepository.findByName(name);
     }
 
     @Override

@@ -2,7 +2,6 @@ package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.ProductSubCategoryBO;
 import lk.bit.web.dto.SubCategoryDTO;
-import lk.bit.web.entity.ProductSubCategory;
 import lk.bit.web.repository.SubCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,8 +11,32 @@ import java.util.List;
 
 @Component
 public class ProductSubCategoryBOImpl implements ProductSubCategoryBO {
+    @Override
+    public List<SubCategoryDTO> getAllSubCategories() {
+        return null;
+    }
 
-    @Autowired
+    @Override
+    public void saveSubCategory(SubCategoryDTO subCategory) {
+
+    }
+
+    @Override
+    public void updateSubCategory(String name, String status, String categoryId, String subCategoryId) {
+
+    }
+
+    @Override
+    public void deleteSubCategory(String subCategoryId) {
+
+    }
+
+    @Override
+    public boolean subCategoryExist(String subCategoryId) {
+        return false;
+    }
+
+   /* @Autowired
     private SubCategoryRepository subCategoryRepository;
 
     @Override
@@ -46,5 +69,5 @@ public class ProductSubCategoryBOImpl implements ProductSubCategoryBO {
     @Override
     public boolean subCategoryExist(String subCategoryId) {
         return subCategoryRepository.existsById(subCategoryId);
-    }
+    }*/
 }

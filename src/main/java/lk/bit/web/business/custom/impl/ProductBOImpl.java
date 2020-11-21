@@ -15,13 +15,32 @@ import java.util.List;
 
 @Component
 public class ProductBOImpl implements ProductBO {
+    @Override
+    public List<ProductDTO> getAllProducts() {
+        return null;
+    }
 
+    @Override
+    public ProductDTO getProduct(String productId) {
+        return null;
+    }
+
+    @Override
+    public void saveProduct(ProductDTO product) throws IOException {
+
+    }
+
+    @Override
+    public boolean existProduct(String productId) {
+        return false;
+    }
+/*
     @Autowired
     private ProductRepository productRepository;
 
     @Override
     public List<ProductDTO> getAllProducts() {
-       /* List<Product> allProducts = productRepository.findAll();
+        List<Product> allProducts = productRepository.findAll();
         List<ProductDTO> products = new ArrayList<>();
         for (Product product : allProducts) {
             products.add(new ProductDTO(
@@ -30,20 +49,20 @@ public class ProductBOImpl implements ProductBO {
                     product.getQuantitySellingPrice(), product.getWeight(), product.getDiscountPerUnit(),
                     product.getCurrentQuantity(), imageOne, imageTwo, imageThree,
                     product.getStatus(), product.getSubCategory().getSubCategoryId()));
-        }*/
+        }
         return null;
     }
 
     @Override
     public ProductDTO getProduct(String productId) {
         Product product = productRepository.findById(productId).get();
-        return null;/*new ProductDTO(
+        return null;new ProductDTO(
                 product.getProductId(), product.getProductName(), product.getProductDescription(),
                 product.getQuantityPerUnit(), product.getQuantityBuyingPrice(),
                 product.getQuantitySellingPrice(), product.getWeight(), product.getDiscountPerUnit(),
                 product.getCurrentQuantity(), imageOne, imageTwo, imageThree,
                 product.getStatus(), product.getSubCategory().getSubCategoryId()
-        );*/
+        );
     }
 
     @Override
@@ -79,5 +98,5 @@ public class ProductBOImpl implements ProductBO {
     @Override
     public boolean existProduct(String productId) {
          return productRepository.existsById(productId);
-    }
+    }*/
 }

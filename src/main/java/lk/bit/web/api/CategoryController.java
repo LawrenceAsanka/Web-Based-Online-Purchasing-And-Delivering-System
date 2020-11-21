@@ -8,6 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @CrossOrigin
@@ -20,14 +23,27 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<CategoryDTO> getAllCategories(){
+    public List<CategoryDTO> getAllCategories() {
         return categoryBO.getAllCategories();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/{categoryName}")
+    public CategoryDTO getCategory(@PathVariable @Valid @NotEmpty String categoryName){
+        if (categoryName.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            return categoryBO.getCategory(categoryName);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveCategory(@RequestBody CategoryDTO category){
-        if (categoryBO.existCategory(category.getCategoryId())) {
+    public void saveCategory(@RequestBody CategoryDTO category) {
+        if (category.getCategoryName()== null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         categoryBO.saveCategory(category);
@@ -35,19 +51,30 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(value ="/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void updateCategory(@PathVariable("id") String categoryId, @RequestBody CategoryDTO category){
-        if (!categoryBO.existCategory(categoryId)) {
+    public void updateCategory(@PathVariable("id") @Valid @Pattern(regexp = "CA\\d{2}") String categoryId,
+                               @RequestBody CategoryDTO category){
+        if (!categoryBO.existCategoryById(categoryId) || categoryId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         categoryBO.updateCategory(category,categoryId);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping(value ="/{id}")
+    public void updateCategory(@PathVariable("id") @Valid @Pattern(regexp = "CA\\d{2}") String categoryId,
+                               @RequestParam("status") String status){
+        if (!categoryBO.existCategoryById(categoryId) || categoryId == null || status == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        categoryBO.updateCategoryStatus(status,categoryId);
+    }
+
+  /*  @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deleteCategory(@PathVariable("id") String categoryId){
         if (!categoryBO.existCategory(categoryId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         categoryBO.deleteCategory(categoryId);
-    }
+    }*/
 }

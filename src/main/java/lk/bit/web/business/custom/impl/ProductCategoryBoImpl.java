@@ -28,9 +28,32 @@ public class ProductCategoryBoImpl implements ProductCategoryBO {
     }
 
     @Override
+    public CategoryDTO getCategory(String categoryName){
+        ProductCategory category = categoryRepository.findByCategoryName(categoryName);
+        return new CategoryDTO(category.getCategoryId(),category.getCategoryName(),
+                category.getStatus());
+    }
+
+    @Override
     public void saveCategory(CategoryDTO category) {
-        categoryRepository.save(new ProductCategory(category.getCategoryId(), category.getCategoryName(),
-                category.getStatus()));
+
+        //ID generating
+        String newCategoryId = "";
+        ProductCategory lastCategory = categoryRepository.findFirstLastCategoryIdByOrderByCategoryIdDesc();
+        if (lastCategory.getCategoryId() == null) {
+            newCategoryId = "CA01";
+        } else {
+            String replaceCategoryId = lastCategory.getCategoryId().replaceAll("CA", "");
+            int categoryId = Integer.parseInt(replaceCategoryId) + 1;
+            if (categoryId < 10) {
+                newCategoryId = "CA0" + categoryId;
+            } else {
+                newCategoryId = "CA" + categoryId;
+            }
+
+        }
+        categoryRepository.save(new ProductCategory(newCategoryId, category.getCategoryName(),
+                "ACTIVE"));
     }
 
     @Override
@@ -40,12 +63,26 @@ public class ProductCategoryBoImpl implements ProductCategoryBO {
     }
 
     @Override
+    public void updateCategoryStatus(String status, String categoryId) {
+        ProductCategory category = categoryRepository.findById(categoryId).get();
+        category.setStatus(status);
+        categoryRepository.save(category);
+    }
+
+    @Override
     public void deleteCategory(String categoryId) {
         categoryRepository.deleteById(categoryId);
     }
 
     @Override
-    public boolean existCategory(String categoryId) {
-        return categoryRepository.existsById(categoryId);
+    public String existCategoryByName(String categoryName){
+        ProductCategory category = categoryRepository.findByCategoryName(categoryName);
+        return category.getCategoryName();
+
+    }
+
+    @Override
+    public boolean existCategoryById(String categoryId) {
+         return categoryRepository.existsById(categoryId);
     }
 }
