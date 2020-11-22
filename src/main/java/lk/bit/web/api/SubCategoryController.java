@@ -22,18 +22,28 @@ public class SubCategoryController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<SubCategoryTM> getAllSubCategories(){
+    public List<SubCategoryTM> getAllSubCategories() {
         List<SubCategoryDTO> allSubCategories = subCategoryBO.getAllSubCategories();
         List<SubCategoryTM> subCategories = new ArrayList<>();
         for (SubCategoryDTO subCategory : allSubCategories) {
-            subCategories.add(new SubCategoryTM(subCategory.getSubCategoryId(),subCategory.getSubCategoryName()));
+            subCategories.add(new SubCategoryTM(subCategory.getSubCategoryId(), subCategory.getSubCategoryName()));
         }
         return subCategories;
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}")
+    public String getSubCategory(@PathVariable int id) {
+        if (id < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return subCategoryBO.getSubCategory(id);
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveSubCategory(@RequestParam("categoryName") String categoryName,
-            @RequestBody SubCategoryDTO subCategory){
+                                @RequestBody SubCategoryDTO subCategory) {
         if (categoryName == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
@@ -53,7 +63,7 @@ public class SubCategoryController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public void deleteSubCategory(@PathVariable("id") String subCategoryId){
+    public void deleteSubCategory(@PathVariable("id") String subCategoryId) {
         if (!subCategoryBO.subCategoryExist(subCategoryId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

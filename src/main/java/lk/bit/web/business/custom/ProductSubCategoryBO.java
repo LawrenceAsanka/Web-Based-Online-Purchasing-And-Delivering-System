@@ -10,6 +10,8 @@ public interface ProductSubCategoryBO extends SuperBO {
 
     List<SubCategoryDTO> getAllSubCategories();
 
+    String getSubCategory(int id);
+
     void saveSubCategory(String subCategoryName,String categoryName);
 
     void updateSubCategory(String name,String status,String categoryId,String subCategoryId);

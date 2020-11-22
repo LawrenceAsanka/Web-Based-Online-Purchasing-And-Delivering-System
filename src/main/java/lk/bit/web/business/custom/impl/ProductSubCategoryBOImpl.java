@@ -28,6 +28,12 @@ public class ProductSubCategoryBOImpl implements ProductSubCategoryBO {
     }
 
     @Override
+    public String getSubCategory(int id) {
+        String categoryName = subCategoryRepository.getCategoryName(id);
+        return categoryName;
+    }
+
+    @Override
     public void saveSubCategory(String subCategoryName,String categoryName) {
         String categoryId = subCategoryRepository.getCategoryId(categoryName);
         subCategoryRepository.save(new ProductSubCategory(subCategoryName,categoryId));
