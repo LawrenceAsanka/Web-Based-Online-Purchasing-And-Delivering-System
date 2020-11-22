@@ -2,6 +2,7 @@ package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.ProductSubCategoryBO;
 import lk.bit.web.dto.SubCategoryDTO;
+import lk.bit.web.entity.ProductSubCategory;
 import lk.bit.web.repository.SubCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,14 +12,25 @@ import java.util.List;
 
 @Component
 public class ProductSubCategoryBOImpl implements ProductSubCategoryBO {
+
+    @Autowired
+    private SubCategoryRepository subCategoryRepository;
+
     @Override
     public List<SubCategoryDTO> getAllSubCategories() {
-        return null;
+        List<ProductSubCategory> allSubCategories = subCategoryRepository.findAll();
+        List<SubCategoryDTO> subCategories = new ArrayList<>();
+        for (ProductSubCategory subCategory : allSubCategories) {
+            subCategories.add(new SubCategoryDTO(subCategory.getSubCategoryId(), subCategory.getSubCategoryName(),
+                   subCategory.getCategory().getCategoryId()));
+        }
+        return subCategories;
     }
 
     @Override
-    public void saveSubCategory(SubCategoryDTO subCategory) {
-
+    public void saveSubCategory(String subCategoryName,String categoryName) {
+        String categoryId = subCategoryRepository.getCategoryId(categoryName);
+        subCategoryRepository.save(new ProductSubCategory(subCategoryName,categoryId));
     }
 
     @Override
@@ -36,20 +48,8 @@ public class ProductSubCategoryBOImpl implements ProductSubCategoryBO {
         return false;
     }
 
-   /* @Autowired
-    private SubCategoryRepository subCategoryRepository;
 
-    @Override
-    public List<SubCategoryDTO> getAllSubCategories() {
-        List<ProductSubCategory> allSubCategories = subCategoryRepository.findAll();
-        List<SubCategoryDTO> subCategories = new ArrayList<>();
-        for (ProductSubCategory subCategory : allSubCategories) {
-            subCategories.add(new SubCategoryDTO(subCategory.getSubCategoryId(), subCategory.getSubCategoryName(),
-                    subCategory.getStatus(), subCategory.getProductCategory().getCategoryId()));
-        }
-        return subCategories;
-    }
-
+ /*
     @Override
     public void saveSubCategory(SubCategoryDTO subCategory) {
         subCategoryRepository.save(new ProductSubCategory(subCategory.getSubCategoryId(),

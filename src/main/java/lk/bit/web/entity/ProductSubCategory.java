@@ -16,7 +16,7 @@ public class ProductSubCategory implements SuperEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id",length = 50,columnDefinition = "INT",nullable = false)
-    private String subCategoryId;
+    private int subCategoryId;
 
     @Column(name = "sub_category_name",nullable = false,length = 50)
     private String subCategoryName;
@@ -24,4 +24,9 @@ public class ProductSubCategory implements SuperEntity{
     @ManyToOne
     @JoinColumn(name = "category_id",referencedColumnName = "id",nullable = false)
     private ProductCategory category;
+
+    public ProductSubCategory(String subCategoryName, String categoryId) {
+        this.subCategoryName = subCategoryName;
+        this.category = new ProductCategory(categoryId);
+    }
 }

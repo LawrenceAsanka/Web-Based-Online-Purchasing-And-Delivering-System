@@ -2,11 +2,14 @@ package lk.bit.web.api;
 
 import lk.bit.web.business.custom.ProductSubCategoryBO;
 import lk.bit.web.dto.SubCategoryDTO;
+import lk.bit.web.util.SubCategoryTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin
@@ -19,20 +22,25 @@ public class SubCategoryController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<SubCategoryDTO> getAllSubCategories(){
-        return subCategoryBO.getAllSubCategories();
+    public List<SubCategoryTM> getAllSubCategories(){
+        List<SubCategoryDTO> allSubCategories = subCategoryBO.getAllSubCategories();
+        List<SubCategoryTM> subCategories = new ArrayList<>();
+        for (SubCategoryDTO subCategory : allSubCategories) {
+            subCategories.add(new SubCategoryTM(subCategory.getSubCategoryId(),subCategory.getSubCategoryName()));
+        }
+        return subCategories;
     }
-
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public void saveSubCategory(@RequestBody SubCategoryDTO subCategory){
-        if (subCategoryBO.subCategoryExist(subCategory.getSubCategoryId())) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void saveSubCategory(@RequestParam("categoryName") String categoryName,
+            @RequestBody SubCategoryDTO subCategory){
+        if (categoryName == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        subCategoryBO.saveSubCategory(subCategory);
+        subCategoryBO.saveSubCategory(subCategory.getSubCategoryName(), categoryName);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+/*    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
     public void saveSubCategory(@PathVariable("id") String subCategoryId,
                                   @RequestBody SubCategoryDTO subCategory){
@@ -41,7 +49,7 @@ public class SubCategoryController {
         }
         subCategoryBO.updateSubCategory(subCategory.getSubCategoryName(),subCategory.getStatus(),
                 subCategory.getCategoryId(),subCategoryId);
-    }
+    }*/
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")

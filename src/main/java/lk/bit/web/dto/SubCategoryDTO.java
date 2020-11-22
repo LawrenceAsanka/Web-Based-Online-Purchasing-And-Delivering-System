@@ -10,8 +10,7 @@ import lombok.*;
 @ToString
 public class SubCategoryDTO {
 
-    private String subCategoryId;
+    private int subCategoryId;
     private String subCategoryName;
-    private String status;
     private String categoryId;
 }

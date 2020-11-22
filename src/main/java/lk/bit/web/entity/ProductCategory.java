@@ -26,4 +26,7 @@ public class ProductCategory implements SuperEntity {
     @Column(name = "status", length = 50, nullable = false)
     private String status;
 
+    public ProductCategory(String categoryId) {
+        this.categoryId = categoryId;
+    }
 }
