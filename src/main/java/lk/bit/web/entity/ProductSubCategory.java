@@ -1,11 +1,27 @@
 package lk.bit.web.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import lombok.*;
 
+import javax.persistence.*;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
+@ToString
 @Entity
-public class ProductSubCategory {
+@Table(name = "item_sub_category")
+public class ProductSubCategory implements SuperEntity{
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id",length = 50,columnDefinition = "INT",nullable = false)
+    private String subCategoryId;
+
+    @Column(name = "sub_category_name",nullable = false,length = 50)
+    private String subCategoryName;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id",referencedColumnName = "id",nullable = false)
+    private ProductCategory category;
 }
