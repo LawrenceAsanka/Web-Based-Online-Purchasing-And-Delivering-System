@@ -12,11 +12,13 @@ public interface ProductSubCategoryBO extends SuperBO {
 
     String getSubCategory(int id);
 
+    List<SubCategoryDTO> getSortedSubCategories(String categoryName);
+
     void saveSubCategory(String subCategoryName,String categoryName);
 
-    void updateSubCategory(String name,String status,String categoryId,String subCategoryId);
+    void updateSubCategory(SubCategoryDTO subCategory,int subCategoryId);
 
     void deleteSubCategory(String subCategoryId);
 
-    boolean subCategoryExist(String subCategoryId);
+    boolean subCategoryExist(int subCategoryId);
 }

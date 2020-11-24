@@ -2,6 +2,7 @@ package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.ProductSubCategoryBO;
 import lk.bit.web.dto.SubCategoryDTO;
+import lk.bit.web.entity.ProductCategory;
 import lk.bit.web.entity.ProductSubCategory;
 import lk.bit.web.repository.SubCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +35,33 @@ public class ProductSubCategoryBOImpl implements ProductSubCategoryBO {
     }
 
     @Override
+    public List<SubCategoryDTO> getSortedSubCategories(String categoryName) {
+        String categoryId = subCategoryRepository.getCategoryId(categoryName);
+        List<ProductSubCategory> sortedSubCategories = subCategoryRepository.sortedSubCategories(categoryId);
+        //sortedSubCategories.forEach(System.out::println);
+        List<SubCategoryDTO> subCategories = new ArrayList<>();
+        for (ProductSubCategory subCategory : sortedSubCategories) {
+            subCategories.add(new SubCategoryDTO(subCategory.getSubCategoryId(), subCategory.getSubCategoryName(),
+                    subCategory.getCategory().getCategoryId()));
+        }
+        return subCategories;
+    }
+
+    @Override
     public void saveSubCategory(String subCategoryName,String categoryName) {
         String categoryId = subCategoryRepository.getCategoryId(categoryName);
         subCategoryRepository.save(new ProductSubCategory(subCategoryName,categoryId));
     }
 
     @Override
-    public void updateSubCategory(String name, String status, String categoryId, String subCategoryId) {
+    public void updateSubCategory(SubCategoryDTO subCategory,int subCategoryId) {
+        String categoryId = subCategoryRepository.getCategoryId(subCategory.getCategoryId());
+        ProductSubCategory productSubCategory = subCategoryRepository.findById(subCategoryId).get();
 
+        productSubCategory.setSubCategoryName(subCategory.getSubCategoryName());
+        productSubCategory.setCategory(new ProductCategory(categoryId));
+
+        subCategoryRepository.save(productSubCategory);
     }
 
     @Override
@@ -50,8 +70,8 @@ public class ProductSubCategoryBOImpl implements ProductSubCategoryBO {
     }
 
     @Override
-    public boolean subCategoryExist(String subCategoryId) {
-        return false;
+    public boolean subCategoryExist(int subCategoryId) {
+        return subCategoryRepository.existsById(subCategoryId);
     }
 
 
@@ -71,9 +91,5 @@ public class ProductSubCategoryBOImpl implements ProductSubCategoryBO {
     public void deleteSubCategory(String subCategoryId) {
         subCategoryRepository.deleteById(subCategoryId);
     }
-
-    @Override
-    public boolean subCategoryExist(String subCategoryId) {
-        return subCategoryRepository.existsById(subCategoryId);
-    }*/
+*/
 }
