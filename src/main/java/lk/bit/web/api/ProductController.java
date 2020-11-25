@@ -1,13 +1,14 @@
 package lk.bit.web.api;
 
 import lk.bit.web.business.custom.ProductBO;
-import lk.bit.web.dto.ProductDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -18,11 +19,13 @@ public class ProductController {
     private ProductBO productBO;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public void saveProduct(@RequestBody ProductDTO product) throws IOException {
-        if (productBO.existProduct(product.getProductId())) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void saveProduct(@RequestPart("images") List<MultipartFile> imageFiles,
+                            @RequestParam("data") String productDetails) {
+        if (imageFiles.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        productBO.saveProduct(product);
+        productBO.saveProduct(imageFiles,productDetails);
+
     }
 }

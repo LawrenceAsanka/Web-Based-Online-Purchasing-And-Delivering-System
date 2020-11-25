@@ -1,11 +1,14 @@
 package lk.bit.web.business.custom.impl;
 
+import com.google.gson.Gson;
 import lk.bit.web.business.custom.ProductBO;
 import lk.bit.web.dto.ProductDTO;
 import lk.bit.web.entity.Product;
 import lk.bit.web.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -15,6 +18,10 @@ import java.util.List;
 
 @Component
 public class ProductBOImpl implements ProductBO {
+
+    @Autowired
+    private ProductRepository productRepository;
+
     @Override
     public List<ProductDTO> getAllProducts() {
         return null;
@@ -26,7 +33,9 @@ public class ProductBOImpl implements ProductBO {
     }
 
     @Override
-    public void saveProduct(ProductDTO product) throws IOException {
+    public void saveProduct(List<MultipartFile> imageFiles,String productDetails){
+        Gson gson = new Gson();
+        ProductDTO product = gson.fromJson(productDetails, ProductDTO.class);
 
     }
 

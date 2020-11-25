@@ -42,17 +42,14 @@ public class Product implements SuperEntity {
     @Column(name = "current_quantity", columnDefinition = "INT", nullable = false)
     private int currentQuantity;
 
-    @Lob
-    @Column(name = "image_1", columnDefinition = "MEDIUMBLOB", nullable = false)
-    private byte[] imageOne;
+    @Column(name = "image_1",length = 100,nullable = false)
+    private String imageOne;
 
-    @Lob
-    @Column(name = "image_2", columnDefinition = "MEDIUMBLOB")
-    private byte[] imageTwo;
+    @Column(name = "image_2",length = 100)
+    private String imageTwo;
 
-    @Lob
-    @Column(name = "image_3", columnDefinition = "MEDIUMBLOB")
-    private byte[] imageThree;
+    @Column(name = "image_3", length = 100)
+    private String imageThree;
 
     @Column(length = 30, nullable = false)
     private String status;
