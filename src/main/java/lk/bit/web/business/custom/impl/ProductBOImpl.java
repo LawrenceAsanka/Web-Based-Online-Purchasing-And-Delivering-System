@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import lk.bit.web.business.custom.ProductBO;
 import lk.bit.web.dto.ProductDTO;
 import lk.bit.web.entity.Product;
+import lk.bit.web.entity.User;
 import lk.bit.web.repository.ProductRepository;
 import lk.bit.web.repository.SubCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +101,26 @@ public class ProductBOImpl implements ProductBO {
     @Override
     public boolean existProduct(String productId) {
         return false;
+    }
+
+    @Override
+    public String getNewProductId() {
+        Product lastProduct = productRepository.findFirstLastProductIdByOrderByProductIdDesc();
+        String lastProductId = lastProduct.getProductId();
+
+        if (lastProductId == null) {
+            return "P001";
+        } else {
+            String id = lastProductId.replace("P", "");
+            int newProductId = Integer.parseInt(id) + 1;
+            if (newProductId < 10) {
+                return "P00" + newProductId;
+            } else if (newProductId < 100) {
+                return "P0" + newProductId;
+            } else {
+                return "P" + newProductId;
+            }
+        }
     }
 /*
     @Autowired

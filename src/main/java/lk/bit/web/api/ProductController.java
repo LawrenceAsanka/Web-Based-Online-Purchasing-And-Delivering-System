@@ -18,6 +18,12 @@ public class ProductController {
     @Autowired
     private ProductBO productBO;
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/ids")
+    private String getNewProductId(){
+        return productBO.getNewProductId();
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void saveProduct(@RequestPart("images") List<MultipartFile> imageFiles,
