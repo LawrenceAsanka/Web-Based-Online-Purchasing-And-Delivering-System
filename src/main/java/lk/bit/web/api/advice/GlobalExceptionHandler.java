@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public String globalExceptionHandlerMethod(Exception e){
         e.printStackTrace();
-        return "Call DEPPO immediately";
+        return "Contact admin immediately";
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
