@@ -18,5 +18,7 @@ public interface SubCategoryRepository extends JpaRepository<ProductSubCategory,
     @Query(value = "SELECT sc FROM ProductSubCategory sc WHERE sc.category.categoryId = ?1")
     List<ProductSubCategory> sortedSubCategories(String categoryId);
 
-
+    @Query(value = "SELECT sc.subCategoryId FROM ProductSubCategory sc WHERE sc.subCategoryName = ?1 " +
+            "AND sc.category.categoryName = ?2")
+    int getSubCategoryId(String subCategoryName,String categoryName);
 }

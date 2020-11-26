@@ -29,4 +29,8 @@ public class ProductSubCategory implements SuperEntity{
         this.subCategoryName = subCategoryName;
         this.category = new ProductCategory(categoryId);
     }
+
+    public ProductSubCategory(int subCategoryId) {
+        this.subCategoryId = subCategoryId;
+    }
 }

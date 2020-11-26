@@ -18,4 +18,6 @@ public interface ProductBO extends SuperBO {
 
     boolean existProduct(String productId);
 
+    String getNewProductId();
+
 }

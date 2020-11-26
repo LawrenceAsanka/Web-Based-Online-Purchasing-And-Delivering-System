@@ -5,22 +5,26 @@ import lk.bit.web.business.custom.ProductBO;
 import lk.bit.web.dto.ProductDTO;
 import lk.bit.web.entity.Product;
 import lk.bit.web.repository.ProductRepository;
+import lk.bit.web.repository.SubCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Component
 public class ProductBOImpl implements ProductBO {
 
+    private static File file;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private Environment env;
+    @Autowired
+    private SubCategoryRepository subCategoryRepository;
 
     @Override
     public List<ProductDTO> getAllProducts() {
@@ -33,10 +37,64 @@ public class ProductBOImpl implements ProductBO {
     }
 
     @Override
-    public void saveProduct(List<MultipartFile> imageFiles,String productDetails){
+    public void saveProduct(List<MultipartFile> imageFiles, String productDetails) {
+        String firstImagePath = "";
+        String secondImagePath = "";
+        String thirdImagePath = "";
+
+        // create Gson object
         Gson gson = new Gson();
         ProductDTO product = gson.fromJson(productDetails, ProductDTO.class);
 
+
+        // get category and subcategory name
+        String categoryId = subCategoryRepository.getCategoryId(product.getProductCategory());
+        int subCategoryId = subCategoryRepository.getSubCategoryId(product.getProductSubCategory(),
+                product.getProductCategory());
+
+        // check whether folder is exist or not
+        String uploadDir = env.getProperty("static.path") + product.getProductId();
+        file = new File(uploadDir);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+
+        // check multipart file and set image path
+        for (int i = 0; i < imageFiles.size(); i++) {
+            switch (i) {
+                case 1:
+                    secondImagePath = imageFiles.get(i).getOriginalFilename();
+                    setImageAndWriteImage(i, imageFiles);
+                    break;
+                case 2:
+                    thirdImagePath = imageFiles.get(i).getOriginalFilename();
+                    setImageAndWriteImage(i, imageFiles);
+                    break;
+                default:
+                    firstImagePath = imageFiles.get(i).getOriginalFilename();
+                    setImageAndWriteImage(i, imageFiles);
+                    break;
+            }
+        }
+
+
+        //save data in database
+        productRepository.save(new Product(
+                product.getProductId(), product.getProductName(), product.getProductDescription(), product.getQuantityPerUnit(),
+                product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(), product.getWeight(),
+                product.getDiscountPerUnit(), product.getCurrentQuantity(), firstImagePath, secondImagePath,
+                thirdImagePath, "ACTIVE", subCategoryId, categoryId
+        ));
+
+    }
+
+    // save images in locally
+    private void setImageAndWriteImage(int i, List<MultipartFile> imageFiles) {
+        try {
+            imageFiles.get(i).transferTo(new File(file.getAbsolutePath() + "/" + imageFiles.get(i).getOriginalFilename()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -74,35 +132,6 @@ public class ProductBOImpl implements ProductBO {
         );
     }
 
-    @Override
-    public void saveProduct(ProductDTO product) throws IOException {
-
-        if (product.getDiscountPerUnit() == null) {
-            product.setDiscountPerUnit(new BigDecimal("0.00"));
-        }
-
-        if (product.getImageTwo() == null) {
-            product.setImageTwo("/media/asanka/0C6A07160C6A0716/Project_Details/BITProject_2020/BIT_final-year-project/src/main/resources/images/noImage.png");
-        }
-
-        if (product.getImageThree() == null) {
-            product.setImageThree("/media/asanka/0C6A07160C6A0716/Project_Details/BITProject_2020/BIT_final-year-project/src/main/resources/images/noImage.png");
-        }
-
-        byte[] imageOne = Files.readAllBytes(Paths.get(product.getImageOne()));
-        byte[] imageTwo = Files.readAllBytes(Paths.get(product.getImageTwo()));
-        byte[] imageThree = Files.readAllBytes(Paths.get(product.getImageThree()));
-
-        productRepository.save(
-                new Product(product.getProductId(), product.getProductName(), product.getProductDescription(),
-                        product.getQuantityPerUnit(), product.getQuantityBuyingPrice(),
-                        product.getQuantitySellingPrice(), product.getWeight(), product.getDiscountPerUnit(),
-                        product.getCurrentQuantity(), imageOne, imageTwo, imageThree,
-                        product.getStatus(), product.getProductSubCategoryId())
-        );
-
-
-    }
 
     @Override
     public boolean existProduct(String productId) {

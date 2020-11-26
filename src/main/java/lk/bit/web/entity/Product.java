@@ -62,5 +62,24 @@ public class Product implements SuperEntity {
     @JoinColumn(name = "category_id",referencedColumnName = "id",nullable = false)
     private ProductCategory category;
 
-
+    public Product(String productId, String productName, String productDescription, int quantityPerUnit,
+                   BigDecimal quantityBuyingPrice, BigDecimal quantitySellingPrice, String weight,
+                   BigDecimal discountPerUnit, int currentQuantity, String imageOne, String imageTwo,
+                   String imageThree, String status,int subCategoryId,String categoryId) {
+        this.productId = productId;
+        this.productName = productName;
+        this.productDescription = productDescription;
+        this.quantityPerUnit = quantityPerUnit;
+        this.quantityBuyingPrice = quantityBuyingPrice;
+        this.quantitySellingPrice = quantitySellingPrice;
+        this.weight = weight;
+        this.discountPerUnit = discountPerUnit;
+        this.currentQuantity = currentQuantity;
+        this.imageOne = imageOne;
+        this.imageTwo = imageTwo;
+        this.imageThree = imageThree;
+        this.status = status;
+        this.subCategory = new ProductSubCategory(subCategoryId);
+        this.category = new ProductCategory(categoryId);
+    }
 }
