@@ -1,6 +1,7 @@
 package lk.bit.web.api;
 
 import lk.bit.web.business.custom.ProductBO;
+import lk.bit.web.util.ProductTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,8 +20,23 @@ public class ProductController {
     private ProductBO productBO;
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/")
+    private List<ProductTM> getAllProductsDetails() {
+        return productBO.getAllProductsDetails();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    private List<ProductTM> getGroupedProductsDetails(@RequestParam("categoryName") String categoryName) {
+        if (categoryName == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return productBO.getGroupedProductDetails(categoryName);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/ids")
-    private String getNewProductId(){
+    private String getNewProductId() {
         try {
             System.out.println(productBO.getNewProductId());
             return productBO.getNewProductId();
@@ -37,7 +53,7 @@ public class ProductController {
         if (imageFiles.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        productBO.saveProduct(imageFiles,productDetails);
+        productBO.saveProduct(imageFiles, productDetails);
 
     }
 }

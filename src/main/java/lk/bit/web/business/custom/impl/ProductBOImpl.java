@@ -3,9 +3,11 @@ package lk.bit.web.business.custom.impl;
 import com.google.gson.Gson;
 import lk.bit.web.business.custom.ProductBO;
 import lk.bit.web.dto.ProductDTO;
+import lk.bit.web.entity.CustomEntity2;
 import lk.bit.web.entity.Product;
 import lk.bit.web.repository.ProductRepository;
 import lk.bit.web.repository.SubCategoryRepository;
+import lk.bit.web.util.ProductTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -124,6 +127,28 @@ public class ProductBOImpl implements ProductBO {
             }
         }
         return productId;
+    }
+
+    @Override
+    public List<ProductTM> getAllProductsDetails() {
+        List<CustomEntity2> allProducts = productRepository.getAllProducts();
+        List<ProductTM> products = new ArrayList<>();
+        allProducts.forEach(p -> {
+            products.add(new ProductTM(p.getProductId(),p.getProductName(),p.getProductCategory(),
+                    p.getProductSellingPrice(),p.getProductBuyingPrice(),p.getProductQuantity(),p.getProductStatus()));
+        });
+        return products;
+    }
+
+    @Override
+    public List<ProductTM> getGroupedProductDetails(String categoryName) {
+        List<CustomEntity2> category = productRepository.getGroupedProductDetails(categoryName);
+        List<ProductTM> products = new ArrayList<>();
+        category.forEach(p -> {
+            products.add(new ProductTM(p.getProductId(),p.getProductName(),p.getProductCategory(),
+                    p.getProductSellingPrice(),p.getProductBuyingPrice(),p.getProductQuantity(),p.getProductStatus()));
+        });
+        return products;
     }
 /*
     @Autowired

@@ -12,5 +12,7 @@ public interface CustomEntity2 {
 
     String getProductBuyingPrice();
 
+    String getProductQuantity();
+
     String getProductStatus();
 }
