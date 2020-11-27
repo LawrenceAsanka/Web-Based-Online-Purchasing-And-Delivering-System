@@ -5,6 +5,9 @@ import lk.bit.web.business.custom.ProductBO;
 import lk.bit.web.dto.ProductDTO;
 import lk.bit.web.entity.CustomEntity2;
 import lk.bit.web.entity.Product;
+import lk.bit.web.entity.ProductCategory;
+import lk.bit.web.entity.ProductSubCategory;
+import lk.bit.web.repository.CategoryRepository;
 import lk.bit.web.repository.ProductRepository;
 import lk.bit.web.repository.SubCategoryRepository;
 import lk.bit.web.util.ProductTM;
@@ -29,6 +32,8 @@ public class ProductBOImpl implements ProductBO {
     private Environment env;
     @Autowired
     private SubCategoryRepository subCategoryRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Override
     public List<ProductDTO> getAllProducts() {
@@ -37,7 +42,15 @@ public class ProductBOImpl implements ProductBO {
 
     @Override
     public ProductDTO getProduct(String productId) {
-        return null;
+        Product p = productRepository.findById(productId).get();
+        ProductSubCategory subCategory = subCategoryRepository.findById(p.getSubCategory().getSubCategoryId()).get();
+        ProductCategory category = categoryRepository.findById(p.getCategory().getCategoryId()).get();
+
+        return new ProductDTO(p.getProductId(),p.getProductName(),p.getProductDescription(),p.getQuantityPerUnit(),
+                p.getQuantityBuyingPrice(),p.getQuantitySellingPrice(),p.getWeight(),p.getDiscountPerUnit(),
+                p.getCurrentQuantity(),p.getImageOne(),p.getImageTwo(),p.getImageThree(),p.getStatus(),
+                subCategory.getSubCategoryName(),category.getCategoryName());
+
     }
 
     @Override
@@ -161,23 +174,5 @@ public class ProductBOImpl implements ProductBO {
             productRepository.save(product);
         }
     }
-/*
 
-    @Override
-    public ProductDTO getProduct(String productId) {
-        Product product = productRepository.findById(productId).get();
-        return null;new ProductDTO(
-                product.getProductId(), product.getProductName(), product.getProductDescription(),
-                product.getQuantityPerUnit(), product.getQuantityBuyingPrice(),
-                product.getQuantitySellingPrice(), product.getWeight(), product.getDiscountPerUnit(),
-                product.getCurrentQuantity(), imageOne, imageTwo, imageThree,
-                product.getStatus(), product.getSubCategory().getSubCategoryId()
-        );
-    }
-
-
-    @Override
-    public boolean existProduct(String productId) {
-         return productRepository.existsById(productId);
-    }*/
 }

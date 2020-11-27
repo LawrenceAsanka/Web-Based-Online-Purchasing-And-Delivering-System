@@ -1,6 +1,7 @@
 package lk.bit.web.api;
 
 import lk.bit.web.business.custom.ProductBO;
+import lk.bit.web.dto.ProductDTO;
 import lk.bit.web.util.ProductTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,15 @@ public class ProductController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         return productBO.getGroupedProductDetails(categoryName);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}")
+    private ProductDTO getRequestedProduct(@PathVariable("id") String productId) {
+        if (!productBO.existProduct(productId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return productBO.getProduct(productId);
     }
 
     @ResponseStatus(HttpStatus.OK)
