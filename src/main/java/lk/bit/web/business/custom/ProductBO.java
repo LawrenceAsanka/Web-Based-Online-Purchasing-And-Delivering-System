@@ -25,4 +25,6 @@ public interface ProductBO extends SuperBO {
 
     List<ProductTM> getGroupedProductDetails(String categoryName);
 
+    void updateStatus(String status,String productId);
+
 }

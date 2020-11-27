@@ -27,7 +27,7 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    private List<ProductTM> getGroupedProductsDetails(@RequestParam("categoryName") String categoryName) {
+    private List<ProductTM> getGroupedProductsDetails(@RequestParam("sort") String categoryName) {
         if (categoryName == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
@@ -55,5 +55,14 @@ public class ProductController {
         }
         productBO.saveProduct(imageFiles, productDetails);
 
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/{id}")
+    private void updateStatus(@PathVariable("id") String productId,@RequestParam String status){
+        if (!productBO.existProduct(productId) || status == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        productBO.updateStatus(status,productId);
     }
 }

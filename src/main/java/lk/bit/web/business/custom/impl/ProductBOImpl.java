@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ProductBOImpl implements ProductBO {
@@ -102,7 +103,7 @@ public class ProductBOImpl implements ProductBO {
 
     @Override
     public boolean existProduct(String productId) {
-        return false;
+        return productRepository.existsById(productId);
     }
 
     @Override
@@ -150,24 +151,17 @@ public class ProductBOImpl implements ProductBO {
         });
         return products;
     }
-/*
-    @Autowired
-    private ProductRepository productRepository;
 
     @Override
-    public List<ProductDTO> getAllProducts() {
-        List<Product> allProducts = productRepository.findAll();
-        List<ProductDTO> products = new ArrayList<>();
-        for (Product product : allProducts) {
-            products.add(new ProductDTO(
-                    product.getProductId(), product.getProductName(), product.getProductDescription(),
-                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(),
-                    product.getQuantitySellingPrice(), product.getWeight(), product.getDiscountPerUnit(),
-                    product.getCurrentQuantity(), imageOne, imageTwo, imageThree,
-                    product.getStatus(), product.getSubCategory().getSubCategoryId()));
+    public void updateStatus(String status, String productId) {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            product.setStatus(status);
+            productRepository.save(product);
         }
-        return null;
     }
+/*
 
     @Override
     public ProductDTO getProduct(String productId) {
