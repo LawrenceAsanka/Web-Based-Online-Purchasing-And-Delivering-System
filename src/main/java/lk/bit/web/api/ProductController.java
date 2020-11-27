@@ -21,7 +21,13 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/ids")
     private String getNewProductId(){
-        return productBO.getNewProductId();
+        try {
+            System.out.println(productBO.getNewProductId());
+            return productBO.getNewProductId();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "P001";
+        }
     }
 
     @ResponseStatus(HttpStatus.CREATED)
