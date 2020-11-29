@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @CrossOrigin
@@ -69,10 +72,24 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
-    private void updateStatus(@PathVariable("id") String productId,@RequestParam String status){
+    private void updateStatus(@PathVariable("id") String productId, @RequestParam String status) {
         if (!productBO.existProduct(productId) || status == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        productBO.updateStatus(status,productId);
+        productBO.updateStatus(status, productId);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping(value = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public void updateUser(@RequestPart("images") List<MultipartFile> imageFiles,
+                           @RequestParam @Valid @NotEmpty String status,
+                           @RequestParam("data") String productDetails,
+                           @PathVariable @Valid @Pattern(regexp = "P\\d{3}") String productId) {
+        if (!productBO.existProduct(productId) || status == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        productBO.updateProduct(imageFiles, productDetails, status, productId);
+    }
+
 }

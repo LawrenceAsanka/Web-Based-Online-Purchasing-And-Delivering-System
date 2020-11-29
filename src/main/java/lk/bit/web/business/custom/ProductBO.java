@@ -27,4 +27,6 @@ public interface ProductBO extends SuperBO {
 
     void updateStatus(String status,String productId);
 
+    void updateProduct(List<MultipartFile> imageFiles,String productDetails,String status,String productId);
+
 }

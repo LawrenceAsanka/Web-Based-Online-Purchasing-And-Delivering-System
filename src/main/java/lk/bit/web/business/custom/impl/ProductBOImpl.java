@@ -26,6 +26,7 @@ import java.util.Optional;
 public class ProductBOImpl implements ProductBO {
 
     private static File file;
+    private String uploadDir;
     @Autowired
     private ProductRepository productRepository;
     @Autowired
@@ -70,7 +71,7 @@ public class ProductBOImpl implements ProductBO {
                 product.getProductCategory());
 
         // check whether folder is exist or not
-        String uploadDir = env.getProperty("static.path") + product.getProductId();
+        uploadDir = env.getProperty("static.path") + product.getProductId();
         file = new File(uploadDir);
         if (!file.exists()) {
             file.mkdir();
@@ -103,15 +104,6 @@ public class ProductBOImpl implements ProductBO {
                 thirdImagePath, "ACTIVE", subCategoryId, categoryId
         ));
 
-    }
-
-    // save images in locally
-    private void setImageAndWriteImage(int i, List<MultipartFile> imageFiles) {
-        try {
-            imageFiles.get(i).transferTo(new File(file.getAbsolutePath() + "/" + imageFiles.get(i).getOriginalFilename()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -172,6 +164,84 @@ public class ProductBOImpl implements ProductBO {
             Product product = optionalProduct.get();
             product.setStatus(status);
             productRepository.save(product);
+        }
+    }
+
+    @Override
+    public void updateProduct(List<MultipartFile> imageFiles, String productDetails, String status, String productId) {
+        String firstImagePath = "";
+        String secondImagePath = "";
+        String thirdImagePath = "";
+
+        // create Gson object
+        Gson gson = new Gson();
+        ProductDTO product = gson.fromJson(productDetails, ProductDTO.class);
+        Product p = productRepository.findById(product.getProductId()).get();
+
+        // check whether folder is exist or not
+        String uploadDir = env.getProperty("static.path") + product.getProductId();
+        file = new File(uploadDir);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+
+     /*   uploadDir = env.getProperty("static.path") + product.getProductId();
+        File folder = new File(uploadDir);
+        File[] listOfFiles = folder.listFiles();
+        for (File file : listOfFiles) {
+            System.out.println(file);
+        }*/
+
+        if (imageFiles.size() > 0) {
+            // check multipart file and set image path
+            for (int i = 0; i < imageFiles.size(); i++) {
+                switch (i) {
+                    case 1:
+                        secondImagePath = imageFiles.get(i).getOriginalFilename();
+                        setImageAndWriteImage(i, imageFiles);
+                        p.setImageTwo(secondImagePath);
+                        break;
+                    case 2:
+                        thirdImagePath = imageFiles.get(i).getOriginalFilename();
+                        setImageAndWriteImage(i, imageFiles);
+                        p.setImageThree(thirdImagePath);
+                        break;
+                    default:
+                        firstImagePath = imageFiles.get(i).getOriginalFilename();
+                        setImageAndWriteImage(i, imageFiles);
+                        p.setImageOne(firstImagePath);
+                        break;
+                }
+            }
+        }
+            // get category and subcategory name
+            String categoryId = subCategoryRepository.getCategoryId(product.getProductCategory());
+            int subCategoryId = subCategoryRepository.getSubCategoryId(product.getProductSubCategory(),
+                    product.getProductCategory());
+
+            p.setProductId(productId);
+            p.setProductName(product.getProductName());
+            p.setProductDescription(product.getProductDescription());
+            p.setCategory(new ProductCategory(categoryId));
+            p.setSubCategory(new ProductSubCategory(subCategoryId));
+            p.setQuantityBuyingPrice(product.getQuantityBuyingPrice());
+            p.setQuantitySellingPrice(product.getQuantitySellingPrice());
+            p.setCurrentQuantity(product.getCurrentQuantity());
+            p.setQuantityPerUnit(product.getQuantityPerUnit());
+            p.setWeight(product.getWeight());
+            p.setDiscountPerUnit(product.getDiscountPerUnit());
+            p.setStatus(status);
+
+            productRepository.save(p);
+
+    }
+
+    // save images in locally
+    private void setImageAndWriteImage(int i, List<MultipartFile> imageFiles) {
+        try {
+            imageFiles.get(i).transferTo(new File(file.getAbsolutePath() + "/" + imageFiles.get(i).getOriginalFilename()));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
