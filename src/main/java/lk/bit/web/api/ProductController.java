@@ -48,6 +48,15 @@ public class ProductController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/categories/{categoryName}")
+    private List<ProductDTO> getProductsByCategory(@PathVariable("categoryName") String categoryName) {
+        if (categoryName == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return productBO.getProductsByCategory(categoryName);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/ids")
     private String getNewProductId() {
         try {
@@ -57,6 +66,15 @@ public class ProductController {
             e.printStackTrace();
             return "P001";
         }
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/category")
+    private List<ProductDTO> getActiveLastThreeProducts(@RequestParam("name") String category) {
+        if (category == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return productBO.getActiveLastThreeProducts(category);
     }
 
     @ResponseStatus(HttpStatus.CREATED)

@@ -29,4 +29,8 @@ public interface ProductBO extends SuperBO {
 
     void updateProduct(List<MultipartFile> imageFiles,String productDetails,String status,String productId);
 
+    List<ProductDTO> getActiveLastThreeProducts(String category);
+
+    List<ProductDTO> getProductsByCategory(String categoryName);
+
 }

@@ -23,6 +23,13 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
+    public List<CategoryDTO> getAllActiveCategories(@RequestParam("status") String status) {
+        return categoryBO.getActiveCategories(status);
+    }
+
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/")
     public List<CategoryDTO> getAllCategories() {
         return categoryBO.getAllCategories();
     }
@@ -33,11 +40,8 @@ public class CategoryController {
         if (categoryName.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        try {
             return categoryBO.getCategory(categoryName);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+
     }
 
     @ResponseStatus(HttpStatus.CREATED)

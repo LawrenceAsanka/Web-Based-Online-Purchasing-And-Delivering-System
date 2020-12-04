@@ -22,4 +22,6 @@ public interface ProductCategoryBO extends SuperBO {
     String existCategoryByName(String categoryName);
 
     boolean existCategoryById(String categoryId);
+
+    List<CategoryDTO> getActiveCategories(String status);
 }

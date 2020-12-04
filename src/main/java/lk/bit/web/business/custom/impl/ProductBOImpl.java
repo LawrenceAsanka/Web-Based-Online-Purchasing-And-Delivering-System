@@ -38,6 +38,7 @@ public class ProductBOImpl implements ProductBO {
 
     @Override
     public List<ProductDTO> getAllProducts() {
+        List<Product> allProducts = productRepository.findAll();
         return null;
     }
 
@@ -47,10 +48,10 @@ public class ProductBOImpl implements ProductBO {
         ProductSubCategory subCategory = subCategoryRepository.findById(p.getSubCategory().getSubCategoryId()).get();
         ProductCategory category = categoryRepository.findById(p.getCategory().getCategoryId()).get();
 
-        return new ProductDTO(p.getProductId(),p.getProductName(),p.getProductDescription(),p.getQuantityPerUnit(),
-                p.getQuantityBuyingPrice(),p.getQuantitySellingPrice(),p.getWeight(),p.getDiscountPerUnit(),
-                p.getCurrentQuantity(),p.getImageOne(),p.getImageTwo(),p.getImageThree(),p.getStatus(),
-                subCategory.getSubCategoryName(),category.getCategoryName());
+        return new ProductDTO(p.getProductId(), p.getProductName(), p.getProductDescription(), p.getQuantityPerUnit(),
+                p.getQuantityBuyingPrice(), p.getQuantitySellingPrice(), p.getWeight(), p.getDiscountPerUnit(),
+                p.getCurrentQuantity(), p.getImageOne(), p.getImageTwo(), p.getImageThree(), p.getStatus(),
+                subCategory.getSubCategoryName(), category.getCategoryName());
 
     }
 
@@ -121,7 +122,7 @@ public class ProductBOImpl implements ProductBO {
 
         if (lastProductId == null) {
             return "P001";
-        }else{
+        } else {
             String id = lastProductId.replace("P", "");
             int newProductId = Integer.parseInt(id) + 1;
             if (newProductId < 10) {
@@ -140,8 +141,8 @@ public class ProductBOImpl implements ProductBO {
         List<CustomEntity2> allProducts = productRepository.getAllProducts();
         List<ProductTM> products = new ArrayList<>();
         allProducts.forEach(p -> {
-            products.add(new ProductTM(p.getProductId(),p.getProductName(),p.getProductCategory(),
-                    p.getProductSellingPrice(),p.getProductBuyingPrice(),p.getProductQuantity(),p.getProductStatus()));
+            products.add(new ProductTM(p.getProductId(), p.getProductName(), p.getProductCategory(),
+                    p.getProductSellingPrice(), p.getProductBuyingPrice(), p.getProductQuantity(), p.getProductStatus()));
         });
         return products;
     }
@@ -151,8 +152,8 @@ public class ProductBOImpl implements ProductBO {
         List<CustomEntity2> category = productRepository.getGroupedProductDetails(categoryName);
         List<ProductTM> products = new ArrayList<>();
         category.forEach(p -> {
-            products.add(new ProductTM(p.getProductId(),p.getProductName(),p.getProductCategory(),
-                    p.getProductSellingPrice(),p.getProductBuyingPrice(),p.getProductQuantity(),p.getProductStatus()));
+            products.add(new ProductTM(p.getProductId(), p.getProductName(), p.getProductCategory(),
+                    p.getProductSellingPrice(), p.getProductBuyingPrice(), p.getProductQuantity(), p.getProductStatus()));
         });
         return products;
     }
@@ -214,26 +215,57 @@ public class ProductBOImpl implements ProductBO {
                 }
             }
         }
-            // get category and subcategory name
-            String categoryId = subCategoryRepository.getCategoryId(product.getProductCategory());
-            int subCategoryId = subCategoryRepository.getSubCategoryId(product.getProductSubCategory(),
-                    product.getProductCategory());
+        // get category and subcategory name
+        String categoryId = subCategoryRepository.getCategoryId(product.getProductCategory());
+        int subCategoryId = subCategoryRepository.getSubCategoryId(product.getProductSubCategory(),
+                product.getProductCategory());
 
-            p.setProductId(productId);
-            p.setProductName(product.getProductName());
-            p.setProductDescription(product.getProductDescription());
-            p.setCategory(new ProductCategory(categoryId));
-            p.setSubCategory(new ProductSubCategory(subCategoryId));
-            p.setQuantityBuyingPrice(product.getQuantityBuyingPrice());
-            p.setQuantitySellingPrice(product.getQuantitySellingPrice());
-            p.setCurrentQuantity(product.getCurrentQuantity());
-            p.setQuantityPerUnit(product.getQuantityPerUnit());
-            p.setWeight(product.getWeight());
-            p.setDiscountPerUnit(product.getDiscountPerUnit());
-            p.setStatus(status);
+        p.setProductId(productId);
+        p.setProductName(product.getProductName());
+        p.setProductDescription(product.getProductDescription());
+        p.setCategory(new ProductCategory(categoryId));
+        p.setSubCategory(new ProductSubCategory(subCategoryId));
+        p.setQuantityBuyingPrice(product.getQuantityBuyingPrice());
+        p.setQuantitySellingPrice(product.getQuantitySellingPrice());
+        p.setCurrentQuantity(product.getCurrentQuantity());
+        p.setQuantityPerUnit(product.getQuantityPerUnit());
+        p.setWeight(product.getWeight());
+        p.setDiscountPerUnit(product.getDiscountPerUnit());
+        p.setStatus(status);
 
-            productRepository.save(p);
+        productRepository.save(p);
 
+    }
+
+    @Override
+    public List<ProductDTO> getProductsByCategory(String categoryName) {
+        List<Product> productsByCategory = productRepository.getProductsByCategory(categoryName);
+        List<ProductDTO> products = new ArrayList<>();
+        for (Product product : productsByCategory) {
+            products.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
+                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
+                    product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
+                    product.getImageOne(), product.getImageTwo(), product.getImageThree(),
+                    product.getStatus(), product.getSubCategory().getSubCategoryName(),
+                    product.getCategory().getCategoryName()));
+        }
+        return products;
+    }
+
+    @Override
+    public List<ProductDTO> getActiveLastThreeProducts(String category) {
+        String categoryId = subCategoryRepository.getCategoryId(category);
+        List<Product> lastActiveThreeProducts = productRepository.getLastActiveThreeProducts(categoryId);
+        List<ProductDTO> products = new ArrayList<>();
+        for (Product product : lastActiveThreeProducts) {
+            products.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
+                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
+                    product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
+                    product.getImageOne(), product.getImageTwo(), product.getImageThree(),
+                    product.getStatus(), product.getSubCategory().getSubCategoryName(),
+                    product.getCategory().getCategoryName()));
+        }
+        return products;
     }
 
     // save images in locally

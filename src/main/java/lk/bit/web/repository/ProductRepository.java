@@ -21,4 +21,11 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             "p.status AS productStatus FROM Product p INNER JOIN p.category c WHERE c.categoryName = ?1 ORDER BY p.productId")
     List<CustomEntity2> getGroupedProductDetails(String categoryName);
 
+    @Query(value = "SELECT * FROM item WHERE item.status = 'ACTIVE' " +
+            "AND item.category_id = ?1 ORDER BY item.id DESC LIMIT 3",
+            nativeQuery = true)
+    List<Product> getLastActiveThreeProducts(String categoryId);
+
+    @Query(value = "SELECT p FROM Product p WHERE p.category.categoryName = ?1 AND p.status = 'ACTIVE' ORDER BY p.productId")
+    List<Product> getProductsByCategory(String categoryName);
 }

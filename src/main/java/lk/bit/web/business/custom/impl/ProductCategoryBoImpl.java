@@ -85,4 +85,15 @@ public class ProductCategoryBoImpl implements ProductCategoryBO {
     public boolean existCategoryById(String categoryId) {
          return categoryRepository.existsById(categoryId);
     }
+
+    @Override
+    public List<CategoryDTO> getActiveCategories(String status) {
+        List<ProductCategory> allActiveCategories = categoryRepository.getAllActiveCategories(status);
+        List<CategoryDTO> activeCategories = new ArrayList<>();
+        for (ProductCategory categories : allActiveCategories) {
+            activeCategories.add(new CategoryDTO(categories.getCategoryId(),categories.getCategoryName(),
+                    categories.getStatus()));
+        }
+        return activeCategories;
+    }
 }
