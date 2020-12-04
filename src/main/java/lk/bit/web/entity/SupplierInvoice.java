@@ -23,7 +23,7 @@ public class SupplierInvoice implements SuperEntity {
     private Date dateAndTime;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "user_id", referencedColumnName = "auth_user_id", nullable = false)
+    @JoinColumn(name = "created_by", referencedColumnName = "auth_user_id", nullable = false)
     private User user;
 
 
