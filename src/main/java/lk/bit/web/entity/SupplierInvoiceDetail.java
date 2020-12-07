@@ -15,8 +15,8 @@ import java.math.BigDecimal;
 public class SupplierInvoiceDetail implements SuperEntity {
 
     @EmbeddedId
-    @AttributeOverride(name = "invoiceNumber",column = @Column(name = "supplier_invoice_id"))
-    @AttributeOverride(name = "productId",column = @Column(name = "product_id"))
+    @AttributeOverride(name = "invoiceNumber",column = @Column(name = "supplier_invoice_id",length = 50))
+    @AttributeOverride(name = "productId",column = @Column(name = "product_id",length = 50))
     private SupplierInvoiceDetailPK supplierInvoiceDetailPK;
 
     @Column(length = 20)
