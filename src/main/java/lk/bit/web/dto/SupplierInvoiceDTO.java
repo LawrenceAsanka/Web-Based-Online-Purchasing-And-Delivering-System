@@ -12,6 +12,7 @@ import java.util.List;
 @ToString
 public class SupplierInvoiceDTO {
 
+    private String userId;
     private String invoiceNumber;
     private Date dateTime;
     private List<SupplierInvoiceDetailDTO> invoiceDetail;
