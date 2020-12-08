@@ -97,4 +97,7 @@ public class User implements SuperEntity {
     }
 
 
+    public User(String userId) {
+        this.id = userId;
+    }
 }

@@ -67,7 +67,7 @@ public class UserBOImpl implements UserBO {
 
     @Override
     public boolean existUser(String id) {
-        return false;
+        return userRepository.existsById(id);
     }
 
     @Override

@@ -35,4 +35,12 @@ public class SupplierInvoiceDetail implements SuperEntity {
     @ManyToOne
     @JoinColumn(name = "product_id",referencedColumnName = "id",insertable = false,updatable = false)
     private Product product;
+
+    public SupplierInvoiceDetail(String invoiceNumber,String productCode, int qty, BigDecimal qtyPrice,
+                                 BigDecimal discount) {
+        this.supplierInvoiceDetailPK = new SupplierInvoiceDetailPK(invoiceNumber,productCode);
+        this.qty = qty;
+        this.qtyPrice = qtyPrice;
+        this.discount = discount;
+    }
 }

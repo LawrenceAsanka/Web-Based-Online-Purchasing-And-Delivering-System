@@ -26,5 +26,10 @@ public class SupplierInvoice implements SuperEntity {
     @JoinColumn(name = "created_by", referencedColumnName = "auth_user_id", nullable = false)
     private User user;
 
+    public SupplierInvoice(String invoiceNumber, Date dateAndTime,String userId) {
+        this.invoiceNumber = invoiceNumber;
+        this.dateAndTime = dateAndTime;
+        this.user = new User(userId);
+    }
 
 }
