@@ -3,20 +3,19 @@ package lk.bit.web.business.custom.impl;
 import lk.bit.web.business.custom.SupplierInvoiceBO;
 import lk.bit.web.dto.SupplierInvoiceDTO;
 import lk.bit.web.dto.SupplierInvoiceDetailDTO;
-import lk.bit.web.entity.Product;
-import lk.bit.web.entity.SupplierInvoice;
-import lk.bit.web.entity.SupplierInvoiceDetail;
-import lk.bit.web.entity.User;
+import lk.bit.web.entity.*;
 import lk.bit.web.repository.ProductRepository;
 import lk.bit.web.repository.SupplierInvoiceDetailRepository;
 import lk.bit.web.repository.SupplierInvoiceRepository;
 import lk.bit.web.repository.UserRepository;
+import lk.bit.web.util.InvoiceDetailTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -66,5 +65,16 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
             product.setQuantityBuyingPrice(productDetail.getPricePerQty());
             productRepository.save(product);
         }
+    }
+
+    @Override
+    public List<InvoiceDetailTM> getInvoiceDetails() {
+        List<CustomEntity3> invoiceDetails = supplierInvoiceRepository.getInvoiceDetails();
+        List<InvoiceDetailTM> invoiceDetail = new ArrayList<>();
+        for (CustomEntity3 details : invoiceDetails) {
+            invoiceDetail.add(new InvoiceDetailTM(details.getInvoiceNumber(), details.getDateTime(),
+                    details.getUserId(), details.getUserName(), details.getNetAmount()));
+        }
+        return invoiceDetail;
     }
 }
