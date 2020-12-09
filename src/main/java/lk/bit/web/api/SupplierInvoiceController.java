@@ -23,9 +23,18 @@ public class SupplierInvoiceController {
     private SupplierInvoiceBO supplierInvoiceBO;
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/")
+    private List<InvoiceDetailTM> getAllInvoiceDetails(){
+        return supplierInvoiceBO.getAllInvoiceDetails();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    private List<InvoiceDetailTM> getInvoiceDetails(){
-        return supplierInvoiceBO.getInvoiceDetails();
+    private List<SupplierInvoiceDTO> getInvoiceDetail(@RequestParam("invoiceNumber") String invoiceNumber){
+        if (!supplierInvoiceBO.existInvoice(invoiceNumber)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return null;
     }
 
     @ResponseStatus(HttpStatus.CREATED)

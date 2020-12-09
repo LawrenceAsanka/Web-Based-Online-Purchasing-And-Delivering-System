@@ -13,13 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 @Component
 @Transactional
@@ -40,7 +35,7 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
         User user = userRepository.findById(invoiceDetails.getUserId()).get();
 
         supplierInvoiceRepository.save(new SupplierInvoice(
-                invoiceDetails.getInvoiceNumber(),invoiceDetails.getDateTime(),user
+                invoiceDetails.getInvoiceNumber(), invoiceDetails.getDateTime(), user
         ));
 
         List<SupplierInvoiceDetailDTO> productDetails = invoiceDetails.getInvoiceDetail();
@@ -48,7 +43,7 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
 
             supplierInvoiceDetailRepository.save(new SupplierInvoiceDetail(
                     invoiceDetails.getInvoiceNumber(), productDetail.getProductCode(), productDetail.getTotalQty(),
-                    productDetail.getPricePerQty(),productDetail.getDiscount()
+                    productDetail.getPricePerQty(), productDetail.getDiscount()
             ));
 
             Product product = productRepository.findById(productDetail.getProductCode()).get();
@@ -60,7 +55,8 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
     }
 
     @Override
-    public List<InvoiceDetailTM> getInvoiceDetails() {
+    @Transactional(readOnly = true)
+    public List<InvoiceDetailTM> getAllInvoiceDetails() {
         List<CustomEntity3> invoiceDetails = supplierInvoiceRepository.getInvoiceDetails();
         List<InvoiceDetailTM> invoiceDetail = new ArrayList<>();
         for (CustomEntity3 details : invoiceDetails) {
@@ -70,4 +66,17 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
         }
         return invoiceDetail;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existInvoice(String invoiceNumber) {
+         return supplierInvoiceRepository.existsById(invoiceNumber);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SupplierInvoiceDTO> getInvoiceDetail(String invoiceNumber) {
+        return null;
+    }
+
 }

@@ -10,5 +10,9 @@ public interface SupplierInvoiceBO extends SuperEntity {
 
     void saveSupplierInvoice(SupplierInvoiceDTO invoiceDetails);
 
-    List<InvoiceDetailTM> getInvoiceDetails();
+    List<InvoiceDetailTM> getAllInvoiceDetails();
+
+    boolean existInvoice(String invoiceNumber);
+
+    List<SupplierInvoiceDTO> getInvoiceDetail(String invoiceNumber);
 }
