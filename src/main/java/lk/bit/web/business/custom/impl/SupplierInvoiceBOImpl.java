@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 @Transactional
@@ -36,16 +38,6 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
     public void saveSupplierInvoice(SupplierInvoiceDTO invoiceDetails) {
 
         User user = userRepository.findById(invoiceDetails.getUserId()).get();
-
-       /* try {
-            Date twelveHours = new SimpleDateFormat("dd/MM/yyyy hh.mm aa")
-                    .parse(invoiceDetails.getDateTime().toString());
-            supplierInvoiceRepository.save(new SupplierInvoice(
-                    invoiceDetails.getInvoiceNumber(),twelveHours,user
-            ));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }*/
 
         supplierInvoiceRepository.save(new SupplierInvoice(
                 invoiceDetails.getInvoiceNumber(),invoiceDetails.getDateTime(),user
@@ -72,6 +64,7 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
         List<CustomEntity3> invoiceDetails = supplierInvoiceRepository.getInvoiceDetails();
         List<InvoiceDetailTM> invoiceDetail = new ArrayList<>();
         for (CustomEntity3 details : invoiceDetails) {
+
             invoiceDetail.add(new InvoiceDetailTM(details.getInvoiceNumber(), details.getDateTime(),
                     details.getUserId(), details.getUserName(), details.getNetAmount()));
         }

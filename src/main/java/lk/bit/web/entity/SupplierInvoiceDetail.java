@@ -19,13 +19,13 @@ public class SupplierInvoiceDetail implements SuperEntity {
     @AttributeOverride(name = "productId",column = @Column(name = "product_id",length = 50))
     private SupplierInvoiceDetailPK supplierInvoiceDetailPK;
 
-    @Column(length = 20)
+    @Column(length = 20,nullable = false)
     private int qty;
 
-    @Column(name = "qty_price")
+    @Column(name = "qty_price",nullable = false)
     private BigDecimal qtyPrice;
 
-    @Column
+    @Column(nullable = false)
     private BigDecimal discount;
 
     @ManyToOne

@@ -14,6 +14,6 @@ public class SupplierInvoiceDTO {
 
     private String userId;
     private String invoiceNumber;
-    private Date dateTime;
+    private String dateTime;
     private List<SupplierInvoiceDetailDTO> invoiceDetail;
 }

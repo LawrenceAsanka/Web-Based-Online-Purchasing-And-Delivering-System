@@ -18,18 +18,11 @@ public class SupplierInvoice implements SuperEntity {
     @Column(name = "invoice_id",length = 50)
     private String invoiceNumber;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_date_time")
-    private Date dateAndTime;
+    @Column(name = "created_date_time",nullable = false)
+    private String dateAndTime;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "created_by", referencedColumnName = "auth_user_id", nullable = false)
     private User user;
-
-    public SupplierInvoice(String invoiceNumber, Date dateAndTime,String userId) {
-        this.invoiceNumber = invoiceNumber;
-        this.dateAndTime = dateAndTime;
-        this.user = new User(userId);
-    }
 
 }
