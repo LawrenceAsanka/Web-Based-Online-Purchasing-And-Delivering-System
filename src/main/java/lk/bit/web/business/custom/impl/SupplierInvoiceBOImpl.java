@@ -78,16 +78,10 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
     @Transactional(readOnly = true)
     public List<SupplierInvoiceDetailDTO> getInvoiceDetail(String invoiceNumber) {
         List<SupplierInvoiceDetailDTO> invoice = new ArrayList<>();
-        Optional<SupplierInvoiceDetail> invoiceDetail = supplierInvoiceDetailRepository
-                .findById(new SupplierInvoiceDetailPK(invoiceNumber));
-        if (invoiceDetail.isPresent()) {
-            invoice.add(new SupplierInvoiceDetailDTO(
-                    invoiceDetail.get().getSupplierInvoiceDetailPK().getProductId(),
-                    invoiceDetail.get().getQty(),
-                    invoiceDetail.get().getQtyPrice(),
-                    invoiceDetail.get().getDiscount()
-            ));
-        }
+        List<SupplierInvoiceDetail> invoiceDetails = supplierInvoiceDetailRepository.getInvoiceDetail(invoiceNumber);
+        invoiceDetails.forEach(id -> invoice.add(new SupplierInvoiceDetailDTO(
+               id.getProduct().getProductId(),id.getQty(),id.getQtyPrice(),id.getDiscount()
+        )));
         return invoice;
     }
 

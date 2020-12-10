@@ -32,6 +32,7 @@ public class SupplierInvoiceController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     private List<SupplierInvoiceDetailDTO> getInvoiceDetail(@RequestParam("invoice") String invoiceNumber){
+        System.out.println(invoiceNumber);
         if (!supplierInvoiceBO.existInvoice(invoiceNumber)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
@@ -41,7 +42,6 @@ public class SupplierInvoiceController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     private void saveSupplierInvoice(@RequestBody SupplierInvoiceDTO invoiceDetails){
-        System.out.println(invoiceDetails);
         if (!userBO.existUser(invoiceDetails.getUserId()) || invoiceDetails.getInvoiceNumber() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
