@@ -12,5 +12,10 @@ public interface SupplierInvoiceRepository extends JpaRepository<SupplierInvoice
     @Query(value = "SELECT s.invoiceNumber AS invoiceNumber,s.dateAndTime AS dateTime,s.user.id AS userId," +
             "s.user.firstName AS userName,SUM(sd.qty * sd.qtyPrice) AS netAmount FROM SupplierInvoiceDetail sd  INNER JOIN " +
             "sd.supplierInvoice s GROUP BY s.invoiceNumber ORDER BY s.invoiceNumber")
-    List<CustomEntity3> getInvoiceDetails();
+    List<CustomEntity3> getAllInvoiceDetails();
+
+    /*@Query(value = "SELECT s.invoiceNumber AS invoiceNumber,s.dateAndTime AS dateTime,s.user.id AS userId," +
+            "s.user.firstName AS userName,SUM(sd.qty * sd.qtyPrice) AS netAmount FROM SupplierInvoiceDetail sd  INNER JOIN " +
+            "sd.supplierInvoice s WHERE s.invoiceNumber = ?1 GROUP BY s.invoiceNumber ORDER BY s.invoiceNumber")
+    List<CustomEntity3> getInvoiceDetail(String invoiceNumber);*/
 }

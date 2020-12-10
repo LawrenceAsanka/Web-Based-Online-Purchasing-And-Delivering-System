@@ -1,6 +1,7 @@
 package lk.bit.web.business.custom;
 
 import lk.bit.web.dto.SupplierInvoiceDTO;
+import lk.bit.web.dto.SupplierInvoiceDetailDTO;
 import lk.bit.web.entity.SuperEntity;
 import lk.bit.web.util.InvoiceDetailTM;
 
@@ -14,5 +15,5 @@ public interface SupplierInvoiceBO extends SuperEntity {
 
     boolean existInvoice(String invoiceNumber);
 
-    List<SupplierInvoiceDTO> getInvoiceDetail(String invoiceNumber);
+    List<SupplierInvoiceDetailDTO> getInvoiceDetail(String invoiceNumber);
 }

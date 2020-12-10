@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Transactional
@@ -57,7 +58,7 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
     @Override
     @Transactional(readOnly = true)
     public List<InvoiceDetailTM> getAllInvoiceDetails() {
-        List<CustomEntity3> invoiceDetails = supplierInvoiceRepository.getInvoiceDetails();
+        List<CustomEntity3> invoiceDetails = supplierInvoiceRepository.getAllInvoiceDetails();
         List<InvoiceDetailTM> invoiceDetail = new ArrayList<>();
         for (CustomEntity3 details : invoiceDetails) {
 
@@ -75,8 +76,19 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SupplierInvoiceDTO> getInvoiceDetail(String invoiceNumber) {
-        return null;
+    public List<SupplierInvoiceDetailDTO> getInvoiceDetail(String invoiceNumber) {
+        List<SupplierInvoiceDetailDTO> invoice = new ArrayList<>();
+        Optional<SupplierInvoiceDetail> invoiceDetail = supplierInvoiceDetailRepository
+                .findById(new SupplierInvoiceDetailPK(invoiceNumber));
+        if (invoiceDetail.isPresent()) {
+            invoice.add(new SupplierInvoiceDetailDTO(
+                    invoiceDetail.get().getSupplierInvoiceDetailPK().getProductId(),
+                    invoiceDetail.get().getQty(),
+                    invoiceDetail.get().getQtyPrice(),
+                    invoiceDetail.get().getDiscount()
+            ));
+        }
+        return invoice;
     }
 
 }
