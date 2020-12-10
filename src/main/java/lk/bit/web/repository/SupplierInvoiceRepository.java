@@ -10,8 +10,9 @@ import java.util.List;
 public interface SupplierInvoiceRepository extends JpaRepository<SupplierInvoice, String> {
 
     @Query(value = "SELECT s.invoiceNumber AS invoiceNumber,s.dateAndTime AS dateTime,s.user.id AS userId," +
-            "s.user.firstName AS userName,SUM(((100 - sd.discount)/100) * (sd.qty * sd.qtyPrice)) AS netAmount FROM SupplierInvoiceDetail sd  INNER JOIN " +
-            "sd.supplierInvoice s GROUP BY s.invoiceNumber ORDER BY s.invoiceNumber")
+            "s.user.firstName AS userName,SUM(((100 - sd.discount)/100) * (sd.qty * sd.qtyPrice)) AS netAmount " +
+            "FROM SupplierInvoiceDetail sd  INNER JOIN sd.supplierInvoice s GROUP BY s.invoiceNumber " +
+            "ORDER BY s.invoiceNumber")
     List<CustomEntity3> getAllInvoiceDetails();
 
 }
