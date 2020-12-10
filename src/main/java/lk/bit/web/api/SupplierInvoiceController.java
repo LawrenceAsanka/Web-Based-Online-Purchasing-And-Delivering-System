@@ -3,6 +3,7 @@ package lk.bit.web.api;
 import lk.bit.web.business.custom.SupplierInvoiceBO;
 import lk.bit.web.business.custom.UserBO;
 import lk.bit.web.dto.SupplierInvoiceDTO;
+import lk.bit.web.dto.SupplierInvoiceDetailDTO;
 import lk.bit.web.util.InvoiceDetailTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,11 +31,11 @@ public class SupplierInvoiceController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    private List<SupplierInvoiceDTO> getInvoiceDetail(@RequestParam("invoice") String invoiceNumber){
+    private List<SupplierInvoiceDetailDTO> getInvoiceDetail(@RequestParam("invoice") String invoiceNumber){
         if (!supplierInvoiceBO.existInvoice(invoiceNumber)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return null;
+        return supplierInvoiceBO.getInvoiceDetail(invoiceNumber);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
