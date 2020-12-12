@@ -25,10 +25,17 @@ public class Advertisement implements SuperEntity {
     @Column(name = "adver_image",nullable = false)
     private String advertisementImage;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "creadted_date_time",nullable = false)
-    private Date createdDateTime;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "creadted_date",nullable = false)
+    private Date createdDate;
 
     @Column(nullable = false,length = 20)
     private String status;
+
+    public Advertisement(String advertisementName, String advertisementImage, Date createdDateTime, String status) {
+        this.advertisementName = advertisementName;
+        this.advertisementImage = advertisementImage;
+        this.createdDate = createdDateTime;
+        this.status = status;
+    }
 }

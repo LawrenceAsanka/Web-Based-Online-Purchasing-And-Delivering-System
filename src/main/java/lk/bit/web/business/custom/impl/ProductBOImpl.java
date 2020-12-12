@@ -72,7 +72,7 @@ public class ProductBOImpl implements ProductBO {
                 product.getProductCategory());
 
         // check whether folder is exist or not
-        uploadDir = env.getProperty("static.path") + product.getProductId();
+        uploadDir = env.getProperty("static.path") + "product/" +product.getProductId();
         file = new File(uploadDir);
         if (!file.exists()) {
             file.mkdir();
@@ -180,7 +180,7 @@ public class ProductBOImpl implements ProductBO {
         Product p = productRepository.findById(product.getProductId()).get();
 
         // check whether folder is exist or not
-        String uploadDir = env.getProperty("static.path") + product.getProductId();
+        String uploadDir = env.getProperty("static.path") + "product/" + product.getProductId();
         file = new File(uploadDir);
         if (!file.exists()) {
             file.mkdir();

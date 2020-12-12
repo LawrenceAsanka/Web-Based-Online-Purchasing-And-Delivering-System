@@ -16,6 +16,10 @@ public class AdvertisementController {
     @Autowired
     private AdvertisementBO advertisementBO;
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    private List<> getAllAdsDetails(){}
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     private void saveAdvertisement(@RequestPart("image")MultipartFile image,
