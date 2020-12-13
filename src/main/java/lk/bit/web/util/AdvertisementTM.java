@@ -12,6 +12,7 @@ public class AdvertisementTM {
     private int adsId;
     private String adsName;
     private String adsImage;
-    private int dateCount;
+    private long dateCount;
+    private String createdDate;
     private String status;
 }

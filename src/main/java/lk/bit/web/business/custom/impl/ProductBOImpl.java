@@ -75,7 +75,7 @@ public class ProductBOImpl implements ProductBO {
         uploadDir = env.getProperty("static.path") + "product/" +product.getProductId();
         file = new File(uploadDir);
         if (!file.exists()) {
-            file.mkdir();
+            file.mkdirs();
         }
 
         // check multipart file and set image path
@@ -183,7 +183,7 @@ public class ProductBOImpl implements ProductBO {
         String uploadDir = env.getProperty("static.path") + "product/" + product.getProductId();
         file = new File(uploadDir);
         if (!file.exists()) {
-            file.mkdir();
+            file.mkdirs();
         }
 
      /*   uploadDir = env.getProperty("static.path") + product.getProductId();

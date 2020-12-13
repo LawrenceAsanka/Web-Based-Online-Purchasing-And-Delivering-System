@@ -1,12 +1,15 @@
 package lk.bit.web.api;
 
 import lk.bit.web.business.custom.AdvertisementBO;
+import lk.bit.web.util.AdvertisementTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -18,7 +21,9 @@ public class AdvertisementController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    private List<> getAllAdsDetails(){}
+    private List<AdvertisementTM> getAllAdsDetails(){
+        return advertisementBO.getAllAdsDetails();
+    }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
