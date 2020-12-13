@@ -32,7 +32,6 @@ public class SupplierInvoiceController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     private List<SupplierInvoiceDetailDTO> getInvoiceDetail(@RequestParam("invoice") String invoiceNumber){
-        System.out.println(invoiceNumber);
         if (!supplierInvoiceBO.existInvoice(invoiceNumber)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

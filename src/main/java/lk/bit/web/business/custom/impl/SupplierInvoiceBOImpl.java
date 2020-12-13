@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @Transactional
@@ -61,9 +61,10 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
         List<CustomEntity3> invoiceDetails = supplierInvoiceRepository.getAllInvoiceDetails();
         List<InvoiceDetailTM> invoiceDetail = new ArrayList<>();
         for (CustomEntity3 details : invoiceDetails) {
+            String netAmount = String.format("%.2f", new BigDecimal(details.getNetAmount()));
 
             invoiceDetail.add(new InvoiceDetailTM(details.getInvoiceNumber(), details.getDateTime(),
-                    details.getUserId(), details.getUserName(), details.getNetAmount()));
+                    details.getUserId(), details.getUserName(), netAmount));
         }
         return invoiceDetail;
     }
@@ -71,7 +72,7 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
     @Override
     @Transactional(readOnly = true)
     public boolean existInvoice(String invoiceNumber) {
-         return supplierInvoiceRepository.existsById(invoiceNumber);
+        return supplierInvoiceRepository.existsById(invoiceNumber);
     }
 
     @Override
@@ -80,7 +81,7 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
         List<SupplierInvoiceDetailDTO> invoice = new ArrayList<>();
         List<SupplierInvoiceDetail> invoiceDetails = supplierInvoiceDetailRepository.getInvoiceDetail(invoiceNumber);
         invoiceDetails.forEach(id -> invoice.add(new SupplierInvoiceDetailDTO(
-               id.getProduct().getProductId(),id.getQty(),id.getQtyPrice(),id.getDiscount()
+                id.getProduct().getProductId(), id.getQty(), id.getQtyPrice(), id.getDiscount()
         )));
         return invoice;
     }
