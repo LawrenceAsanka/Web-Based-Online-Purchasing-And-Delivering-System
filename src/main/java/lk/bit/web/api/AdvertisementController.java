@@ -34,4 +34,11 @@ public class AdvertisementController {
         }
         advertisementBO.saveAdvertisement(image,advertisementName);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping(value= "/{id}")
+    private void updateAdsStatus(@PathVariable("id") int adsId,
+                                 @RequestParam String status){
+        advertisementBO.updateAdsStatus(adsId,status);
+    }
 }

@@ -72,5 +72,6 @@ public class AdvertisementBOImpl implements AdvertisementBO {
     public void updateAdsStatus(int id,String status) {
         Optional<Advertisement> ad = advertisementRepository.findById(id);
         ad.ifPresent(advertisement -> advertisement.setStatus(status));
+        advertisementRepository.save(ad.get());
     }
 }
