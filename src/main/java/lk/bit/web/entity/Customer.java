@@ -17,19 +17,22 @@ public class Customer implements SuperEntity {
     @Id
     @Column(name = "customer_id",length = 20)
     private String customerId;
+
     @Column(name = "customer_fname",length = 50,nullable = false)
     private String customerFirstName;
+
     @Column(name = "customer_lname",length = 50,nullable = false)
     private String customerLastName;
-    @Column(name = "customer_contact",length = 20,nullable = false)
-    private String customerContact;
+
     @Column(name = "customer_email",length = 50,nullable = false)
     private String customerEmail;
+
     @Column(length = 10,nullable = false)
     private String password;
-    @Lob
-    @Column(name = "profile_picture",columnDefinition = "MEDIUMBLOB",nullable = false)
-    private byte[] profilePicture;
+
+    @Column(name = "profile_picture")
+    private String profilePicture;
+
     @Column(length = 20,nullable = false)
     private String status;
 
