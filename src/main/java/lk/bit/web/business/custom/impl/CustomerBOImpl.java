@@ -1,8 +1,8 @@
 package lk.bit.web.business.custom.impl;
 
-import lk.bit.web.business.custom.SignUpBO;
+import lk.bit.web.business.custom.CustomerBO;
 
-public class SignUpBOImpl implements SignUpBO{
+public class CustomerBOImpl implements CustomerBO {
 
     @Override
     public void saveCustomer() {
