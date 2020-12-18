@@ -27,7 +27,7 @@ public class Shop implements SuperEntity {
     @JoinColumn(name = "owner_id",referencedColumnName = "customer_id",nullable = false)
     private Customer customer;
 
-    public Shop(String shopId,String shopName, String shopCategory, String contact, String address,String ownerId) {
+    public Shop(String shopId,String shopName, String shopCategory, String contact, String address,int ownerId) {
         this.shopId = shopId;
         this.shopName = shopName;
         this.shopCategory = shopCategory;

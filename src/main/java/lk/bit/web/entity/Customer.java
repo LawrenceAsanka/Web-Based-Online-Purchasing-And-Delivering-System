@@ -15,8 +15,9 @@ import javax.persistence.*;
 public class Customer implements SuperEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id",length = 20)
-    private String customerId;
+    private int customerId;
 
     @Column(name = "customer_fname",length = 50,nullable = false)
     private String customerFirstName;
@@ -36,8 +37,16 @@ public class Customer implements SuperEntity {
     @Column(length = 20,nullable = false)
     private String status;
 
+    public Customer(String customerFirstName, String customerLastName, String customerEmail, String password, String profilePicture, String status) {
+        this.customerFirstName = customerFirstName;
+        this.customerLastName = customerLastName;
+        this.customerEmail = customerEmail;
+        this.password = password;
+        this.profilePicture = profilePicture;
+        this.status = status;
+    }
 
-    public Customer(String ownerId){
+    public Customer(int ownerId){
        this.customerId = ownerId;
     }
 }
