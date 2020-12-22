@@ -5,19 +5,35 @@ import lk.bit.web.dto.SignUpDTO;
 import lk.bit.web.entity.Customer;
 import lk.bit.web.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CustomerBOImpl implements CustomerBO {
 
     @Autowired
+    private JavaMailSender javaMailSender;
+    @Autowired
     private CustomerRepository customerRepository;
+    @Value("${spring.mail.username}")
+    private String getEmailAddress;
 
     @Override
     public void saveCustomer(SignUpDTO signUpDetails) {
-    customerRepository.save(new Customer(signUpDetails.getFirstName(), signUpDetails.getLastName(),
-            signUpDetails.getEmail(), signUpDetails.getPassword(), "","ACTIVE"));
-    }
+        //create a customer
+        customerRepository.save(new Customer(signUpDetails.getFirstName(), signUpDetails.getLastName(),
+                signUpDetails.getEmail(), signUpDetails.getPassword(), "", "ACTIVE"));
 
+        // send an email to the created customer
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setFrom(getEmailAddress);
+        mail.setTo(signUpDetails.getEmail());
+        mail.setSubject("Welcome to the VG Distributors e shopping");
+        mail.setText("Thanks for registering with us!.Use your email address as your user name when logging.");
+
+        javaMailSender.send(mail);
+    }
 
 }
