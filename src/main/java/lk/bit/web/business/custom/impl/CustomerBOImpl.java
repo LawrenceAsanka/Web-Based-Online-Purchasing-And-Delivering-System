@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,6 +19,8 @@ public class CustomerBOImpl implements CustomerBO {
     private JavaMailSender javaMailSender;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Value("${spring.mail.username}")
     private String getEmailAddress;
 
@@ -24,7 +28,7 @@ public class CustomerBOImpl implements CustomerBO {
     public void saveCustomer(SignUpDTO signUpDetails) {
         //create a customer
         customerRepository.save(new Customer(signUpDetails.getFirstName(), signUpDetails.getLastName(),
-                signUpDetails.getEmail(), signUpDetails.getPassword(), "", "ACTIVE"));
+                signUpDetails.getEmail(), passwordEncoder.encode(signUpDetails.getPassword()), "", "ACTIVE"));
 
         // send an email to the created customer
         SimpleMailMessage mail = new SimpleMailMessage();

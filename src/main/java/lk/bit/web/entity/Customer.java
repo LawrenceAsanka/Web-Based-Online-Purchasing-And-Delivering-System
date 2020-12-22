@@ -28,7 +28,7 @@ public class Customer implements SuperEntity {
     @Column(name = "customer_email",length = 50,unique = true,nullable = false)
     private String customerEmail;
 
-    @Column(length = 20,nullable = false)
+    @Column(nullable = false)
     private String password;
 
     @Column(name = "profile_picture")
