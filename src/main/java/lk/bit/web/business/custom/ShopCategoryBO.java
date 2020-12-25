@@ -1,14 +1,19 @@
 package lk.bit.web.business.custom;
 
 import lk.bit.web.business.SuperBO;
+import lk.bit.web.dto.ShopCategoryDTO;
+
+import java.util.List;
 
 public interface ShopCategoryBO extends SuperBO {
 
-    void getAllShopCategories();
+    List<ShopCategoryDTO> getAllShopCategories();
 
-    void getShopCategory(int categoryId);
+    ShopCategoryDTO getShopCategory(int categoryId);
 
     void saveShopCategory(String categoryName);
 
-    void updateShopCategory(int categoryId);
+    void updateShopCategory(String categoryName,String status,int categoryId);
+
+    boolean existShopCategory(int categoryId);
 }

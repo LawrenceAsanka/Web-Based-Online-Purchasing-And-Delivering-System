@@ -24,4 +24,8 @@ public class ShopCategory implements SuperEntity {
     @Column(length = 20, nullable = false)
     private String status;
 
+    public ShopCategory(String categoryName, String status) {
+        this.categoryName = categoryName;
+        this.status = status;
+    }
 }
