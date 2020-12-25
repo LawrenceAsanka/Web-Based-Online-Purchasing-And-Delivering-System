@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/shopCategories")
@@ -16,6 +18,21 @@ public class ShopCategoryController {
     @Autowired
     private ShopCategoryBO shopCategoryBO;
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    private List<ShopCategoryDTO> getAllShopCategoryDetails(){
+        return shopCategoryBO.getAllShopCategories();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(name = "/{categoryId}")
+    private ShopCategoryDTO getShopCategoryDetail(@PathVariable int categoryId){
+        if (!shopCategoryBO.existShopCategory(categoryId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+      return shopCategoryBO.getShopCategory(categoryId);
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     private void saveShopCategory(@RequestBody ShopCategoryDTO shopCategoryDetails){
@@ -23,5 +40,16 @@ public class ShopCategoryController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         shopCategoryBO.saveShopCategory(shopCategoryDetails.getCategoryName());
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping(name = "/{categoryId}")
+    private void updateShopCategory(@PathVariable int categoryId,
+                                    @RequestBody ShopCategoryDTO shopCategoryDetails){
+        if (!shopCategoryBO.existShopCategory(categoryId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        shopCategoryBO.updateShopCategory(shopCategoryDetails.getCategoryName(), shopCategoryDetails.getStatus(),
+                categoryId);
     }
 }

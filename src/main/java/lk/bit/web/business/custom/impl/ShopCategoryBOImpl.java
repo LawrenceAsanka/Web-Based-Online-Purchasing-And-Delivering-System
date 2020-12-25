@@ -21,7 +21,7 @@ public class ShopCategoryBOImpl implements ShopCategoryBO {
         List<ShopCategoryDTO> shopCategoryDetails = new ArrayList<>();
         List<ShopCategory> allShopCategories = shopCategoryRepository.findAll();
         for (ShopCategory shopCategory : allShopCategories) {
-            shopCategoryDetails.add(new ShopCategoryDTO(shopCategory.getCategoryId(), shopCategory.getCategoryName(), ,
+            shopCategoryDetails.add(new ShopCategoryDTO(shopCategory.getCategoryId(), shopCategory.getCategoryName(),
                     shopCategory.getStatus()));
         }
         return shopCategoryDetails;
@@ -40,8 +40,8 @@ public class ShopCategoryBOImpl implements ShopCategoryBO {
     }
 
     @Override
-    public void updateShopCategory(String categoryName,String status,int categoryId) {
-        shopCategoryRepository.save(new ShopCategory(categoryId,categoryName,status));
+    public void updateShopCategory(String categoryName, String status, int categoryId) {
+        shopCategoryRepository.save(new ShopCategory(categoryId, categoryName, status));
     }
 
     @Override
