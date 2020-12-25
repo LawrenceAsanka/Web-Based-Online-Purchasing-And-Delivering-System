@@ -15,13 +15,13 @@ public class ShopCategory implements SuperEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id",length = 20)
+    @Column(name = "category_id", length = 20)
     private int categoryId;
 
-    @Column(name = "category_name",length = 100,nullable = false)
+    @Column(name = "category_name", length = 50, nullable = false)
     private String categoryName;
 
-    @Column(length = 20,nullable = false)
-   private String status;
+    @Column(length = 20, nullable = false)
+    private String status;
 
 }
