@@ -17,16 +17,16 @@ public class City implements SuperEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "dis_id")
-    private int DistrictId;
+    @Column(name = "city_id")
+    private int cityId;
 
-    @ManyToOne
-    @PrimaryKeyJoinColumn(name = "dis_id")
-    private District district;
-
-    @Column(length = 20, nullable = false)
-    private String city;
+    @Column(name = "city_name",length = 20, nullable = false)
+    private String cityName;
 
     @Column(length = 10, nullable = false)
     private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "dis_id",referencedColumnName = "dis_id",nullable = false)
+    private District district;
 }
