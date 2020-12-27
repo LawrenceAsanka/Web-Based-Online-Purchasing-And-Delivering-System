@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("api/v1/shopCategories")
 public class ShopCategoryController {
 
-    @Autowired
+/*    @Autowired
     private ShopCategoryBO shopCategoryBO;
 
     @ResponseStatus(HttpStatus.OK)
@@ -51,5 +51,5 @@ public class ShopCategoryController {
         }
         shopCategoryBO.updateShopCategory(shopCategoryDetails.getCategoryName(), shopCategoryDetails.getStatus(),
                 categoryId);
-    }
+    }*/
 }
