@@ -24,6 +24,7 @@ public class AppInitializer implements WebMvcConfigurer {
                 .addResourceLocations("file:///" + staticPath + "/");
     }
 
+    //to encrypte the password
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder();

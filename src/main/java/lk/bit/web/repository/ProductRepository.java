@@ -5,6 +5,7 @@ import lk.bit.web.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, String> {
@@ -28,4 +29,6 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     @Query(value = "SELECT p FROM Product p WHERE p.category.categoryName = ?1 AND p.status = 'ACTIVE' ORDER BY p.productId")
     List<Product> getProductsByCategory(String categoryName);
+
+    List<Product> getProductsByDiscountPerUnitIsGreaterThanEqual(BigDecimal discountPerUnit);
 }
