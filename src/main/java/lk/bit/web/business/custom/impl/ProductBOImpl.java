@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +73,7 @@ public class ProductBOImpl implements ProductBO {
                 product.getProductCategory());
 
         // check whether folder is exist or not
-        uploadDir = env.getProperty("static.path") + "product/" +product.getProductId();
+        uploadDir = env.getProperty("static.path") + "product/" + product.getProductId();
         file = new File(uploadDir);
         if (!file.exists()) {
             file.mkdirs();
@@ -107,10 +108,6 @@ public class ProductBOImpl implements ProductBO {
 
     }
 
-    @Override
-    public boolean existProduct(String productId) {
-        return productRepository.existsById(productId);
-    }
 
     @Override
     public String getNewProductId() throws Exception {
@@ -277,4 +274,23 @@ public class ProductBOImpl implements ProductBO {
         }
     }
 
+    @Override
+    public List<ProductDTO> getOfferProducts() {
+        List<Product> offers = productRepository.getProductsByDiscountPerUnitIsGreaterThanEqual(new BigDecimal("40.00"));
+        List<ProductDTO> offerDetail = new ArrayList<>();
+        offers.forEach(product -> {
+            offerDetail.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
+                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
+                    product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
+                    product.getImageOne(), product.getImageTwo(), product.getImageThree(),
+                    product.getStatus(), product.getSubCategory().getSubCategoryName(),
+                    product.getCategory().getCategoryName()));
+        });
+        return offerDetail;
+    }
+
+    @Override
+    public boolean existProduct(String productId) {
+        return productRepository.existsById(productId);
+    }
 }

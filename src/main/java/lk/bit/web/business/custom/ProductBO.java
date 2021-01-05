@@ -33,4 +33,6 @@ public interface ProductBO extends SuperBO {
 
     List<ProductDTO> getProductsByCategory(String categoryName);
 
+    List<ProductDTO> getOfferProducts();
+
 }
