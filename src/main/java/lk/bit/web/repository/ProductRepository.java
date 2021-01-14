@@ -10,7 +10,9 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, String> {
 
-    Product findFirstLastProductIdByOrderByProductIdDesc() throws Exception;
+    @Query(value = "SELECT i.id from item i ORDER BY id DESC LIMIT 1", nativeQuery = true)
+    String getLastProductId();
+//    Product findFirstLastProductIdByOrderByProductIdDesc() throws Exception;
 
     @Query(value = "SELECT p.productId AS productId,p.productName AS productName,c.categoryName AS productCategory, " +
             "p.quantitySellingPrice AS productSellingPrice,p.quantityBuyingPrice AS productBuyingPrice,p.currentQuantity AS productQuantity, " +

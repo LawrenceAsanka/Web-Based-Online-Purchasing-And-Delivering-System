@@ -109,16 +109,18 @@ public class ProductBOImpl implements ProductBO {
     }
 
 
+    // return a product ID
     @Override
-    public String getNewProductId() throws Exception {
+    public String getNewProductId() {
         String productId = "";
 
-        Product lastProduct = productRepository.findFirstLastProductIdByOrderByProductIdDesc();
+//        Product lastProduct = productRepository.findFirstLastProductIdByOrderByProductIdDesc();
+        String lastProductId = productRepository.getLastProductId();
 
-        String lastProductId = lastProduct.getProductId();
+//        String lastProductId = lastProduct.getProductId();
 
         if (lastProductId == null) {
-            return "P001";
+            productId =  "P001";
         } else {
             String id = lastProductId.replace("P", "");
             int newProductId = Integer.parseInt(id) + 1;

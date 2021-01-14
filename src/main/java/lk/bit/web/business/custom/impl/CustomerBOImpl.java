@@ -8,8 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
 
 @Component
 public class CustomerBOImpl implements CustomerBO {
@@ -39,4 +44,12 @@ public class CustomerBOImpl implements CustomerBO {
         javaMailSender.send(mail);
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Customer customer = customerRepository.getCustomerByCustomerEmail(email);
+       /* if (customer == null) {
+            throw new UsernameNotFoundException("Invalid email or password");
+        }*/
+        return new User(customer.getCustomerEmail(), customer.getPassword(), new ArrayList<>());
+    }
 }

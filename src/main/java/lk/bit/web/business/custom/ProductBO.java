@@ -19,7 +19,7 @@ public interface ProductBO extends SuperBO {
 
     boolean existProduct(String productId);
 
-    String getNewProductId() throws Exception;
+    String getNewProductId();
 
     List<ProductTM> getAllProductsDetails();
 
