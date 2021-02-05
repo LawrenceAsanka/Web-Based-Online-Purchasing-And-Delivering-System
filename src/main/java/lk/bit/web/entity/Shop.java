@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Setter
 @Getter
 @ToString
-@Table(name = "shop_detail")
+@Table(name = "shop")
 public class Shop implements SuperEntity {
 
     @Id
@@ -23,8 +23,8 @@ public class Shop implements SuperEntity {
     @Column(length = 20, nullable = false)
     private String contact;
 
-    @Column(length = 50,nullable = false)
-    private String address;
+    @Column(name = "is_active", nullable = false, columnDefinition = "tinyint(1)")
+    private int isActive = 1;
 
     @ManyToOne
     @JoinColumn(name = "shop_category", referencedColumnName = "category_id", nullable = false)
@@ -33,9 +33,4 @@ public class Shop implements SuperEntity {
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private CustomerUser customerUser;
-
-    @ManyToOne
-    @JoinColumn(name = "city_id",referencedColumnName = "city_id",nullable = false)
-    private City city;
-
 }
