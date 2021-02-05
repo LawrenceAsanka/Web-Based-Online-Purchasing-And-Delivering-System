@@ -9,12 +9,12 @@ import org.springframework.web.server.ResponseStatusException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+/*    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public String globalExceptionHandlerMethod(Exception e){
         e.printStackTrace();
         return "Contact admin immediately";
-    }
+    }*/
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ResponseStatusException.class)

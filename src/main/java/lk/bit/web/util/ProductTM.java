@@ -15,6 +15,8 @@ public class ProductTM {
     private String sellingPrice;
     private String buyingPrice;
     private String quantity;
+    private String discountPerUnit;
+    private String offerStatus;
     private String status;
 
 }

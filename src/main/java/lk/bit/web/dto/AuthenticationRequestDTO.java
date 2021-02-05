@@ -1,5 +1,6 @@
 package lk.bit.web.dto;
 
+import lk.bit.web.entity.Role;
 import lombok.*;
 
 @AllArgsConstructor
@@ -11,4 +12,5 @@ public class AuthenticationRequestDTO {
 
     private String userName;
     private String password;
+    private Role role;
 }

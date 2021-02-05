@@ -7,7 +7,7 @@ import lk.bit.web.entity.*;
 import lk.bit.web.repository.ProductRepository;
 import lk.bit.web.repository.SupplierInvoiceDetailRepository;
 import lk.bit.web.repository.SupplierInvoiceRepository;
-import lk.bit.web.repository.UserRepository;
+import lk.bit.web.repository.SystemUserRepository;
 import lk.bit.web.util.InvoiceDetailTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,15 +28,15 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
     @Autowired
     private ProductRepository productRepository;
     @Autowired
-    private UserRepository userRepository;
+    private SystemUserRepository systemUserRepository;
 
     @Override
     public void saveSupplierInvoice(SupplierInvoiceDTO invoiceDetails) {
 
-        User user = userRepository.findById(invoiceDetails.getUserId()).get();
+        SystemUser systemUser = systemUserRepository.findSystemUser(invoiceDetails.getUserName());
 
         supplierInvoiceRepository.save(new SupplierInvoice(
-                invoiceDetails.getInvoiceNumber(), invoiceDetails.getDateTime(), user
+                invoiceDetails.getInvoiceNumber(), invoiceDetails.getDateTime(), systemUser
         ));
 
         List<SupplierInvoiceDetailDTO> productDetails = invoiceDetails.getInvoiceDetail();
@@ -48,7 +48,7 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
             ));
 
             Product product = productRepository.findById(productDetail.getProductCode()).get();
-            System.out.println(product);
+
             product.setCurrentQuantity(product.getCurrentQuantity() + productDetail.getTotalQty());
             product.setQuantityBuyingPrice(productDetail.getPricePerQty());
             productRepository.save(product);

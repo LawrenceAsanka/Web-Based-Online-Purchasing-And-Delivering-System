@@ -6,5 +6,5 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface CustomerBO extends UserDetailsService,SuperBO {
 
-    void saveCustomer(SignUpDTO signUpDetails);
+    String saveCustomer(SignUpDTO signUpDetails);
 }

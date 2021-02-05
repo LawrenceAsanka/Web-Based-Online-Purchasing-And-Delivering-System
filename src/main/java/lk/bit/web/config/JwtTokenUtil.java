@@ -3,23 +3,25 @@ package lk.bit.web.config;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lk.bit.web.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Component
 public class JwtTokenUtil implements Serializable {
 
-    private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
     @Autowired
     private Environment env;
+
+    private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -46,8 +48,30 @@ public class JwtTokenUtil implements Serializable {
         return expiration.before(new Date());
     }
 
+    public List<SimpleGrantedAuthority> getRolesFromToken(String token) {
+        List<SimpleGrantedAuthority> roles = null;
+        Claims claims = getAllClaimsFromToken(token);
+        Boolean isAdmin = claims.get("isAdmin", Boolean.class);
+        Boolean isUser = claims.get("isCustomer", Boolean.class);
+        if (isAdmin != null && isAdmin) {
+            roles = Collections.singletonList(new SimpleGrantedAuthority(Role.ROLE_ADMIN.name()));
+        }
+        if (isUser != null && isUser) {
+            roles = Collections.singletonList(new SimpleGrantedAuthority(Role.ROLE_CUSTOMER.name()));
+        }
+
+        return roles;
+    }
+
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        Collection<? extends GrantedAuthority> roles = userDetails.getAuthorities();
+        if (roles.contains(new SimpleGrantedAuthority(Role.ROLE_ADMIN.name()))) {
+            claims.put("isAdmin", true);
+        }
+        if (roles.contains(new SimpleGrantedAuthority(Role.ROLE_CUSTOMER.name()))) {
+            claims.put("isCustomer", true);
+        }
         return doGenerateToken(claims, userDetails.getUsername());
     }
 

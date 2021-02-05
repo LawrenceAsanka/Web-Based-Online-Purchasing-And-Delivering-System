@@ -7,13 +7,15 @@ import java.util.List;
 
 public interface ShopCategoryBO extends SuperBO {
 
-    List<ShopCategoryDTO> getAllShopCategories();
+//    List<ShopCategoryDTO> getAllShopCategories();
 
-    ShopCategoryDTO getShopCategory(int categoryId);
+//    ShopCategoryDTO getShopCategory(int categoryId);
 
     void saveShopCategory(String categoryName);
 
-    void updateShopCategory(String categoryName,String status,int categoryId);
+//    void updateShopCategory(String categoryName,String status,int categoryId);
+
+    List<ShopCategoryDTO> getAllCategoryByIsActivated();
 
     boolean existShopCategory(int categoryId);
 }

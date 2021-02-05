@@ -2,6 +2,7 @@ package lk.bit.web.config;
 
 import lk.bit.web.api.filter.JwtRequestFilter;
 import lk.bit.web.business.custom.CustomerBO;
+import lk.bit.web.business.custom.SystemUserBO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,17 +22,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CustomerBO customerBO;
-
+    @Autowired
+    private SystemUserBO systemUserBO;
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
+    @Autowired
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customerBO).passwordEncoder(encoder());
+        auth.userDetailsService(customerBO).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(systemUserBO).passwordEncoder(passwordEncoder());
     }
 
     @Bean
-    public PasswordEncoder encoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -41,15 +46,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests().antMatchers("/api/v1/tokens", "/files/**", "/api/v1/categories",
-                "/api/v1/offers", "/api/v1/products/**", "/api/v1/**")
-                .permitAll()
-                .anyRequest().authenticated()
+        http
+                .cors()
+                .and().csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/api/*/users/**",
+                        "/api/*/advertisements/**","/api/*/supplierInvoices/**",
+                        "/api/*/users/**", "/api/*/supplierInvoices/**").hasRole("ADMIN")
+                .antMatchers("/api/v1/customers/**","/api/*/categories/**", "/api/*/products/**").hasAnyRole("CUSTOMER")
+                .antMatchers("/api/v1/authenticate","/api/v1/registers/**", "/files/**", "/api/*/offers/**",
+                        "/api/*/categories/**", "/api/*/products/**","/api/*/subcategories/**",
+                        "/api/*/shopCategories/**")
+                .permitAll().anyRequest().authenticated()
+                .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
+
 }

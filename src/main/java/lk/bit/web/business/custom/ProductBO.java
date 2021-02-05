@@ -5,7 +5,6 @@ import lk.bit.web.dto.ProductDTO;
 import lk.bit.web.util.ProductTM;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface ProductBO extends SuperBO {
@@ -35,4 +34,7 @@ public interface ProductBO extends SuperBO {
 
     List<ProductDTO> getOfferProducts();
 
+    void updateOfferStatus(String id, int status);
+
+    List<ProductDTO> getOfferedProducts();
 }

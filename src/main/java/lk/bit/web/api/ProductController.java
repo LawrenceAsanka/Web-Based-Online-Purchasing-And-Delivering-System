@@ -6,6 +6,7 @@ import lk.bit.web.util.ProductTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,7 +16,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(path = "api/v1/products")
 public class ProductController {
@@ -24,7 +25,7 @@ public class ProductController {
     private ProductBO productBO;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/")
+    @GetMapping("/all")
     private List<ProductTM> getAllProductsDetails() {
         return productBO.getAllProductsDetails();
     }
@@ -71,9 +72,15 @@ public class ProductController {
         return productBO.getActiveLastThreeProducts(category);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/offers")
+    private List<ProductDTO> getOfferProducts() {
+        return productBO.getOfferedProducts();
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void saveProduct(@RequestPart("images") List<MultipartFile> imageFiles,
+    private void saveProduct(@RequestPart("images") List<MultipartFile> imageFiles,
                             @RequestParam("data") String productDetails) {
         if (imageFiles.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
@@ -94,7 +101,7 @@ public class ProductController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(value = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public void updateUser(@RequestPart("images") List<MultipartFile> imageFiles,
+    private void updateProduct(@RequestPart("images") List<MultipartFile> imageFiles,
                            @RequestParam @Valid @NotEmpty String status,
                            @RequestParam("data") String productDetails,
                            @PathVariable @Valid @Pattern(regexp = "P\\d{3}") String productId) {
@@ -104,4 +111,12 @@ public class ProductController {
         productBO.updateProduct(imageFiles, productDetails, status, productId);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/{id}/offers")
+    private void updateOfferStatus(@PathVariable String id,@RequestParam int status){
+        if (id.isEmpty() && !productBO.existProduct(id)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        productBO.updateOfferStatus(id,status);
+    }
 }

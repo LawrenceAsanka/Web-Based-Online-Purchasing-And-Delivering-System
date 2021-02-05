@@ -31,8 +31,8 @@ public class Shop implements SuperEntity {
     private ShopCategory shopCategory;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "customer_id", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
+    private CustomerUser customerUser;
 
     @ManyToOne
     @JoinColumn(name = "city_id",referencedColumnName = "city_id",nullable = false)

@@ -21,11 +21,10 @@ public class ShopCategory implements SuperEntity {
     @Column(name = "category_name", length = 50, nullable = false)
     private String categoryName;
 
-    @Column(length = 20, nullable = false)
-    private String status;
+    @Column(nullable = false, columnDefinition = "tinyint(1)")
+    private int status = 1;
 
-    public ShopCategory(String categoryName, String status) {
+    public ShopCategory(String categoryName) {
         this.categoryName = categoryName;
-        this.status = status;
     }
 }

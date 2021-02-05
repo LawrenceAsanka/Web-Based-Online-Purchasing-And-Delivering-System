@@ -3,7 +3,6 @@ package lk.bit.web.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -22,7 +21,7 @@ public class SupplierInvoice implements SuperEntity {
     private String dateAndTime;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "created_by", referencedColumnName = "auth_user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
+    private SystemUser systemUser;
 
 }

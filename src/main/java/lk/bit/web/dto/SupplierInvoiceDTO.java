@@ -12,7 +12,7 @@ import java.util.List;
 @ToString
 public class SupplierInvoiceDTO {
 
-    private String userId;
+    private String userName;
     private String invoiceNumber;
     private String dateTime;
     private List<SupplierInvoiceDetailDTO> invoiceDetail;

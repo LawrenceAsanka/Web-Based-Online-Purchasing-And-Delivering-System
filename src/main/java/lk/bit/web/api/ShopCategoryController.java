@@ -10,27 +10,33 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("api/v1/shopCategories")
 public class ShopCategoryController {
 
-/*    @Autowired
+    @Autowired
     private ShopCategoryBO shopCategoryBO;
 
-    @ResponseStatus(HttpStatus.OK)
+   /* @ResponseStatus(HttpStatus.OK)
     @GetMapping
     private List<ShopCategoryDTO> getAllShopCategoryDetails(){
         return shopCategoryBO.getAllShopCategories();
-    }
+    }*/
 
-    @ResponseStatus(HttpStatus.OK)
+   /* @ResponseStatus(HttpStatus.OK)
     @GetMapping(name = "/{categoryId}")
     private ShopCategoryDTO getShopCategoryDetail(@PathVariable int categoryId){
         if (!shopCategoryBO.existShopCategory(categoryId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
       return shopCategoryBO.getShopCategory(categoryId);
+    }*/
+
+    @GetMapping()
+    private List<ShopCategoryDTO> getAllActiveCategories(@RequestParam String status){
+        List<ShopCategoryDTO> categoryDTOS = shopCategoryBO.getAllCategoryByIsActivated();
+        return categoryDTOS;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -42,7 +48,7 @@ public class ShopCategoryController {
         shopCategoryBO.saveShopCategory(shopCategoryDetails.getCategoryName());
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+   /* @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(name = "/{categoryId}")
     private void updateShopCategory(@PathVariable int categoryId,
                                     @RequestBody ShopCategoryDTO shopCategoryDetails){
@@ -53,3 +59,4 @@ public class ShopCategoryController {
                 categoryId);
     }*/
 }
+

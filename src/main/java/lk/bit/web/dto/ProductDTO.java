@@ -27,4 +27,7 @@ public class ProductDTO {
     private String productSubCategory;
     private String productCategory;
 
+
+
+
 }

@@ -1,6 +1,6 @@
 package lk.bit.web.entity;
 
-public interface CustomEntity2 {
+public interface CustomEntity4 {
 
     String getProductId();
 
@@ -15,8 +15,4 @@ public interface CustomEntity2 {
     String getProductQuantity();
 
     String getDiscountPerUnit();
-
-    String getOfferStatus();
-
-    String getProductStatus();
 }

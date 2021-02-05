@@ -3,10 +3,7 @@ package lk.bit.web.business.custom.impl;
 import com.google.gson.Gson;
 import lk.bit.web.business.custom.ProductBO;
 import lk.bit.web.dto.ProductDTO;
-import lk.bit.web.entity.CustomEntity2;
-import lk.bit.web.entity.Product;
-import lk.bit.web.entity.ProductCategory;
-import lk.bit.web.entity.ProductSubCategory;
+import lk.bit.web.entity.*;
 import lk.bit.web.repository.CategoryRepository;
 import lk.bit.web.repository.ProductRepository;
 import lk.bit.web.repository.SubCategoryRepository;
@@ -141,7 +138,7 @@ public class ProductBOImpl implements ProductBO {
         List<ProductTM> products = new ArrayList<>();
         allProducts.forEach(p -> {
             products.add(new ProductTM(p.getProductId(), p.getProductName(), p.getProductCategory(),
-                    p.getProductSellingPrice(), p.getProductBuyingPrice(), p.getProductQuantity(), p.getProductStatus()));
+                    p.getProductSellingPrice(), p.getProductBuyingPrice(), p.getProductQuantity(),p.getDiscountPerUnit(),p.getOfferStatus(), p.getProductStatus()));
         });
         return products;
     }
@@ -152,7 +149,8 @@ public class ProductBOImpl implements ProductBO {
         List<ProductTM> products = new ArrayList<>();
         category.forEach(p -> {
             products.add(new ProductTM(p.getProductId(), p.getProductName(), p.getProductCategory(),
-                    p.getProductSellingPrice(), p.getProductBuyingPrice(), p.getProductQuantity(), p.getProductStatus()));
+                    p.getProductSellingPrice(), p.getProductBuyingPrice(), p.getProductQuantity(),p.getDiscountPerUnit(),
+                    p.getOfferStatus(), p.getProductStatus()));
         });
         return products;
     }
@@ -289,6 +287,29 @@ public class ProductBOImpl implements ProductBO {
                     product.getCategory().getCategoryName()));
         });
         return offerDetail;
+    }
+
+    @Override
+    public void updateOfferStatus(String id, int status){
+        Product product = productRepository.findById(id).get();
+        product.setOfferStatus(status);
+        productRepository.save(product);
+    }
+
+    @Override
+    public List<ProductDTO> getOfferedProducts() {
+        List<Product> offeredProducts = productRepository.getProductsByOfferStatusEqualsAndStatusEquals(1, "ACTIVE");
+        List<ProductDTO> products = new ArrayList<>();
+      offeredProducts.forEach(product -> {
+          products.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
+                  product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
+                  product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
+                  product.getImageOne(), product.getImageTwo(), product.getImageThree(),
+                  product.getStatus(), product.getSubCategory().getSubCategoryName(),
+                  product.getCategory().getCategoryName()));
+      });
+
+      return products;
     }
 
     @Override

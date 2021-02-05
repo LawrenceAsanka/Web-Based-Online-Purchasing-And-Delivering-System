@@ -1,7 +1,7 @@
 package lk.bit.web.api;
 
-import lk.bit.web.business.custom.UserBO;
-import lk.bit.web.dto.UserDTO;
+import lk.bit.web.business.custom.SystemUserBO;
+import lk.bit.web.dto.SystemUserDTO;
 import lk.bit.web.util.UserTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,53 +14,53 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("api/v1/users")
-public class UserController {
+public class SystemUserController {
 
     @Autowired
-    private UserBO userBO;
+    private SystemUserBO systemUserBO;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<UserTM> getUsers() {
-        return userBO.getAllUsers();
+        return systemUserBO.getAllUsers();
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/id")
+    @GetMapping("/ids")
     public String getLastUserId() {
-        return userBO.getLastUserId();
+        return systemUserBO.getLastUserId();
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public UserDTO getUser(@PathVariable("id") @Valid @Pattern(regexp = "U\\d{3}") String userId) {
-        if (userId == null) {
+    public SystemUserDTO getUser(@PathVariable("id") @Valid @Pattern(regexp = "U\\d{3}") String userId) {
+        if (userId == null && !systemUserBO.existUser(userId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return userBO.getRequestedUser(userId);
+        return systemUserBO.getRequestedUser(userId);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveUser(@RequestBody UserDTO user) {
-        if (userBO.existUser(user.getId())) {
+    public void saveUser(@RequestBody SystemUserDTO user) {
+        if (systemUserBO.existUser(user.getId()) ) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        userBO.saveUser(user);
+        systemUserBO.saveUser(user);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(value = "/{id}/{status}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void updateUser(@PathVariable("id") @Valid @Pattern(regexp = "U\\d{3}") String userId,
                            @PathVariable @Valid @NotEmpty  String status,
-                           @RequestBody UserDTO user) {
-        if (userId == null && status == null) {
+                           @RequestBody SystemUserDTO user) {
+        if (userId == null && status == null && !systemUserBO.existUser(user.getId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        userBO.updateUser(user, status, userId);
+        systemUserBO.updateUser(user, status, userId);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -70,7 +70,7 @@ public class UserController {
         if (userId == null && status == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        userBO.updateStatus(userId, status);
+        systemUserBO.updateStatus(userId, status);
     }
 
 }

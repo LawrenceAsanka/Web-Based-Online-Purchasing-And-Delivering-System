@@ -16,7 +16,7 @@ public class ShopCategoryBOImpl implements ShopCategoryBO {
     @Autowired
     private ShopCategoryRepository shopCategoryRepository;
 
-    @Override
+/*    @Override
     public List<ShopCategoryDTO> getAllShopCategories() {
         List<ShopCategoryDTO> shopCategoryDetails = new ArrayList<>();
         List<ShopCategory> allShopCategories = shopCategoryRepository.findAll();
@@ -25,24 +25,35 @@ public class ShopCategoryBOImpl implements ShopCategoryBO {
                     shopCategory.getStatus()));
         }
         return shopCategoryDetails;
-    }
+    }*/
 
-    @Override
+/*    @Override
     public ShopCategoryDTO getShopCategory(int categoryId) {
         ShopCategory shopCategory = shopCategoryRepository.findById(categoryId).get();
         return new ShopCategoryDTO(shopCategory.getCategoryId(), shopCategory.getCategoryName(),
                 shopCategory.getStatus());
-    }
+    }*/
 
     @Override
     public void saveShopCategory(String categoryName) {
-        shopCategoryRepository.save(new ShopCategory(categoryName, "ACTIVE"));
+        shopCategoryRepository.save(new ShopCategory(categoryName));
     }
 
     @Override
+    public List<ShopCategoryDTO> getAllCategoryByIsActivated() {
+        List<ShopCategory> categories = shopCategoryRepository.getAllCategoriesByIsActive();
+        List<ShopCategoryDTO> categoryDTO = new ArrayList<>();
+        for (ShopCategory category : categories) {
+            categoryDTO.add(new ShopCategoryDTO(category.getCategoryId(), category.getCategoryName(),
+                    category.getStatus()));
+        }
+        return categoryDTO;
+    }
+
+    /*@Override
     public void updateShopCategory(String categoryName, String status, int categoryId) {
         shopCategoryRepository.save(new ShopCategory(categoryId, categoryName, status));
-    }
+    }*/
 
     @Override
     public boolean existShopCategory(int categoryId) {

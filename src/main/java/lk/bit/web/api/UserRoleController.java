@@ -1,24 +1,13 @@
 package lk.bit.web.api;
 
-import lk.bit.web.business.custom.UserRoleBO;
-import lk.bit.web.dto.UserRoleDTO;
-import lk.bit.web.entity.UserRole;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import java.util.List;
 
 @CrossOrigin
 @RestController
 @RequestMapping("api/v1/roles")
 public class UserRoleController {
 
-    @Autowired
+   /* @Autowired
     private UserRoleBO userRoleBO;
 
     @ResponseStatus(HttpStatus.OK)
@@ -56,5 +45,5 @@ public class UserRoleController {
         }
         userRoleBO.updateUserRole(userRole.getRoleName(),id);
     }
-
+*/
 }

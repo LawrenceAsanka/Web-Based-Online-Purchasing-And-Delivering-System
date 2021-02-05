@@ -51,6 +51,9 @@ public class Product implements SuperEntity {
     @Column(name = "image_3", length = 100)
     private String imageThree;
 
+    @Column(name = "offer_enabled",columnDefinition = "TINYINT DEFAULT 0", length = 1, nullable = false)
+    private int offerStatus;
+
     @Column(length = 30, nullable = false)
     private String status;
 

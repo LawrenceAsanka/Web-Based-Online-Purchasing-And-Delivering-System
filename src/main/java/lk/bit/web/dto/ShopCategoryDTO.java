@@ -11,5 +11,5 @@ public class ShopCategoryDTO {
 
     private int categoryId;
     private String categoryName;
-    private String status;
+    private int status;
 }

@@ -1,6 +1,7 @@
 package lk.bit.web.repository;
 
 import lk.bit.web.entity.CustomEntity2;
+import lk.bit.web.entity.CustomEntity4;
 import lk.bit.web.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,12 +17,12 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     @Query(value = "SELECT p.productId AS productId,p.productName AS productName,c.categoryName AS productCategory, " +
             "p.quantitySellingPrice AS productSellingPrice,p.quantityBuyingPrice AS productBuyingPrice,p.currentQuantity AS productQuantity, " +
-            "p.status AS productStatus FROM Product p INNER JOIN p.category c ORDER BY p.productId")
+            "p.discountPerUnit AS discountPerUnit,p.offerStatus AS offerStatus,p.status AS productStatus FROM Product p INNER JOIN p.category c ORDER BY p.productId")
     List<CustomEntity2> getAllProducts();
 
     @Query(value = "SELECT p.productId AS productId,p.productName AS productName,c.categoryName AS productCategory, " +
             "p.quantitySellingPrice AS productSellingPrice,p.quantityBuyingPrice AS productBuyingPrice,p.currentQuantity AS productQuantity, " +
-            "p.status AS productStatus FROM Product p INNER JOIN p.category c WHERE c.categoryName = ?1 ORDER BY p.productId")
+            "p.discountPerUnit AS discountPerUnit,p.offerStatus AS offerStatus,p.status AS productStatus FROM Product p INNER JOIN p.category c WHERE c.categoryName = ?1 ORDER BY p.productId")
     List<CustomEntity2> getGroupedProductDetails(String categoryName);
 
     @Query(value = "SELECT * FROM item WHERE item.status = 'ACTIVE' " +
@@ -33,4 +34,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
     List<Product> getProductsByCategory(String categoryName);
 
     List<Product> getProductsByDiscountPerUnitIsGreaterThanEqual(BigDecimal discountPerUnit);
+
+    @Query(value = "SELECT p FROM Product p WHERE p.offerStatus=?1 AND p.status=?2 ORDER BY p.productId")
+    List<Product> getProductsByOfferStatusEqualsAndStatusEquals(int offerStatus, String productStatus);
 }
