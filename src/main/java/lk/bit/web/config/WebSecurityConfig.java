@@ -60,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/*/products/**", "/api/v*/shops/**").hasAnyRole("CUSTOMER")
                 .antMatchers("/api/v1/authenticate","/api/v1/registers/**", "/files/**", "/api/*/offers/**",
                         "/api/*/categories/**", "/api/*/products/**","/api/*/subcategories/**",
-                        "/api/*/shopCategories/**")
+                        "/api/*/shopCategories/**", "/api/v*/orderinvoices")
                 .permitAll().anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and().sessionManagement()
