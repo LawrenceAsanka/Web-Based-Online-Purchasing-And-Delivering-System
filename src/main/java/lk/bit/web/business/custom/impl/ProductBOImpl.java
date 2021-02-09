@@ -54,7 +54,8 @@ public class ProductBOImpl implements ProductBO {
     }
 
     @Override
-    public void saveProduct(List<MultipartFile> imageFiles, String productDetails) {
+    public void
+    saveProduct(List<MultipartFile> imageFiles, String productDetails) {
         String firstImagePath = "";
         String secondImagePath = "";
         String thirdImagePath = "";

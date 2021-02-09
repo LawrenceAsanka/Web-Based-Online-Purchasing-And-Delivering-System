@@ -18,7 +18,7 @@ public class ShopCategory implements SuperEntity {
     @Column(name = "category_id", length = 20)
     private int categoryId;
 
-    @Column(name = "category_name", length = 50, nullable = false)
+    @Column(name = "category_name", length = 50, nullable = false, unique = true)
     private String categoryName;
 
     @Column(nullable = false, columnDefinition = "tinyint(1)")

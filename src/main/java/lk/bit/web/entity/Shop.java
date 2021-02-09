@@ -45,4 +45,18 @@ public class Shop implements SuperEntity {
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private CustomerUser customerUser;
+
+    public Shop(String shopId, String shopName, String contact, String address1,
+                String address2, String city, String district, ShopCategory shopCategory,
+                CustomerUser customerUser) {
+        this.shopId = shopId;
+        this.shopName = shopName;
+        this.contact = contact;
+        this.address1 = address1;
+        this.address2 = address2;
+        this.city = city;
+        this.district = district;
+        this.shopCategory = shopCategory;
+        this.customerUser = customerUser;
+    }
 }
