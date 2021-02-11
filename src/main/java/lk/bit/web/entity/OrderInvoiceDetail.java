@@ -37,11 +37,9 @@ public class OrderInvoiceDetail implements SuperEntity {
     private Product product;
 
     public OrderInvoiceDetail(String orderInvoiceId, String productId, BigDecimal total,
-                              BigDecimal discount, OrderInvoice orderInvoice, Product product) {
+                              BigDecimal discount) {
         this.orderInvoiceDetailPK = new OrderInvoiceDetailPK(orderInvoiceId, productId);
         this.total = total;
         this.discount = discount;
-        this.orderInvoice = orderInvoice;
-        this.product = product;
     }
 }

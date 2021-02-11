@@ -11,6 +11,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class SupplierInvoiceDetailPK implements Serializable {
 
     private String invoiceNumber;

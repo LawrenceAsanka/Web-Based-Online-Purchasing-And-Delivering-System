@@ -1,9 +1,11 @@
 package lk.bit.web.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -27,14 +29,16 @@ public class OrderInvoice implements SuperEntity{
     @JoinColumn(name = "shop_id", referencedColumnName = "id", nullable = false)
     private Shop shop;
 
-    @Column(name="created_date_time", columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP", nullable = false)
-    private Date createdDateAndTime;
-
-    @Column(name = "net_total", nullable = false)
-    private BigDecimal netTotal;
+    @Column(name="created_date_time",nullable = false)
+    private LocalDateTime createdDateAndTime = LocalDateTime.now();
 
     @Column(nullable = false, columnDefinition = "tinyint(1) DEFAULT 0")
     private int status;
 
 
+    public OrderInvoice(String orderId, CustomerUser customerUser, Shop shop) {
+        this.orderId = orderId;
+        this.customerUser = customerUser;
+        this.shop = shop;
+    }
 }

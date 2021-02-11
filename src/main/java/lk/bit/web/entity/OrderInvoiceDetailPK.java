@@ -11,10 +11,13 @@ import java.io.Serializable;
 @Setter
 @Getter
 @ToString
+@EqualsAndHashCode
 public class OrderInvoiceDetailPK implements Serializable {
 
     private String orderInvoiceId;
     private String productId;
 
-
+    public OrderInvoiceDetailPK(String orderInvoiceId) {
+        this.orderInvoiceId = orderInvoiceId;
+    }
 }
