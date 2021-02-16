@@ -2,6 +2,7 @@ package lk.bit.web.dto;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @AllArgsConstructor
@@ -14,5 +15,6 @@ public class OrderInvoiceDTO {
     private String orderId;
     private String customerId;
     private String shopId;
+    private BigDecimal netTotal;
     private List<OrderInvoiceDetailDTO> orderInvoiceDetail;
 }

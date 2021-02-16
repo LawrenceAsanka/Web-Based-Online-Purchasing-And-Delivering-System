@@ -2,7 +2,7 @@ package lk.bit.web.api;
 
 import lk.bit.web.business.custom.ConfirmationTokenBO;
 import lk.bit.web.business.custom.CustomerBO;
-import lk.bit.web.dto.SignUpDTO;
+import lk.bit.web.dto.CustomerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,13 +21,12 @@ public class CustomerRegisterController {
 
     @GetMapping("/confirm")
     public String confirm(@RequestParam("token") String token){
-        String s = confirmationTokenBO.confirmToken(token);
-        return s;
+        return confirmationTokenBO.confirmToken(token);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/signup",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public String saveCustomer(@RequestBody SignUpDTO signUpDetails){
+    public String saveCustomer(@RequestBody CustomerDTO signUpDetails){
         if (signUpDetails.getFirstName().isEmpty() || signUpDetails.getEmail().isEmpty() ||
                 signUpDetails.getPassword().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);

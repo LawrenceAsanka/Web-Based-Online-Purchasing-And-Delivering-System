@@ -30,7 +30,10 @@ public class CustomerUser implements SuperEntity {
     private String password;
 
     @Column(name = "profile_picture")
-    private String profilePicture;
+    private String profilePicture = "no-image";
+
+    @Column(nullable = false,length = 15)
+    private String contact;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -47,14 +50,14 @@ public class CustomerUser implements SuperEntity {
                         String customerLastName,
                         String customerEmail,
                         String password,
-                        String profilePicture,
+                        String contact,
                         Role role) {
         this.customerId = customerId;
         this.customerFirstName = customerFirstName;
         this.customerLastName = customerLastName;
         this.customerEmail = customerEmail;
         this.password = password;
-        this.profilePicture = profilePicture;
+        this.contact = contact;
         this.role = role;
     }
 }

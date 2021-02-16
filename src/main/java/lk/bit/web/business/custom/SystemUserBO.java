@@ -22,4 +22,5 @@ public interface SystemUserBO extends UserDetailsService,SuperBO {
     String getLastUserId();
 
     void updateStatus(String userId, String status);
+
 }

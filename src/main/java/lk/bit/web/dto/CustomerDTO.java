@@ -8,12 +8,14 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class SignUpDTO {
+public class CustomerDTO {
 
+    private String id;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
+    private String contact;
     private String profilePicture;
     private Role role;
     private int emailVerified;

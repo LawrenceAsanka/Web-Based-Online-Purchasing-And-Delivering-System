@@ -22,13 +22,10 @@ public class JwtAuthenticationController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
-
     @Autowired
     private CustomerBO customerBO;
-
     @Autowired
     private SystemUserBO systemUserBO;
 
@@ -40,15 +37,15 @@ public class JwtAuthenticationController {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUserName(),
                             authenticationRequest.getPassword()));
-        }catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
             throw new Exception("Invalid username or password", e);
         }
 
         if (authenticationRequest.getRole() == Role.ROLE_CUSTOMER) {
+            customerBO.checkIsEmailAndStatusEnable(authenticationRequest.getUserName());
             userDetails = customerBO.loadUserByUsername(authenticationRequest.getUserName());
         } else {
+            // TODO is status checking
             userDetails = systemUserBO.loadUserByUsername(authenticationRequest.getUserName());
         }
 

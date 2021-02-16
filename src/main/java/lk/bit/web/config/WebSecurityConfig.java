@@ -3,6 +3,7 @@ package lk.bit.web.config;
 import lk.bit.web.api.filter.JwtRequestFilter;
 import lk.bit.web.business.custom.CustomerBO;
 import lk.bit.web.business.custom.SystemUserBO;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,6 +41,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -56,11 +62,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/*/users/**",
                         "/api/*/advertisements/**","/api/*/supplierInvoices/**",
                         "/api/*/users/**", "/api/*/supplierInvoices/**").hasRole("ADMIN")
-                .antMatchers("/api/v1/customers/**","/api/*/categories/**",
-                        "/api/*/products/**", "/api/v*/shops/**").hasAnyRole("CUSTOMER")
+                .antMatchers("/api/*/customers/**","/api/*/categories/**",
+                        "/api/*/products/**", "/api/v*/shops/**").hasRole("CUSTOMER")
                 .antMatchers("/api/v1/authenticate","/api/v1/registers/**", "/files/**", "/api/*/offers/**",
                         "/api/*/categories/**", "/api/*/products/**","/api/*/subcategories/**",
-                        "/api/*/shopCategories/**", "/api/v*/orderinvoices")
+                        "/api/*/shopCategories/**", "/api/v*/orderInvoices")
                 .permitAll().anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and().sessionManagement()

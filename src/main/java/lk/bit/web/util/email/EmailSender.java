@@ -19,14 +19,13 @@ public class EmailSender {
     private String emailAddress;
 
     @Async
-    public void sendEmail(String to, String emailHTMLText) {
-        System.out.println(emailAddress);
+    public void sendEmail(String to, String emailHTMLText, String message) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setText(emailHTMLText, true);
             helper.setTo(to);
-            helper.setSubject("Confirm your email");
+            helper.setSubject(message);
             helper.setFrom(emailAddress);
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {

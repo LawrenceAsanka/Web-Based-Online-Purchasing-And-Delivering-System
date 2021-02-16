@@ -1,16 +1,19 @@
 package lk.bit.web.business.custom.impl;
 
+import com.google.gson.Gson;
 import lk.bit.web.business.custom.ConfirmationTokenBO;
 import lk.bit.web.business.custom.CustomerBO;
 import lk.bit.web.dto.ConfirmationTokenDTO;
-import lk.bit.web.dto.SignUpDTO;
+import lk.bit.web.dto.CustomerDTO;
 import lk.bit.web.entity.CustomerUser;
 import lk.bit.web.entity.Role;
 import lk.bit.web.repository.CustomerUserRepository;
 import lk.bit.web.util.email.EmailSender;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,10 +21,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -35,10 +42,13 @@ public class CustomerBOImpl implements CustomerBO {
     @Autowired
     private EmailSender emailSender;
     @Autowired
-    private Environment env;
-    @Autowired
     @Lazy
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ModelMapper mapper;
+    @Autowired
+    private Environment env;
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -52,28 +62,116 @@ public class CustomerBOImpl implements CustomerBO {
     }
 
     @Override
-    public String saveCustomer(SignUpDTO signUpDetails) {
+    public String saveCustomer(CustomerDTO signUpDetails) {
 
         CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(signUpDetails.getEmail());
+        String customerID = getCustomerId();
+
         if (customer != null) {
             throw new IllegalStateException(String.format("email %s was already taken", signUpDetails.getEmail()));
         }
         //create a customer
-        customerUserRepository.save(new CustomerUser("CUS1", signUpDetails.getFirstName(),
+        customerUserRepository.save(new CustomerUser(customerID, signUpDetails.getFirstName(),
                 signUpDetails.getLastName(), signUpDetails.getEmail(),
-                passwordEncoder.encode(signUpDetails.getPassword()), "", Role.ROLE_CUSTOMER));
+                passwordEncoder.encode(signUpDetails.getPassword()), signUpDetails.getContact(), Role.ROLE_CUSTOMER));
 
+        // process of creating confirmation email
         String token = UUID.randomUUID().toString();
         String savedToken = confirmationTokenBO.saveConfirmationToken(new ConfirmationTokenDTO(
                         token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15)),
-                new CustomerUser("CUS1", signUpDetails.getFirstName(),
+                new CustomerUser(customerID, signUpDetails.getFirstName(),
                         signUpDetails.getLastName(), signUpDetails.getEmail(),
-                        passwordEncoder.encode(signUpDetails.getPassword()), "", Role.ROLE_CUSTOMER));
+                        passwordEncoder.encode(signUpDetails.getPassword()), signUpDetails.getContact(), Role.ROLE_CUSTOMER));
 
         // confirmation link
-        String link = "http://localhost:8080/bit/api/v1/registers/confirm?token=" + savedToken;
-        emailSender.sendEmail(signUpDetails.getEmail(), buildEmail(signUpDetails.getFirstName(), link));
+        String link = "http://localhost:63342/BIT-frontend/template/customer/login.html";
+        emailSender.sendEmail(signUpDetails.getEmail(), buildEmail(signUpDetails.getFirstName(), link), "Confirm Your Email");
+
         return savedToken;
+    }
+
+    @Override
+    public void checkIsEmailAndStatusEnable(String email) {
+        CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(email);
+
+        if (customer.getAccountStatus() == 1 && customer.getEmailVerified() == 1) {
+            return;
+        }
+        throw new DisabledException("User email not verified");
+    }
+
+    @Override
+    public CustomerDTO findCustomerByEmail(String email) {
+        CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(email);
+
+        return mapper.map(customer, CustomerDTO.class);
+    }
+
+    @Override
+    public CustomerDTO findCustomerById(String id) {
+        Optional<CustomerUser> optionalCustomerUser = customerUserRepository.findById(id);
+        CustomerDTO customerDTO = null;
+
+        if (optionalCustomerUser.isPresent()) {
+            customerDTO = mapper.map(optionalCustomerUser.get(), CustomerDTO.class);
+        }
+        return customerDTO;
+    }
+
+    @Override
+    public void updateCustomer(MultipartFile multipartFile, String userData, String customerId) {
+        String uploadDir;
+        File file;
+        Gson gson = new Gson();
+        CustomerDTO customerDTO = gson.fromJson(userData, CustomerDTO.class);
+        Optional<CustomerUser> optionalCustomerUser = customerUserRepository.findById(customerId);
+        if (multipartFile != null) {
+            if (optionalCustomerUser.isPresent()) {
+                optionalCustomerUser.get().setCustomerFirstName(customerDTO.getFirstName());
+                optionalCustomerUser.get().setCustomerLastName(customerDTO.getLastName());
+                optionalCustomerUser.get().setCustomerEmail(customerDTO.getEmail());
+                optionalCustomerUser.get().setContact(customerDTO.getContact());
+
+                // check whether folder is exist or not
+                uploadDir = env.getProperty("static.path") + "customerImage/" + optionalCustomerUser.get().getCustomerId();
+                file = new File(uploadDir);
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+
+                try {
+                    multipartFile.transferTo(new File(file.getAbsolutePath() + "/" + multipartFile.getOriginalFilename()));
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                }
+
+                optionalCustomerUser.get().setProfilePicture(multipartFile.getOriginalFilename());
+
+
+                customerUserRepository.save(optionalCustomerUser.get());
+            }
+        } else {
+            optionalCustomerUser.get().setCustomerFirstName(customerDTO.getFirstName());
+            optionalCustomerUser.get().setCustomerLastName(customerDTO.getLastName());
+            optionalCustomerUser.get().setCustomerEmail(customerDTO.getEmail());
+            optionalCustomerUser.get().setContact(customerDTO.getContact());
+            customerUserRepository.save(optionalCustomerUser.get());
+        }
+
+    }
+
+    private String getCustomerId(){
+        String lastCustomerId = customerUserRepository.getCustomerId();
+        String newCustomerId = "";
+
+        if (lastCustomerId == null) {
+            newCustomerId = "CUS01";
+        } else {
+            String id = lastCustomerId.replaceAll("CUS", "");
+            int newID = Integer.parseInt(id) + 1;
+            newCustomerId = "CUS0"+newID;
+        }
+        return newCustomerId;
     }
 
     private String buildEmail(String name, String link) {
