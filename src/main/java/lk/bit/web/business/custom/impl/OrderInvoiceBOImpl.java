@@ -5,7 +5,9 @@ import lk.bit.web.dto.OrderInvoiceDTO;
 import lk.bit.web.dto.OrderInvoiceDetailDTO;
 import lk.bit.web.entity.*;
 import lk.bit.web.repository.*;
+import lk.bit.web.util.OrderInvoiceTM;
 import lk.bit.web.util.email.EmailSender;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -15,8 +17,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @Transactional
@@ -33,6 +37,8 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     private ProductRepository productRepository;
     @Autowired
     private EmailSender emailSender;
+    @Autowired
+    private ModelMapper mapper;
 
     @Override
     public void saveOrder(OrderInvoiceDTO orderInvoiceDTO) {
@@ -42,7 +48,8 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
         String orderId = getOrderId();
 
         if (customer != null && shop.isPresent()) {
-            orderInvoiceRepository.save(new OrderInvoice(orderId, customer, shop.get(), orderInvoiceDTO.getNetTotal()));
+            orderInvoiceRepository.save(new OrderInvoice(orderId, customer, shop.get(), new BigDecimal(orderInvoiceDTO.getNetTotal()),
+                    LocalDateTime.now().plusHours(3)));
 
             List<OrderInvoiceDetailDTO> orderInvoiceDetail = orderInvoiceDTO.getOrderInvoiceDetail();
             for (OrderInvoiceDetailDTO orderInvoiceDetailDTO : orderInvoiceDetail) {
@@ -52,7 +59,7 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
                 ));
 
                 emailSender.sendEmail(customer.getCustomerEmail(), buildOrderEmail(orderId, getDateAndTime(),
-                        orderInvoiceDTO.getNetTotal(), shop.get()), "Order #" + orderId + " placed successfully");
+                        new BigDecimal(orderInvoiceDTO.getNetTotal()), shop.get()), "Order #" + orderId + " placed successfully");
 
                 Optional<Product> product = productRepository.findById(orderInvoiceDetailDTO.getProductId());
                 if (product.isPresent()) {
@@ -69,9 +76,40 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
+    public List<OrderInvoiceDTO> readOrderInvoiceDetailByStatus() {
+        List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.getOrderInvoiceByStatus();
+        List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
+
+        for (OrderInvoice orderInvoice : orderInvoiceList) {
+            OrderInvoiceDTO orderInvoiceDTO = new OrderInvoiceDTO();
+
+            String createdDateTime = orderInvoice.getCreatedDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String deadlineDateTime = orderInvoice.getDeadlineDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+            orderInvoiceDTO.setOrderId(orderInvoice.getOrderId());
+            orderInvoiceDTO.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+            orderInvoiceDTO.setShopId(orderInvoice.getShop().getShopId());
+            orderInvoiceDTO.setNetTotal(orderInvoice.getNetTotal().toString());
+            orderInvoiceDTO.setCreatedDateTime(createdDateTime);
+            orderInvoiceDTO.setDeadlineDateTime(deadlineDateTime);
+
+            orderInvoiceDTOList.add(orderInvoiceDTO);
+        }
+        return orderInvoiceDTOList;
+    }
+
+    @Override
+    public List<OrderInvoiceTM> readOrderInvoiceDetailByOrderId(String orderId) {
+        List<CustomEntity5> orderInvoiceDetailList = orderInvoiceRepository.readAllOrderInvoiceDetailsById(orderId);
+
+        return orderInvoiceDetailList.stream()
+                .map(this::getOrderInvoiceTM)
+                .collect(Collectors.toList());
+    }
+
     // check every one minutes
     @Scheduled(cron = "*/60 * * * * *")
-    public void autoConfirmOrder() {
+    protected void autoConfirmOrder() {
         List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.getOrderInvoiceByStatus();
 
         for (OrderInvoice orderInvoice : orderInvoiceList) {
@@ -103,6 +141,14 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     private String getDateAndTime() {
         LocalDateTime now = LocalDateTime.now();
         return now.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+    }
+
+    private OrderInvoiceDTO getOrderInvoiceDTO(OrderInvoice orderInvoice){
+        return mapper.map(orderInvoice, OrderInvoiceDTO.class);
+    }
+
+    private OrderInvoiceTM getOrderInvoiceTM(CustomEntity5 customEntity5){
+        return mapper.map(customEntity5, OrderInvoiceTM.class);
     }
 
     private String buildOrderEmail(String orderId, String dateTime, BigDecimal netTotal, Shop shop) {

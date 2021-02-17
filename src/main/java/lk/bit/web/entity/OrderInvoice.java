@@ -35,17 +35,18 @@ public class OrderInvoice implements SuperEntity{
     @Column(name="created_date_time",nullable = false)
     private LocalDateTime createdDateAndTime = LocalDateTime.now();
 
-    @Column(name="cancel_deadline", nullable = false)
-    private LocalDateTime cancelDeadline;
+    @Column(name="deadline_date_time", nullable = false)
+    private LocalDateTime deadlineDateAndTime;
 
     @Column(nullable = false, columnDefinition = "tinyint(1) DEFAULT 0")
-    private int status;
+    private int status = 0;
 
-    // TODO canceldatetime enna ona
-    public OrderInvoice(String orderId, CustomerUser customerUser, Shop shop, BigDecimal netTotal) {
+    public OrderInvoice(String orderId, CustomerUser customerUser, Shop shop, BigDecimal netTotal ,
+                        LocalDateTime deadlineDateAndTime) {
         this.orderId = orderId;
         this.customerUser = customerUser;
         this.shop = shop;
         this.netTotal = netTotal;
+        this.deadlineDateAndTime = deadlineDateAndTime;
     }
 }

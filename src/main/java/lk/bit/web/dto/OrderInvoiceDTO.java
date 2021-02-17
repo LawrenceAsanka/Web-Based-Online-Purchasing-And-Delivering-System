@@ -15,6 +15,8 @@ public class OrderInvoiceDTO {
     private String orderId;
     private String customerId;
     private String shopId;
-    private BigDecimal netTotal;
+    private String netTotal;
+    private String createdDateTime;
+    private String deadlineDateTime;
     private List<OrderInvoiceDetailDTO> orderInvoiceDetail;
 }
