@@ -169,7 +169,11 @@ public class CustomerBOImpl implements CustomerBO {
         } else {
             String id = lastCustomerId.replaceAll("CUS", "");
             int newID = Integer.parseInt(id) + 1;
-            newCustomerId = "CUS0"+newID;
+            if (newID < 10) {
+                newCustomerId = "CUS0" + newID;
+            } else {
+                newCustomerId = "CUS" + newID;
+            }
         }
         return newCustomerId;
     }
