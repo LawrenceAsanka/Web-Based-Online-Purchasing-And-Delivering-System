@@ -36,9 +36,10 @@ public class OrderInvoiceDetail implements SuperEntity {
     @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Product product;
 
-    public OrderInvoiceDetail(String orderInvoiceId, String productId, BigDecimal total,
+    public OrderInvoiceDetail(String orderInvoiceId, String productId,int quantity, BigDecimal total,
                               BigDecimal discount) {
         this.orderInvoiceDetailPK = new OrderInvoiceDetailPK(orderInvoiceId, productId);
+        this.quantity = quantity;
         this.total = total;
         this.discount = discount;
     }

@@ -1,6 +1,5 @@
 package lk.bit.web.api;
 
-import lk.bit.web.business.custom.CustomerBO;
 import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ShopBO;
 import lk.bit.web.dto.OrderInvoiceDTO;
@@ -24,14 +23,26 @@ public class OrderInvoiceController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    private List<OrderInvoiceDTO> readOrderInvoiceDetailByStatus(){
+    private List<OrderInvoiceDTO> readOrderInvoiceDetailByStatus() {
         return orderInvoiceBO.readOrderInvoiceDetailByStatus();
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    private List<OrderInvoiceTM> readOrderInvoiceDetailByOrderId(@PathVariable String id){
+    private List<OrderInvoiceTM> readOrderInvoiceDetailByOrderId(@PathVariable String id) {
         return orderInvoiceBO.readOrderInvoiceDetailByOrderId(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/confirm")
+    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusConfirm() {
+        return orderInvoiceBO.readOrderInvoiceByStatusConfirm();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/cancel")
+    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusCancel() {
+        return orderInvoiceBO.readOrderInvoiceByStatusCancel();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -43,4 +54,12 @@ public class OrderInvoiceController {
         orderInvoiceBO.saveOrder(orderInvoiceDTO);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/{id}/cancel")
+    private void updateOrderStatus(@PathVariable String id){
+        if (id == null || !orderInvoiceBO.IExistOrderByOrderId(id)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        orderInvoiceBO.updateStatus(id);
+    }
 }

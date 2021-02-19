@@ -1,12 +1,15 @@
 package lk.bit.web.entity;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 public interface CustomEntity5 {
 
     String getOrderId();
 
-    String getOrderDateTime();
+    LocalDateTime getOrderDateTime();
 
-    String getNetTotal();
+    BigDecimal getNetTotal();
 
     String getShopName();
 
@@ -20,12 +23,14 @@ public interface CustomEntity5 {
 
     String getProductId();
 
+    String getProductName();
+
     String getProductImage();
 
-    String getDiscount();
+    BigDecimal getDiscount();
 
-    String getQuantity();
+    int getQuantity();
 
-    String getTotal();
+    BigDecimal getTotal();
 
 }

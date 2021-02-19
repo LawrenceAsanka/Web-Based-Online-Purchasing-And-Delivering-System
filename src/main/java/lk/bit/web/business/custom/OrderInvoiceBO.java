@@ -11,5 +11,8 @@ public interface OrderInvoiceBO extends SuperBO{
     void saveOrder(OrderInvoiceDTO orderInvoiceDTO);
     List<OrderInvoiceDTO> readOrderInvoiceDetailByStatus();
     List<OrderInvoiceTM> readOrderInvoiceDetailByOrderId(String orderId);
-
+    List<OrderInvoiceDTO> readOrderInvoiceByStatusConfirm();
+    List<OrderInvoiceDTO> readOrderInvoiceByStatusCancel();
+    void updateStatus(String orderId);
+    boolean IExistOrderByOrderId(String id);
 }

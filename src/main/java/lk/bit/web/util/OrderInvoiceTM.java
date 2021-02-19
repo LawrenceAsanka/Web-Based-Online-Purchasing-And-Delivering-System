@@ -18,8 +18,9 @@ public class OrderInvoiceTM {
     private String city;
     private String district;
     private String productId;
+    private String productName;
     private String productImage;
     private String discount;
-    private String quantity;
+    private int quantity;
     private String total;
 }

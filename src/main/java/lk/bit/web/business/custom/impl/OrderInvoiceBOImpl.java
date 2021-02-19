@@ -52,10 +52,11 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
                     LocalDateTime.now().plusHours(3)));
 
             List<OrderInvoiceDetailDTO> orderInvoiceDetail = orderInvoiceDTO.getOrderInvoiceDetail();
+
             for (OrderInvoiceDetailDTO orderInvoiceDetailDTO : orderInvoiceDetail) {
                 orderInvoiceDetailRepository.save(new OrderInvoiceDetail(
-                        orderId, orderInvoiceDetailDTO.getProductId(), orderInvoiceDetailDTO.getTotal(),
-                        orderInvoiceDetailDTO.getDiscount()
+                        orderId, orderInvoiceDetailDTO.getProductId(), orderInvoiceDetailDTO.getQuantity(),
+                        orderInvoiceDetailDTO.getTotal(), orderInvoiceDetailDTO.getDiscount()
                 ));
 
                 emailSender.sendEmail(customer.getCustomerEmail(), buildOrderEmail(orderId, getDateAndTime(),
@@ -99,12 +100,98 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<OrderInvoiceTM> readOrderInvoiceDetailByOrderId(String orderId) {
-        List<CustomEntity5> orderInvoiceDetailList = orderInvoiceRepository.readAllOrderInvoiceDetailsById(orderId);
+        List<OrderInvoiceTM> orderInvoiceList = new ArrayList<>();
+        List<CustomEntity5> orderInvoiceDetailList = orderInvoiceRepository.getOrderInvoice(orderId);
 
-        return orderInvoiceDetailList.stream()
-                .map(this::getOrderInvoiceTM)
-                .collect(Collectors.toList());
+        for (CustomEntity5 orderInvoice : orderInvoiceDetailList) {
+
+            OrderInvoiceTM orderInvoiceTM = new OrderInvoiceTM();
+            String createdDateTime = orderInvoice.getOrderDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+            orderInvoiceTM.setOrderId(orderInvoice.getOrderId());
+            orderInvoiceTM.setOrderDateTime(createdDateTime);
+            orderInvoiceTM.setNetTotal(orderInvoice.getNetTotal().toString());
+            orderInvoiceTM.setShopName(orderInvoice.getShopName());
+            orderInvoiceTM.setAddress1(orderInvoice.getAddress1());
+            orderInvoiceTM.setAddress2(orderInvoice.getAddress2());
+            orderInvoiceTM.setCity(orderInvoice.getCity());
+            orderInvoiceTM.setDistrict(orderInvoice.getDistrict());
+            orderInvoiceTM.setProductId(orderInvoice.getProductId());
+            orderInvoiceTM.setProductName(orderInvoice.getProductName());
+            orderInvoiceTM.setProductImage(orderInvoice.getProductImage());
+            orderInvoiceTM.setDiscount(orderInvoice.getDiscount().toString());
+            orderInvoiceTM.setQuantity(orderInvoice.getQuantity());
+            orderInvoiceTM.setTotal(orderInvoice.getTotal().toString());
+
+            orderInvoiceList.add(orderInvoiceTM);
+        }
+
+        return orderInvoiceList;
+    }
+
+    @Override
+    public List<OrderInvoiceDTO> readOrderInvoiceByStatusConfirm() {
+        List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.readOrderInvoiceByOrderStatusConfirm();
+        List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
+
+        for (OrderInvoice orderInvoice : orderInvoiceList) {
+            OrderInvoiceDTO orderInvoiceDTO = new OrderInvoiceDTO();
+
+            String createdDateTime = orderInvoice.getCreatedDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String deadlineDateTime = orderInvoice.getDeadlineDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+            orderInvoiceDTO.setOrderId(orderInvoice.getOrderId());
+            orderInvoiceDTO.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+            orderInvoiceDTO.setShopId(orderInvoice.getShop().getShopId());
+            orderInvoiceDTO.setNetTotal(orderInvoice.getNetTotal().toString());
+            orderInvoiceDTO.setCreatedDateTime(createdDateTime);
+            orderInvoiceDTO.setDeadlineDateTime(deadlineDateTime);
+
+            orderInvoiceDTOList.add(orderInvoiceDTO);
+        }
+        return orderInvoiceDTOList;
+
+    }
+
+    @Override
+    public List<OrderInvoiceDTO> readOrderInvoiceByStatusCancel() {
+        List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.readOrderInvoiceByOrderStatusCancel();
+        List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
+
+        for (OrderInvoice orderInvoice : orderInvoiceList) {
+            OrderInvoiceDTO orderInvoiceDTO = new OrderInvoiceDTO();
+
+            String createdDateTime = orderInvoice.getCreatedDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String deadlineDateTime = orderInvoice.getDeadlineDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+            orderInvoiceDTO.setOrderId(orderInvoice.getOrderId());
+            orderInvoiceDTO.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+            orderInvoiceDTO.setShopId(orderInvoice.getShop().getShopId());
+            orderInvoiceDTO.setNetTotal(orderInvoice.getNetTotal().toString());
+            orderInvoiceDTO.setCreatedDateTime(createdDateTime);
+            orderInvoiceDTO.setDeadlineDateTime(deadlineDateTime);
+
+            orderInvoiceDTOList.add(orderInvoiceDTO);
+        }
+        return orderInvoiceDTOList;
+    }
+
+    @Override
+    public void updateStatus(String orderId) {
+        Optional<OrderInvoice> orderInvoice = orderInvoiceRepository.findById(orderId);
+
+        if (orderInvoice.isPresent()) {
+            orderInvoice.get().setStatus(1);
+
+            orderInvoiceRepository.save(orderInvoice.get());
+        }
+    }
+
+    @Override
+    public boolean IExistOrderByOrderId(String id) {
+        return orderInvoiceRepository.existsById(id);
     }
 
     // check every one minutes
@@ -133,7 +220,11 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
         } else {
             String replaceId = lastOrderId.replaceAll("OD", "");
             int id = Integer.parseInt(replaceId) + 1;
-            newId = "OD0" + id;
+            if (id < 10) {
+                newId = "OD0" + id;
+            } else {
+                newId = "OD" + id;
+            }
         }
         return newId;
     }
