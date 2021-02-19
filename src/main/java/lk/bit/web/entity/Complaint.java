@@ -35,4 +35,11 @@ public class Complaint {
     @ManyToOne
     @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
     private CustomerUser customer;
+
+    public Complaint(String id, String msgSubject, String msgDescription, CustomerUser customer) {
+        this.id = id;
+        this.msgSubject = msgSubject;
+        this.msgDescription = msgDescription;
+        this.customer = customer;
+    }
 }
