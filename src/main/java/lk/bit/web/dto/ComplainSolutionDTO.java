@@ -4,17 +4,16 @@ import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
+@Setter
 @ToString
-public class ComplainDTO {
+public class ComplainSolutionDTO {
 
     private String id;
-    private String msgSubject;
     private String msgDescription;
     private String createdDateTime;
-    private int isDeletedByCustomer;
-    private int isDeletedByAdmin;
-    private int responseStatus;
     private String createdBy;
+    private String complaintId;
+    private int isDeleted;
+    private int status;
 }

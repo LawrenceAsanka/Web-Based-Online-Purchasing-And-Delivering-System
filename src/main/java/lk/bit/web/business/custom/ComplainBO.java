@@ -2,10 +2,13 @@ package lk.bit.web.business.custom;
 
 import lk.bit.web.business.SuperBO;
 import lk.bit.web.dto.ComplainDTO;
-import lk.bit.web.entity.Complaint;
 
-public interface ComplaintBO extends SuperBO {
+import java.util.List;
+
+public interface ComplainBO extends SuperBO {
 
     public void save(ComplainDTO complainDTO);
     public boolean IsComplaintExist(String complaintId);
+    public List<ComplainDTO> getComplaintDetailsByAdmin();
+    public List<ComplainDTO> getComplaintDetailsByStatus(int status);
 }
