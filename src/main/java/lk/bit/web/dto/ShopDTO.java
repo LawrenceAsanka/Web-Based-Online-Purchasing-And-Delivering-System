@@ -18,5 +18,5 @@ public class ShopDTO {
     private String district;
     private String city;
     private String customerEmail;
-
+    private int isActive;
 }

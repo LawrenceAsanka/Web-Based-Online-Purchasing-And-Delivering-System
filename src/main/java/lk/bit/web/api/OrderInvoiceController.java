@@ -45,6 +45,18 @@ public class OrderInvoiceController {
         return orderInvoiceBO.readOrderInvoiceByStatusCancel();
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/customer")
+    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByCustomerId(@RequestParam("id") String customerId) {
+        return orderInvoiceBO.readOrderInvoiceByCustomerId(customerId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/count")
+    private int getTotalConfirmOrderCount() {
+        return orderInvoiceBO.getTotalConfirmOrderCount();
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     private void save(@RequestBody OrderInvoiceDTO orderInvoiceDTO) {

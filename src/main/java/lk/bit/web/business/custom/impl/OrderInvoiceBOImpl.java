@@ -20,7 +20,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 @Transactional
@@ -179,6 +178,30 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
+    public List<OrderInvoiceDTO> readOrderInvoiceByCustomerId(String customerId) {
+        List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.getOrderInvoiceByCustomerId(customerId);
+        List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
+
+        for (OrderInvoice orderInvoice : orderInvoiceList) {
+            OrderInvoiceDTO orderInvoiceDTO = new OrderInvoiceDTO();
+
+            String createdDateTime = orderInvoice.getCreatedDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String deadlineDateTime = orderInvoice.getDeadlineDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+            orderInvoiceDTO.setOrderId(orderInvoice.getOrderId());
+            orderInvoiceDTO.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+            orderInvoiceDTO.setShopId(orderInvoice.getShop().getShopId());
+            orderInvoiceDTO.setNetTotal(orderInvoice.getNetTotal().toString());
+            orderInvoiceDTO.setCreatedDateTime(createdDateTime);
+            orderInvoiceDTO.setDeadlineDateTime(deadlineDateTime);
+            orderInvoiceDTO.setStatus(orderInvoice.getStatus());
+
+            orderInvoiceDTOList.add(orderInvoiceDTO);
+        }
+        return orderInvoiceDTOList;
+    }
+
+    @Override
     public void updateStatus(String orderId) {
         Optional<OrderInvoice> orderInvoice = orderInvoiceRepository.findById(orderId);
 
@@ -192,6 +215,11 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     @Override
     public boolean IExistOrderByOrderId(String id) {
         return orderInvoiceRepository.existsById(id);
+    }
+
+    @Override
+    public int getTotalConfirmOrderCount() {
+        return orderInvoiceRepository.getTotalConfirmOrderCount();
     }
 
     // check every one minutes

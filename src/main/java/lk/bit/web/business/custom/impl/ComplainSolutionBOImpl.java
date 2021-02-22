@@ -44,6 +44,11 @@ public class ComplainSolutionBOImpl implements ComplainSolutionBO {
         complainRepository.save(complain);
     }
 
+    @Override
+    public int getUnReadMsgCount() {
+        return complainSolutionRepository.getUnReadMsgCount();
+    }
+
     private String getSolutionId(){
         String lastSolutionId = complainSolutionRepository.getLastSolutionId();
         String newId = "";

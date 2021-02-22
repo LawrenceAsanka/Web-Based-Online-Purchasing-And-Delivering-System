@@ -17,6 +17,12 @@ public class ComplainSolutionController {
     @Autowired
     private ComplainBO complainBO;
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/count")
+    private int getUnReadMsgCount(){
+        return complainSolutionBO.getUnReadMsgCount();
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     private void saveComplainSolution(@RequestBody ComplainSolutionDTO complainSolutionDTO){

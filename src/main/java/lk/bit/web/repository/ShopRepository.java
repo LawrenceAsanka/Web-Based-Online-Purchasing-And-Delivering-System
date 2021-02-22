@@ -13,4 +13,10 @@ public interface ShopRepository extends JpaRepository<Shop, String> {
 
     @Query(value = "SELECT s FROM Shop s WHERE s.customerUser.customerId = ?1 AND s.isActive = 1")
     List<Shop> getActiveShopDetailsByCustomer(String customerId);
+
+    @Query(value = "SELECT s FROM Shop s WHERE s.customerUser.customerId = ?1 ORDER BY s.shopId")
+    List<Shop> getAllShopDetailsByCustomerId(String customerId);
+
+    @Query(value = "SELECT count(*) FROM shop WHERE is_active=1", nativeQuery = true)
+    public int getTotalActiveShopCount();
 }

@@ -9,8 +9,10 @@ public interface ShopBO extends SuperEntity {
 
     void saveShop(ShopDTO shopDTO);
     List<ShopDTO> getActiveShopsByCustomer(String customerEmail);
+    List<ShopDTO> getAllShopsByCustomerId(String customerId);
     boolean existShopById(String shopId);
     void updateShopStatus(String shopId);
     ShopDTO getShopDetails(String shopId);
     void updateShop(ShopDTO shopDTO,String shopId);
+    int getTotalActiveShopCount();
 }

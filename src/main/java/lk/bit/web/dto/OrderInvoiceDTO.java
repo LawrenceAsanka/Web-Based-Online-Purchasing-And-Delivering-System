@@ -18,5 +18,6 @@ public class OrderInvoiceDTO {
     private String netTotal;
     private String createdDateTime;
     private String deadlineDateTime;
+    private int status;
     private List<OrderInvoiceDetailDTO> orderInvoiceDetail;
 }

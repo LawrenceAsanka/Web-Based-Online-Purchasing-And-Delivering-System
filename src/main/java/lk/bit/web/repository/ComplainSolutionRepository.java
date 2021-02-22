@@ -11,5 +11,10 @@ public interface ComplainSolutionRepository extends JpaRepository<ComplainSoluti
     @Query(value = "SELECT id FROM complain_solution ORDER BY id DESC LIMIT 1", nativeQuery = true)
     public String getLastSolutionId();
 
+    @Query(value = "SELECT COUNT(*) FROM complain_solution WHERE status=0", nativeQuery = true)
+    public int getUnReadMsgCount();
+
+    @Query(value = "SELECT * FROM complain_solution WHERE complain_id=?1", nativeQuery = true)
+    public ComplainSolution getComplainSolutionByComplainId(String complainId);
 
 }

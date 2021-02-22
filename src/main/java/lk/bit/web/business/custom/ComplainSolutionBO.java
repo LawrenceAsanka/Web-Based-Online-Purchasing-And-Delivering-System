@@ -6,4 +6,5 @@ import lk.bit.web.entity.ComplainSolution;
 public interface ComplainSolutionBO {
 
     public void save(ComplainSolutionDTO complainSolutionDTO);
+    public int getUnReadMsgCount();
 }

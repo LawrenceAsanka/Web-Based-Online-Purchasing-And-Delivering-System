@@ -41,10 +41,25 @@ public class ShopBOImpl implements ShopBO {
         List<ShopDTO> activeShops = new ArrayList<>();
         for (Shop shop : shopList) {
             activeShops.add(new ShopDTO(shop.getShopId(),shop.getShopName(), shop.getContact(), shop.getShopCategory().getCategoryId(),
-                    shop.getAddress1(), shop.getAddress2(), shop.getDistrict(), shop.getCity(), shop.getCustomerUser().getCustomerEmail()));
+                    shop.getAddress1(), shop.getAddress2(), shop.getDistrict(), shop.getCity(),
+                    shop.getCustomerUser().getCustomerEmail(), shop.getIsActive()));
         }
 
         return activeShops;
+    }
+
+    @Override
+    public List<ShopDTO> getAllShopsByCustomerId(String customerId) {
+        List<Shop> shopList = shopRepository.getActiveShopDetailsByCustomer(customerId);
+
+        List<ShopDTO> shopDTOList = new ArrayList<>();
+        for (Shop shop : shopList) {
+            shopDTOList.add(new ShopDTO(shop.getShopId(),shop.getShopName(), shop.getContact(),
+                    shop.getShopCategory().getCategoryId(), shop.getAddress1(), shop.getAddress2(),
+                    shop.getDistrict(), shop.getCity(), shop.getCustomerUser().getCustomerEmail(), shop.getIsActive()));
+        }
+
+        return shopDTOList;
     }
 
     @Override
@@ -70,7 +85,7 @@ public class ShopBOImpl implements ShopBO {
                     shop.get().getShopId(),shop.get().getShopName(),shop.get().getContact(),
                     shop.get().getShopCategory().getCategoryId(),shop.get().getAddress1(),
                     shop.get().getAddress2(),shop.get().getDistrict(),
-                    shop.get().getCity(),shop.get().getCustomerUser().getCustomerEmail()
+                    shop.get().getCity(),shop.get().getCustomerUser().getCustomerEmail(), shop.get().getIsActive()
             );
         }
         return shopDTO;
@@ -93,6 +108,11 @@ public class ShopBOImpl implements ShopBO {
             shop.get().setCustomerUser(customer);
         }
         shopRepository.save(shop.get());
+    }
+
+    @Override
+    public int getTotalActiveShopCount() {
+      return shopRepository.getTotalActiveShopCount();
     }
 
     private String getLastShopId(){

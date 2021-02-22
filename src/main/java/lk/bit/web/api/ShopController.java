@@ -25,12 +25,27 @@ public class ShopController {
        return shopBO.getActiveShopsByCustomer(customer);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/customer")
+    public List<ShopDTO> getAllShopDetailsByCustomerId(@RequestParam("id") String customerId){
+        if (customerId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return shopBO.getAllShopsByCustomerId(customerId);
+    }
+
     @GetMapping("/{shopId}")
     public ShopDTO getShopDetails(@PathVariable String shopId){
         if (!shopBO.existShopById(shopId) || shopId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         return shopBO.getShopDetails(shopId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/count")
+    public int getTotalActiveShopCount(){
+        return shopBO.getTotalActiveShopCount();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
