@@ -43,6 +43,13 @@ public class SystemUserController {
         return systemUserBO.getRequestedUser(userId);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/salesPerson")
+    public List<SystemUserDTO> getUser() {
+
+        return systemUserBO.getSystemUserByRoleSalePerson();
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public void saveUser(@RequestBody SystemUserDTO user) {

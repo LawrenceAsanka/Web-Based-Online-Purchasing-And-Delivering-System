@@ -13,6 +13,8 @@ public interface SystemUserBO extends UserDetailsService,SuperBO {
 
     SystemUserDTO getRequestedUser(String userId);
 
+    List<SystemUserDTO> getSystemUserByRoleSalePerson();
+
     void saveUser(SystemUserDTO user);
 
     void updateUser(SystemUserDTO user,String status, String id);

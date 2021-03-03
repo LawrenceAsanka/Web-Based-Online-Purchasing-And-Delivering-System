@@ -57,6 +57,20 @@ public class SystemUserBOImpl implements SystemUserBO {
     }
 
     @Override
+    public List<SystemUserDTO> getSystemUserByRoleSalePerson() {
+        List<SystemUser> systemUsers = systemUserRepository.getSystemUsersByRoleSalesPerson();
+        List<SystemUserDTO> systemUserDTOList = new ArrayList<>();
+
+        for (SystemUser systemUser : systemUsers) {
+            systemUserDTOList.add(new SystemUserDTO(systemUser.getId(), systemUser.getFirstName(), systemUser.getLastName(),
+                    systemUser.getNic(), systemUser.getContact(), systemUser.getAddress(), systemUser.getUsername(),
+                    systemUser.getPassword(), systemUser.getRole()));
+        }
+
+        return systemUserDTOList;
+    }
+
+    @Override
     public void saveUser(SystemUserDTO user) {
         systemUserRepository.save(new SystemUser(user.getId(), user.getFirstName(), user.getLastName(), user.getNic(),
                 user.getAddress(), user.getContact(), user.getUsername(), passwordEncoder.encode(user.getPassword()),

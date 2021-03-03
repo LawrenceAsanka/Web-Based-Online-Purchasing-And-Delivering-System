@@ -17,9 +17,10 @@ public interface SystemUserRepository extends JpaRepository<SystemUser, String> 
             " FROM SystemUser u ORDER BY u.id")
     List<CustomEntity> getAllUsers();
 
-    /*@Query(value = "SELECT u FROM SystemUser u GROUP BY u.id")
-    List<SystemUser> getUsers();*/
+    @Query(value = "SELECT SU.* FROM system_user SU WHERE role='ROLE_SALESPERSON' ORDER BY id" ,nativeQuery = true)
+    List<SystemUser> getSystemUsersByRoleSalesPerson();
 
     @Query(value = "SELECT * FROM system_user WHERE username=?1",nativeQuery = true)
     SystemUser findSystemUser(String userName);
+
 }
