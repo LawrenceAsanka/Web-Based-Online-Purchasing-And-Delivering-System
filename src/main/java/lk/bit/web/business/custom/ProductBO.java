@@ -32,9 +32,26 @@ public interface ProductBO extends SuperBO {
 
     List<ProductDTO> getProductsByCategory(String categoryName);
 
-    List<ProductDTO> getOfferProducts();
-
     void updateOfferStatus(String id, int status);
 
     List<ProductDTO> getOfferedProducts();
+
+    List<ProductDTO> getProductsBySearch(String keyword);
+
+    List<ProductDTO> getProductsByPriceRange(String minPrice, String maxPrice);
+
+    List<ProductDTO> getProductBySubCategory(String subCategoryName);
+
+    List<ProductDTO> getProductByWeight(String subCategoryName, String weight);
+
+    List<ProductDTO> getProductByQtyPerUnit(String subCategoryName, int qpu);
+
+    List<ProductDTO> getProductsBySubCategoryWithPriceRange(String subCategory, String minPrice, String maxPrice);
+
+    List<ProductDTO> getProductByCategoryWithWeight(String categoryName, String weight);
+
+    List<ProductDTO> getProductByCategoryWithQtyPerUnit(String categoryName, int qpu);
+
+    List<ProductDTO> getProductsByCategoryWithPriceRange(String categoryName, String minPrice, String maxPrice);
+
 }

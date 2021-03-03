@@ -24,11 +24,20 @@ public interface OrderInvoiceRepository extends JpaRepository<OrderInvoice, Stri
             "ODI.orderInvoiceDetailPK.orderInvoiceId = OI.orderId INNER JOIN OI.shop S WHERE OI.orderId=?1")
     public List<CustomEntity5> getOrderInvoice(String orderId);
 
+    @Query(value = "SELECT * FROM order_invoice WHERE status=1 ORDER BY order_id", nativeQuery = true)
+    public List<OrderInvoice> readOrderInvoiceByOrderStatusCancel();
+
     @Query(value = "SELECT * FROM order_invoice WHERE status=2 ORDER BY order_id", nativeQuery = true)
     public List<OrderInvoice> readOrderInvoiceByOrderStatusConfirm();
 
-    @Query(value = "SELECT * FROM order_invoice WHERE status=1 ORDER BY order_id", nativeQuery = true)
-    public List<OrderInvoice> readOrderInvoiceByOrderStatusCancel();
+    @Query(value = "SELECT * FROM order_invoice WHERE status=3 ORDER BY order_id", nativeQuery = true)
+    public List<OrderInvoice> readOrderInvoiceByOrderStatusProcess();
+
+    @Query(value = "SELECT * FROM order_invoice WHERE status=4 ORDER BY order_id", nativeQuery = true)
+    public List<OrderInvoice> readOrderInvoiceByOrderStatusDelivery();
+
+    @Query(value = "SELECT * FROM order_invoice WHERE status=5 ORDER BY order_id", nativeQuery = true)
+    public List<OrderInvoice> readOrderInvoiceByOrderStatusComplete();
 
     @Query(value = "SELECT OI FROM OrderInvoice OI WHERE OI.customerUser.customerId=?1 order by OI.orderId")
     public List<OrderInvoice> getOrderInvoiceByCustomerId(String customerId);

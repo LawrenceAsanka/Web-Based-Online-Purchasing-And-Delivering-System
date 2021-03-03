@@ -16,7 +16,8 @@ public class CustomerController {
     @Autowired
     private CustomerBO customerBO;
 
-    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
     private CustomerDTO readCustomerDetailByEmail(@RequestParam String email) {
         CustomerDTO customer = customerBO.findCustomerByEmail(email);
 
@@ -27,6 +28,7 @@ public class CustomerController {
         return customer;
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     private CustomerDTO readCustomerDetailById(@PathVariable String id) {
         CustomerDTO customer = customerBO.findCustomerById(id);
@@ -48,5 +50,17 @@ public class CustomerController {
         }
 
         customerBO.updateCustomer(userImage, userData, customerId);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/resetPassword")
+    private void updatePassword(@RequestParam("id") String customerId, @RequestParam String password) {
+        CustomerDTO customer = customerBO.findCustomerById(customerId);
+        System.out.println(password);
+        if (customer == null || password == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        customerBO.updatePassword(customerId,password);
     }
 }

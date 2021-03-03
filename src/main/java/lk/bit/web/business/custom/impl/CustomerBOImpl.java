@@ -45,6 +45,7 @@ public class CustomerBOImpl implements CustomerBO {
     @Lazy
     private PasswordEncoder passwordEncoder;
     @Autowired
+    @Lazy
     private ModelMapper mapper;
     @Autowired
     private Environment env;
@@ -158,6 +159,14 @@ public class CustomerBOImpl implements CustomerBO {
             customerUserRepository.save(optionalCustomerUser.get());
         }
 
+    }
+
+    @Override
+    public void updatePassword(String customerId, String password) {
+        Optional<CustomerUser> optionalCustomerUser = customerUserRepository.findById(customerId);
+
+        optionalCustomerUser.ifPresent(customerUser -> System.out.println(customerUser.getPassword()));
+        System.out.println(passwordEncoder.encode(password));
     }
 
     private String getCustomerId(){

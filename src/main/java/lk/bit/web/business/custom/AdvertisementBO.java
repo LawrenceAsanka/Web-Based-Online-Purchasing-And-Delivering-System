@@ -13,4 +13,6 @@ public interface AdvertisementBO extends SuperBO {
     void saveAdvertisement(MultipartFile image,String advertisementName);
 
     void updateAdsStatus(int id,String status);
+
+    List<AdvertisementTM> getAdvertisementDetail();
 }

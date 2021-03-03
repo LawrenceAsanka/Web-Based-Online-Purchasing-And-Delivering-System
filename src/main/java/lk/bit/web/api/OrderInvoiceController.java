@@ -46,6 +46,24 @@ public class OrderInvoiceController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/complete")
+    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusComplete() {
+        return orderInvoiceBO.readOrderInvoiceByStatusComplete();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/process")
+    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusProcess() {
+        return orderInvoiceBO.readOrderInvoiceByStatusProcess();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/delivery")
+    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusDelivery() {
+        return orderInvoiceBO.readOrderInvoiceByStatusDelivery();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/customer")
     private List<OrderInvoiceDTO> readOrderInvoiceDetailsByCustomerId(@RequestParam("id") String customerId) {
         return orderInvoiceBO.readOrderInvoiceByCustomerId(customerId);
@@ -73,5 +91,23 @@ public class OrderInvoiceController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         orderInvoiceBO.updateStatus(id);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/moveToProcess")
+    private void updateOrderStatusToProcess(@RequestParam("orderIdArray") String orderIdArray){
+        if (orderIdArray == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        orderInvoiceBO.updateStatusToProcess(orderIdArray);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/moveToDelivery")
+    private void updateOrderStatusToDelivery(@RequestParam("orderIdArray") String orderIdArray){
+        if (orderIdArray == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        orderInvoiceBO.updateStatusToDelivery(orderIdArray);
     }
 }

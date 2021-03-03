@@ -275,20 +275,6 @@ public class ProductBOImpl implements ProductBO {
         }
     }
 
-    @Override
-    public List<ProductDTO> getOfferProducts() {
-        List<Product> offers = productRepository.getProductsByDiscountPerUnitIsGreaterThanEqual(new BigDecimal("40.00"));
-        List<ProductDTO> offerDetail = new ArrayList<>();
-        offers.forEach(product -> {
-            offerDetail.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
-                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
-                    product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
-                    product.getImageOne(), product.getImageTwo(), product.getImageThree(),
-                    product.getStatus(), product.getSubCategory().getSubCategoryName(),
-                    product.getCategory().getCategoryName()));
-        });
-        return offerDetail;
-    }
 
     @Override
     public void updateOfferStatus(String id, int status){
@@ -311,6 +297,150 @@ public class ProductBOImpl implements ProductBO {
       });
 
       return products;
+    }
+
+    @Override
+    public List<ProductDTO> getProductsBySearch(String keyword) {
+        List<Product> searchProduct = productRepository.getProductBySearch(keyword);
+        List<ProductDTO> products = new ArrayList<>();
+        searchProduct.forEach(product -> {
+            products.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
+                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
+                    product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
+                    product.getImageOne(), product.getImageTwo(), product.getImageThree(),
+                    product.getStatus(), product.getSubCategory().getSubCategoryName(),
+                    product.getCategory().getCategoryName()));
+        });
+
+        return products;
+    }
+
+    @Override
+    public List<ProductDTO> getProductsByPriceRange(String minPrice, String maxPrice) {
+        List<Product> searchProduct = productRepository.getProductsByPriceRange(new BigDecimal(minPrice), new BigDecimal(maxPrice));
+        List<ProductDTO> products = new ArrayList<>();
+        searchProduct.forEach(product -> {
+            products.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
+                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
+                    product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
+                    product.getImageOne(), product.getImageTwo(), product.getImageThree(),
+                    product.getStatus(), product.getSubCategory().getSubCategoryName(),
+                    product.getCategory().getCategoryName()));
+        });
+
+        return products;
+    }
+
+    @Override
+    public List<ProductDTO> getProductBySubCategory(String subCategoryName) {
+        List<Product> searchProduct = productRepository.getProductsBySubCategory(subCategoryName);
+        List<ProductDTO> products = new ArrayList<>();
+        searchProduct.forEach(product -> {
+            products.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
+                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
+                    product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
+                    product.getImageOne(), product.getImageTwo(), product.getImageThree(),
+                    product.getStatus(), product.getSubCategory().getSubCategoryName(),
+                    product.getCategory().getCategoryName()));
+        });
+
+        return products;
+    }
+
+    @Override
+    public List<ProductDTO> getProductByWeight(String subCategoryName, String weight) {
+        List<Product> searchProduct = productRepository.getProductsByWeight(subCategoryName, weight);
+        List<ProductDTO> products = new ArrayList<>();
+        searchProduct.forEach(product -> {
+            products.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
+                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
+                    product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
+                    product.getImageOne(), product.getImageTwo(), product.getImageThree(),
+                    product.getStatus(), product.getSubCategory().getSubCategoryName(),
+                    product.getCategory().getCategoryName()));
+        });
+
+        return products;
+    }
+
+    @Override
+    public List<ProductDTO> getProductByQtyPerUnit(String subCategoryName, int qpu) {
+        List<Product> searchProduct = productRepository.getProductsByQtyPerUnit(subCategoryName, qpu);
+        List<ProductDTO> products = new ArrayList<>();
+        searchProduct.forEach(product -> {
+            products.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
+                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
+                    product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
+                    product.getImageOne(), product.getImageTwo(), product.getImageThree(),
+                    product.getStatus(), product.getSubCategory().getSubCategoryName(),
+                    product.getCategory().getCategoryName()));
+        });
+
+        return products;
+    }
+
+    @Override
+    public List<ProductDTO> getProductsBySubCategoryWithPriceRange(String subCategory, String minPrice, String maxPrice) {
+        List<Product> searchProduct = productRepository.getProductsBySubCategoryWithPriceRange(subCategory, new BigDecimal(minPrice), new BigDecimal(maxPrice));
+        List<ProductDTO> products = new ArrayList<>();
+        searchProduct.forEach(product -> {
+            products.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
+                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
+                    product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
+                    product.getImageOne(), product.getImageTwo(), product.getImageThree(),
+                    product.getStatus(), product.getSubCategory().getSubCategoryName(),
+                    product.getCategory().getCategoryName()));
+        });
+
+        return products;
+    }
+
+    @Override
+    public List<ProductDTO> getProductByCategoryWithWeight(String categoryName, String weight) {
+        List<Product> searchProduct = productRepository.getProductsByCategoryWithWeight(categoryName, weight);
+        List<ProductDTO> products = new ArrayList<>();
+        searchProduct.forEach(product -> {
+            products.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
+                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
+                    product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
+                    product.getImageOne(), product.getImageTwo(), product.getImageThree(),
+                    product.getStatus(), product.getSubCategory().getSubCategoryName(),
+                    product.getCategory().getCategoryName()));
+        });
+
+        return products;
+    }
+
+    @Override
+    public List<ProductDTO> getProductByCategoryWithQtyPerUnit(String categoryName, int qpu) {
+        List<Product> searchProduct = productRepository.getProductsByCategoryWithQtyPerUnit(categoryName, qpu);
+        List<ProductDTO> products = new ArrayList<>();
+        searchProduct.forEach(product -> {
+            products.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
+                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
+                    product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
+                    product.getImageOne(), product.getImageTwo(), product.getImageThree(),
+                    product.getStatus(), product.getSubCategory().getSubCategoryName(),
+                    product.getCategory().getCategoryName()));
+        });
+
+        return products;
+    }
+
+    @Override
+    public List<ProductDTO> getProductsByCategoryWithPriceRange(String categoryName, String minPrice, String maxPrice) {
+        List<Product> searchProduct = productRepository.getProductsByCategoryWithPriceRange(categoryName, new BigDecimal(minPrice), new BigDecimal(maxPrice));
+        List<ProductDTO> products = new ArrayList<>();
+        searchProduct.forEach(product -> {
+            products.add(new ProductDTO(product.getProductId(), product.getProductName(), product.getProductDescription(),
+                    product.getQuantityPerUnit(), product.getQuantityBuyingPrice(), product.getQuantitySellingPrice(),
+                    product.getWeight(), product.getDiscountPerUnit(), product.getCurrentQuantity(),
+                    product.getImageOne(), product.getImageTwo(), product.getImageThree(),
+                    product.getStatus(), product.getSubCategory().getSubCategoryName(),
+                    product.getCategory().getCategoryName()));
+        });
+
+        return products;
     }
 
     @Override

@@ -74,4 +74,22 @@ public class AdvertisementBOImpl implements AdvertisementBO {
         ad.ifPresent(advertisement -> advertisement.setStatus(status));
         advertisementRepository.save(ad.get());
     }
+
+    @Override
+    public List<AdvertisementTM> getAdvertisementDetail() {
+        List<Advertisement> advertisementDetail = advertisementRepository.getAdvertisementDetail();
+        List<AdvertisementTM> advertisementTMList = new ArrayList<>();
+
+        for (Advertisement advertisement : advertisementDetail) {
+            AdvertisementTM advertisementTM = new AdvertisementTM();
+
+            advertisementTM.setAdsId(advertisement.getAdvertisementId());
+            advertisementTM.setAdsName(advertisement.getAdvertisementName());
+            advertisementTM.setAdsImage(advertisement.getAdvertisementImage());
+            advertisementTM.setCreatedDate(advertisement.getCreatedDate().toString());
+
+            advertisementTMList.add(advertisementTM);
+        }
+        return advertisementTMList;
+    }
 }

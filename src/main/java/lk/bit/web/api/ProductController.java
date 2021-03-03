@@ -25,18 +25,18 @@ public class ProductController {
     private ProductBO productBO;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/all")
-    private List<ProductTM> getAllProductsDetails() {
-        return productBO.getAllProductsDetails();
-    }
-
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     private List<ProductTM> getGroupedProductsDetails(@RequestParam("sort") String categoryName) {
         if (categoryName == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         return productBO.getGroupedProductDetails(categoryName);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/all")
+    private List<ProductTM> getAllProductsDetails() {
+        return productBO.getAllProductsDetails();
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -76,6 +76,90 @@ public class ProductController {
     @GetMapping("/offers")
     private List<ProductDTO> getOfferProducts() {
         return productBO.getOfferedProducts();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/search")
+    private List<ProductDTO> getProductBySearch(@RequestParam("q") String keyword) {
+        if (keyword == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return productBO.getProductsBySearch(keyword);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/priceRange")
+    private List<ProductDTO> getProductByPriceRange(@RequestParam("min") String minPrice, @RequestParam("max") String maxPrice) {
+        if (minPrice == null && maxPrice == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return productBO.getProductsByPriceRange(minPrice, maxPrice);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/subCategories")
+    private List<ProductDTO> getProductByPriceRange(@RequestParam("name") String subCategory) {
+//        System.out.println(subCategory);
+        if (subCategory == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return productBO.getProductBySubCategory(subCategory);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{subCategory}/qtyPerUnit")
+    private List<ProductDTO> getProductByQtyPerUnit(@PathVariable String subCategory, @RequestParam int qtyPerUnit) {
+        if (subCategory == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return productBO.getProductByQtyPerUnit(subCategory, qtyPerUnit);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{subCategory}/priceRange")
+    private List<ProductDTO> getProductByPriceRange(@PathVariable String subCategory, @RequestParam("min") String minPrice,
+                                                    @RequestParam("max") String maxPrice) {
+        if (subCategory == null && minPrice == null && maxPrice == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return productBO.getProductsBySubCategoryWithPriceRange(subCategory, minPrice, maxPrice);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{subCategory}/{weight}")
+    private List<ProductDTO> getProductByWeight(@PathVariable String subCategory, @PathVariable("weight") String productWeight) {
+        if (subCategory == null && productWeight == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return productBO.getProductByWeight(subCategory, productWeight);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/categories")
+    private List<ProductDTO> getProductByCategoryWithWeight(@RequestParam("name") String categoryName, @RequestParam("weight") String productWeight) {
+        if (categoryName == null && productWeight == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return productBO.getProductByCategoryWithWeight(categoryName, productWeight);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/qtyPerUnit")
+    private List<ProductDTO> getProductByCategoryWithQtyPerUnit(@RequestParam String category, @RequestParam("qpu") int qtyPerUnit) {
+        if (category == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return productBO.getProductByCategoryWithQtyPerUnit(category, qtyPerUnit);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/")
+    private List<ProductDTO> getProductByCategoryWithPriceRange(@RequestParam String category, @RequestParam("min") String minPrice,
+                                                    @RequestParam("max") String maxPrice) {
+        if (category == null && minPrice == null && maxPrice == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return productBO.getProductsByCategoryWithPriceRange(category, minPrice, maxPrice);
     }
 
     @ResponseStatus(HttpStatus.CREATED)

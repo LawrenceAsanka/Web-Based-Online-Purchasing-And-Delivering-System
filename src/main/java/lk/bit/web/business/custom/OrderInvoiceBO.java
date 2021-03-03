@@ -13,8 +13,13 @@ public interface OrderInvoiceBO extends SuperBO{
     List<OrderInvoiceTM> readOrderInvoiceDetailByOrderId(String orderId);
     List<OrderInvoiceDTO> readOrderInvoiceByStatusConfirm();
     List<OrderInvoiceDTO> readOrderInvoiceByStatusCancel();
+    List<OrderInvoiceDTO> readOrderInvoiceByStatusComplete();
+    List<OrderInvoiceDTO> readOrderInvoiceByStatusProcess();
+    List<OrderInvoiceDTO> readOrderInvoiceByStatusDelivery();
     List<OrderInvoiceDTO> readOrderInvoiceByCustomerId(String customerId);
     void updateStatus(String orderId);
+    void updateStatusToProcess(String orderIdArray);
+    void updateStatusToDelivery(String orderIdArray);
     boolean IExistOrderByOrderId(String id);
     public int getTotalConfirmOrderCount();
 }
