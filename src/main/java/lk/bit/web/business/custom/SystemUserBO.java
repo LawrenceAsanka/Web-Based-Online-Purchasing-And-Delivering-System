@@ -2,7 +2,7 @@ package lk.bit.web.business.custom;
 
 import lk.bit.web.business.SuperBO;
 import lk.bit.web.dto.SystemUserDTO;
-import lk.bit.web.util.UserTM;
+import lk.bit.web.util.tm.UserTM;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;

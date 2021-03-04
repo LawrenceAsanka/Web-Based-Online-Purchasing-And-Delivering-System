@@ -3,7 +3,7 @@ package lk.bit.web.business.custom.impl;
 import lk.bit.web.business.custom.AdvertisementBO;
 import lk.bit.web.entity.Advertisement;
 import lk.bit.web.repository.AdvertisementRepository;
-import lk.bit.web.util.AdvertisementTM;
+import lk.bit.web.util.tm.AdvertisementTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;

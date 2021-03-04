@@ -1,7 +1,7 @@
 package lk.bit.web.business.custom;
 
 import lk.bit.web.business.SuperBO;
-import lk.bit.web.util.AdvertisementTM;
+import lk.bit.web.util.tm.AdvertisementTM;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

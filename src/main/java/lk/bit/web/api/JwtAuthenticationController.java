@@ -12,8 +12,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -32,6 +35,7 @@ public class JwtAuthenticationController {
     @PostMapping
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequestDTO authenticationRequest) throws Exception {
 
+        String role = null;
         UserDetails userDetails = null;
         try {
             authenticationManager.authenticate(
@@ -47,11 +51,15 @@ public class JwtAuthenticationController {
         } else {
             // TODO is status checking
             userDetails = systemUserBO.loadUserByUsername(authenticationRequest.getUserName());
+            Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+            for (GrantedAuthority authority : authorities) {
+                role = authority.toString();
+            }
         }
 
         final String token = jwtTokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthenticationResponseDTO(token));
+        return ResponseEntity.ok(new AuthenticationResponseDTO(token+","+role));
     }
 
 }

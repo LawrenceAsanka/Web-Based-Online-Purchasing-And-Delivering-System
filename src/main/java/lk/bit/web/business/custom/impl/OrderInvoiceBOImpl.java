@@ -5,14 +5,17 @@ import lk.bit.web.dto.OrderInvoiceDTO;
 import lk.bit.web.dto.OrderInvoiceDetailDTO;
 import lk.bit.web.entity.*;
 import lk.bit.web.repository.*;
-import lk.bit.web.util.OrderInvoiceTM;
+import lk.bit.web.util.tm.AssignOrderInvoiceTM;
+import lk.bit.web.util.tm.OrderInvoiceTM;
 import lk.bit.web.util.email.EmailSender;
+import lk.bit.web.util.message.TextMsgSender;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,6 +37,10 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     private ShopRepository shopRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private SystemUserRepository systemUserRepository;
+    @Autowired
+    private AssignOrderInvoiceDetailRepository assignOrderInvoiceDetailRepository;
     @Autowired
     private EmailSender emailSender;
     @Autowired
@@ -228,27 +235,29 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
-    public List<OrderInvoiceDTO> readOrderInvoiceByStatusDelivery() {
-        List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.readOrderInvoiceByOrderStatusDelivery();
-        List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
+    public List<AssignOrderInvoiceTM> readOrderInvoiceByStatusDelivery() {
+        List<CustomEntity7> orderAssigneeDetails = assignOrderInvoiceDetailRepository.getOrderAssigneeDetails();
+        List<AssignOrderInvoiceTM> assignOrderInvoiceList= new ArrayList<>();
 
-        for (OrderInvoice orderInvoice : orderInvoiceList) {
-            OrderInvoiceDTO orderInvoiceDTO = new OrderInvoiceDTO();
+        for (CustomEntity7 orderInvoice : orderAssigneeDetails) {
+            AssignOrderInvoiceTM orders = new AssignOrderInvoiceTM();
 
-            String createdDateTime = orderInvoice.getCreatedDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-            String deadlineDateTime = orderInvoice.getDeadlineDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String createdDateTime = orderInvoice.getOrderDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String assignedDateTime = orderInvoice.getAssignedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            SystemUser systemUser = systemUserRepository.findById(orderInvoice.getAssignee()).get();
 
-            orderInvoiceDTO.setOrderId(orderInvoice.getOrderId());
-            orderInvoiceDTO.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
-            orderInvoiceDTO.setShopId(orderInvoice.getShop().getShopId());
-            orderInvoiceDTO.setNetTotal(orderInvoice.getNetTotal().toString());
-            orderInvoiceDTO.setCreatedDateTime(createdDateTime);
-            orderInvoiceDTO.setDeadlineDateTime(deadlineDateTime);
-            orderInvoiceDTO.setStatus(orderInvoice.getStatus());
+            orders.setOrderId(orderInvoice.getOrderId());
+            orders.setOrderCreatedDateTime(createdDateTime);
+            orders.setAssignedDateTime(assignedDateTime);
+            orders.setCustomerId(orderInvoice.getCustomerId());
+            orders.setShopId(orderInvoice.getShopId());
+            orders.setAssignee(systemUser.getFirstName()+" "+systemUser.getLastName());
+            orders.setNetTotal(orderInvoice.getNetTotal());
+            orders.setOrderStatus(orderInvoice.getOrderStatus());
 
-            orderInvoiceDTOList.add(orderInvoiceDTO);
+            assignOrderInvoiceList.add(orders);
         }
-        return orderInvoiceDTOList;
+        return assignOrderInvoiceList;
     }
 
     @Override
@@ -303,18 +312,33 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
-    public void updateStatusToDelivery(String orderIdArray) {
+    public void updateStatusToDelivery(String orderIdArray, String assigneeId) throws IOException {
+        String orderIdList = "";
+        String message1 = "Please+deliver+below+orders.From+VG+Distributors+";
+        Optional<SystemUser> optionalSystemUser = systemUserRepository.findById(assigneeId);
+
         String[] orderIds = orderIdArray.split(",");
         for (String orderId : orderIds) {
 
             Optional<OrderInvoice> optionalOrderInvoice = orderInvoiceRepository.findById(orderId);
 
-            if (optionalOrderInvoice.isPresent()) {
-                optionalOrderInvoice.get().setStatus(4);
+            if (optionalOrderInvoice.isPresent() && optionalSystemUser.isPresent()) {
+
+                    assignOrderInvoiceDetailRepository.save(new AssignOrderInvoiceDetail(optionalOrderInvoice.get(),
+                            optionalSystemUser.get()));
+
+                    optionalOrderInvoice.get().setStatus(4);
 
                 orderInvoiceRepository.save(optionalOrderInvoice.get());
+
             }
+            orderIdList += "#"+orderId+"+";
         }
+
+        String finalMessage = message1+orderIdList;
+//        System.out.println(finalMessage);
+        TextMsgSender textMsgSender = new TextMsgSender();
+        textMsgSender.sendTextMsg(optionalSystemUser.get().getContact(), finalMessage );
     }
 
     @Override

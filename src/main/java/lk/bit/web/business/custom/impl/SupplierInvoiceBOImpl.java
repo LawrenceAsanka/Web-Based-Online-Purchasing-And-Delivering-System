@@ -8,7 +8,7 @@ import lk.bit.web.repository.ProductRepository;
 import lk.bit.web.repository.SupplierInvoiceDetailRepository;
 import lk.bit.web.repository.SupplierInvoiceRepository;
 import lk.bit.web.repository.SystemUserRepository;
-import lk.bit.web.util.InvoiceDetailTM;
+import lk.bit.web.util.tm.InvoiceDetailTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

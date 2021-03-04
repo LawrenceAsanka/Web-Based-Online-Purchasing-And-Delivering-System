@@ -1,4 +1,4 @@
-package lk.bit.web.util;
+package lk.bit.web.util.tm;
 
 import lombok.*;
 

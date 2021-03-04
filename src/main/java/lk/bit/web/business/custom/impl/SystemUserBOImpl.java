@@ -5,7 +5,7 @@ import lk.bit.web.dto.SystemUserDTO;
 import lk.bit.web.entity.CustomEntity;
 import lk.bit.web.entity.SystemUser;
 import lk.bit.web.repository.SystemUserRepository;
-import lk.bit.web.util.UserTM;
+import lk.bit.web.util.tm.UserTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

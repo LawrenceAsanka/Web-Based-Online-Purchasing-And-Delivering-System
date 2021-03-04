@@ -3,7 +3,7 @@ package lk.bit.web.business.custom;
 import lk.bit.web.dto.SupplierInvoiceDTO;
 import lk.bit.web.dto.SupplierInvoiceDetailDTO;
 import lk.bit.web.entity.SuperEntity;
-import lk.bit.web.util.InvoiceDetailTM;
+import lk.bit.web.util.tm.InvoiceDetailTM;
 
 import java.util.List;
 

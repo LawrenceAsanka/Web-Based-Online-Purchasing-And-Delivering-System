@@ -2,8 +2,10 @@ package lk.bit.web.business.custom;
 
 import lk.bit.web.business.SuperBO;
 import lk.bit.web.dto.OrderInvoiceDTO;
-import lk.bit.web.util.OrderInvoiceTM;
+import lk.bit.web.util.tm.AssignOrderInvoiceTM;
+import lk.bit.web.util.tm.OrderInvoiceTM;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface OrderInvoiceBO extends SuperBO{
@@ -15,11 +17,11 @@ public interface OrderInvoiceBO extends SuperBO{
     List<OrderInvoiceDTO> readOrderInvoiceByStatusCancel();
     List<OrderInvoiceDTO> readOrderInvoiceByStatusComplete();
     List<OrderInvoiceDTO> readOrderInvoiceByStatusProcess();
-    List<OrderInvoiceDTO> readOrderInvoiceByStatusDelivery();
+    List<AssignOrderInvoiceTM> readOrderInvoiceByStatusDelivery();
     List<OrderInvoiceDTO> readOrderInvoiceByCustomerId(String customerId);
     void updateStatus(String orderId);
     void updateStatusToProcess(String orderIdArray);
-    void updateStatusToDelivery(String orderIdArray);
+    void updateStatusToDelivery(String orderIdArray, String assigneeId) throws IOException;
     boolean IExistOrderByOrderId(String id);
     public int getTotalConfirmOrderCount();
 }

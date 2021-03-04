@@ -9,7 +9,7 @@ import lk.bit.web.entity.CustomerUser;
 import lk.bit.web.repository.ComplainRepository;
 import lk.bit.web.repository.ComplainSolutionRepository;
 import lk.bit.web.repository.CustomerUserRepository;
-import lk.bit.web.util.SolutionTM;
+import lk.bit.web.util.tm.SolutionTM;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

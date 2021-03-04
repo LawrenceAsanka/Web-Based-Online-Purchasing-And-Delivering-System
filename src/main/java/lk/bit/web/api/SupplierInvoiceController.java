@@ -4,7 +4,7 @@ import lk.bit.web.business.custom.SupplierInvoiceBO;
 import lk.bit.web.business.custom.SystemUserBO;
 import lk.bit.web.dto.SupplierInvoiceDTO;
 import lk.bit.web.dto.SupplierInvoiceDetailDTO;
-import lk.bit.web.util.InvoiceDetailTM;
+import lk.bit.web.util.tm.InvoiceDetailTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

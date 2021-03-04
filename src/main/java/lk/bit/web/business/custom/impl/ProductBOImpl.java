@@ -7,7 +7,7 @@ import lk.bit.web.entity.*;
 import lk.bit.web.repository.CategoryRepository;
 import lk.bit.web.repository.ProductRepository;
 import lk.bit.web.repository.SubCategoryRepository;
-import lk.bit.web.util.ProductTM;
+import lk.bit.web.util.tm.ProductTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;

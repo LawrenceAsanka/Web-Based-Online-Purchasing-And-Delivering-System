@@ -2,7 +2,7 @@ package lk.bit.web.api;
 
 import lk.bit.web.business.custom.ProductSubCategoryBO;
 import lk.bit.web.dto.SubCategoryDTO;
-import lk.bit.web.util.SubCategoryTM;
+import lk.bit.web.util.tm.SubCategoryTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

@@ -2,14 +2,17 @@ package lk.bit.web.api;
 
 import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ShopBO;
+import lk.bit.web.business.custom.SystemUserBO;
 import lk.bit.web.dto.OrderInvoiceDTO;
-import lk.bit.web.util.OrderInvoiceTM;
+import lk.bit.web.util.tm.AssignOrderInvoiceTM;
+import lk.bit.web.util.tm.OrderInvoiceTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -20,6 +23,8 @@ public class OrderInvoiceController {
     private OrderInvoiceBO orderInvoiceBO;
     @Autowired
     private ShopBO shopBO;
+    @Autowired
+    private SystemUserBO systemUserBO;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
@@ -59,7 +64,7 @@ public class OrderInvoiceController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/delivery")
-    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusDelivery() {
+    private List<AssignOrderInvoiceTM> readOrderInvoiceDetailsByStatusDelivery() {
         return orderInvoiceBO.readOrderInvoiceByStatusDelivery();
     }
 
@@ -85,6 +90,16 @@ public class OrderInvoiceController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/moveToDelivery")
+    private void updateOrderStatusToDelivery(@RequestParam("orderIdArray") String orderIdArray,
+                                             @RequestParam String assignedTo) throws IOException {
+        if (orderIdArray == null || assignedTo == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        orderInvoiceBO.updateStatusToDelivery(orderIdArray,assignedTo );
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}/cancel")
     private void updateOrderStatus(@PathVariable String id){
         if (id == null || !orderInvoiceBO.IExistOrderByOrderId(id)) {
@@ -102,12 +117,4 @@ public class OrderInvoiceController {
         orderInvoiceBO.updateStatusToProcess(orderIdArray);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PutMapping("/moveToDelivery")
-    private void updateOrderStatusToDelivery(@RequestParam("orderIdArray") String orderIdArray){
-        if (orderIdArray == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        orderInvoiceBO.updateStatusToDelivery(orderIdArray);
-    }
 }

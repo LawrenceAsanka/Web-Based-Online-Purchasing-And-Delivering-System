@@ -28,4 +28,9 @@ public class AssignOrderInvoiceDetail implements SuperEntity{
     @ManyToOne
     @JoinColumn(name = "assignee_id", referencedColumnName = "id", nullable = false)
     private SystemUser assigneeId;
+
+    public AssignOrderInvoiceDetail(OrderInvoice orderInvoiceId, SystemUser assigneeId) {
+        this.orderInvoiceId = orderInvoiceId;
+        this.assigneeId = assigneeId;
+    }
 }

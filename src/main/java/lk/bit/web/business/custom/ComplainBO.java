@@ -2,7 +2,7 @@ package lk.bit.web.business.custom;
 
 import lk.bit.web.business.SuperBO;
 import lk.bit.web.dto.ComplainDTO;
-import lk.bit.web.util.SolutionTM;
+import lk.bit.web.util.tm.SolutionTM;
 
 import java.util.List;
 

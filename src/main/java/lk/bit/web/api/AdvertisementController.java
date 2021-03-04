@@ -1,7 +1,7 @@
 package lk.bit.web.api;
 
 import lk.bit.web.business.custom.AdvertisementBO;
-import lk.bit.web.util.AdvertisementTM;
+import lk.bit.web.util.tm.AdvertisementTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

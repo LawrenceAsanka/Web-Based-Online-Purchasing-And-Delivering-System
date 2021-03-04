@@ -2,7 +2,6 @@ package lk.bit.web.business.custom;
 
 import lk.bit.web.business.SuperBO;
 import lk.bit.web.dto.SubCategoryDTO;
-import lk.bit.web.util.SubCategoryTM;
 
 import java.util.List;
 

@@ -4,7 +4,7 @@ import lk.bit.web.business.custom.ComplainBO;
 import lk.bit.web.business.custom.CustomerBO;
 import lk.bit.web.dto.ComplainDTO;
 import lk.bit.web.dto.CustomerDTO;
-import lk.bit.web.util.SolutionTM;
+import lk.bit.web.util.tm.SolutionTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
