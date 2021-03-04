@@ -32,6 +32,9 @@ public class OrderInvoice implements SuperEntity{
     @Column(name = "net_total", nullable = false)
     private BigDecimal netTotal;
 
+    @Column(name = "payment_method",length = 30, nullable = false)
+    private String paymentMethod;
+
     @Column(name="created_date_time",nullable = false)
     private LocalDateTime createdDateAndTime = LocalDateTime.now();
 
@@ -42,11 +45,12 @@ public class OrderInvoice implements SuperEntity{
     private int status = 0;
 
     public OrderInvoice(String orderId, CustomerUser customerUser, Shop shop, BigDecimal netTotal ,
-                        LocalDateTime deadlineDateAndTime) {
+                        String paymentMethod, LocalDateTime deadlineDateAndTime) {
         this.orderId = orderId;
         this.customerUser = customerUser;
         this.shop = shop;
         this.netTotal = netTotal;
+        this.paymentMethod = paymentMethod;
         this.deadlineDateAndTime = deadlineDateAndTime;
     }
 }

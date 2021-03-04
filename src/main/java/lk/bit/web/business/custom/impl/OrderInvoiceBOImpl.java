@@ -53,10 +53,19 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
         CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(orderInvoiceDTO.getCustomerId());
         Optional<Shop> shop = shopRepository.findById(orderInvoiceDTO.getShopId());
         String orderId = getOrderId();
+        String paymentMethod = null;
 
         if (customer != null && shop.isPresent()) {
+
+            // payment method check
+            if (orderInvoiceDTO.getPaymentMethod().equals("1")) {
+                paymentMethod = PaymentMethod.COD.name();
+            } else if (orderInvoiceDTO.getPaymentMethod().equals("2")) {
+                paymentMethod = PaymentMethod.CREDIT.name();
+            }
+
             orderInvoiceRepository.save(new OrderInvoice(orderId, customer, shop.get(), new BigDecimal(orderInvoiceDTO.getNetTotal()),
-                    LocalDateTime.now().plusHours(3)));
+                    paymentMethod, LocalDateTime.now().plusHours(3)));
 
             List<OrderInvoiceDetailDTO> orderInvoiceDetail = orderInvoiceDTO.getOrderInvoiceDetail();
 

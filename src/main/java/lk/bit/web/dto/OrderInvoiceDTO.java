@@ -15,6 +15,7 @@ public class OrderInvoiceDTO {
     private String orderId;
     private String customerId;
     private String shopId;
+    private String paymentMethod;
     private String netTotal;
     private String createdDateTime;
     private String deadlineDateTime;
