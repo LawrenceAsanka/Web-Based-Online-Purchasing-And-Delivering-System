@@ -4,6 +4,7 @@ import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ShopBO;
 import lk.bit.web.business.custom.SystemUserBO;
 import lk.bit.web.dto.OrderInvoiceDTO;
+import lk.bit.web.util.tm.AssignOrderInvoiceDetailTM;
 import lk.bit.web.util.tm.AssignOrderInvoiceTM;
 import lk.bit.web.util.tm.OrderInvoiceTM;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,9 +76,28 @@ public class OrderInvoiceController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/assignee")
+    private List<AssignOrderInvoiceDetailTM> readOrderInvoiceDetailsByAssignee(@RequestParam("userName") String assigneeName) {
+        if (!systemUserBO.existUser(assigneeName)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return orderInvoiceBO.readOrderInvoiceByAssignee(assigneeName);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/count")
     private int getTotalConfirmOrderCount() {
         return orderInvoiceBO.getTotalConfirmOrderCount();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/orderDetails")
+    private void getOrderDetail(@RequestParam String orderId, @RequestParam String assignee) {
+
+        if (!orderId.equals(orderInvoiceBO.getOrderIdFromAssignOrder(assignee,orderId ))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        System.out.println("ok");
     }
 
     @ResponseStatus(HttpStatus.CREATED)

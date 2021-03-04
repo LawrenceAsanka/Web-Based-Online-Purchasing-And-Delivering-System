@@ -53,8 +53,12 @@ public class JwtTokenUtil implements Serializable {
         Claims claims = getAllClaimsFromToken(token);
         Boolean isAdmin = claims.get("isAdmin", Boolean.class);
         Boolean isUser = claims.get("isCustomer", Boolean.class);
+        Boolean isSalesPerson = claims.get("isSalesPerson", Boolean.class);
         if (isAdmin != null && isAdmin) {
             roles = Collections.singletonList(new SimpleGrantedAuthority(Role.ROLE_ADMIN.name()));
+        }
+        if (isSalesPerson != null && isSalesPerson) {
+            roles = Collections.singletonList(new SimpleGrantedAuthority(Role.ROLE_SALESPERSON.name()));
         }
         if (isUser != null && isUser) {
             roles = Collections.singletonList(new SimpleGrantedAuthority(Role.ROLE_CUSTOMER.name()));
@@ -68,6 +72,9 @@ public class JwtTokenUtil implements Serializable {
         Collection<? extends GrantedAuthority> roles = userDetails.getAuthorities();
         if (roles.contains(new SimpleGrantedAuthority(Role.ROLE_ADMIN.name()))) {
             claims.put("isAdmin", true);
+        }
+        if (roles.contains(new SimpleGrantedAuthority(Role.ROLE_SALESPERSON.name()))) {
+            claims.put("isSalesPerson", true);
         }
         if (roles.contains(new SimpleGrantedAuthority(Role.ROLE_CUSTOMER.name()))) {
             claims.put("isCustomer", true);

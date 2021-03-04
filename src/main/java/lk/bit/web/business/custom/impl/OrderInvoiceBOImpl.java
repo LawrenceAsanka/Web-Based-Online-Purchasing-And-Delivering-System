@@ -5,6 +5,7 @@ import lk.bit.web.dto.OrderInvoiceDTO;
 import lk.bit.web.dto.OrderInvoiceDetailDTO;
 import lk.bit.web.entity.*;
 import lk.bit.web.repository.*;
+import lk.bit.web.util.tm.AssignOrderInvoiceDetailTM;
 import lk.bit.web.util.tm.AssignOrderInvoiceTM;
 import lk.bit.web.util.tm.OrderInvoiceTM;
 import lk.bit.web.util.email.EmailSender;
@@ -261,6 +262,32 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
+    public List<AssignOrderInvoiceDetailTM> readOrderInvoiceByAssignee(String assigneeId) {
+        SystemUser assignee = systemUserRepository.findSystemUser(assigneeId);
+        List<CustomEntity8> orderAssigneeDetails = assignOrderInvoiceDetailRepository.getOrderAssigneeDetailsByAssignee(assignee.getId());
+        List<AssignOrderInvoiceDetailTM> assignOrderInvoiceList= new ArrayList<>();
+
+        for (CustomEntity8 orderInvoice : orderAssigneeDetails) {
+            AssignOrderInvoiceDetailTM orders = new AssignOrderInvoiceDetailTM();
+
+            String createdDateTime = orderInvoice.getOrderDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String assignedDateTime = orderInvoice.getAssignedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            CustomerUser customerUser = customerUserRepository.findById(orderInvoice.getCustomerId()).get();
+            Shop shop = shopRepository.findById(orderInvoice.getShopId()).get();
+
+            orders.setOrderId(orderInvoice.getOrderId());
+            orders.setOrderCreatedDateTime(createdDateTime);
+            orders.setAssignedDateTime(assignedDateTime);
+            orders.setCustomerName(customerUser.getCustomerFirstName()+" "+customerUser.getCustomerLastName());
+            orders.setShopName(shop.getShopName());
+            orders.setNetTotal(orderInvoice.getNetTotal().toString());
+
+            assignOrderInvoiceList.add(orders);
+        }
+        return assignOrderInvoiceList;
+    }
+
+    @Override
     public List<OrderInvoiceDTO> readOrderInvoiceByCustomerId(String customerId) {
         List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.getOrderInvoiceByCustomerId(customerId);
         List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
@@ -349,6 +376,12 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     @Override
     public int getTotalConfirmOrderCount() {
         return orderInvoiceRepository.getTotalConfirmOrderCount();
+    }
+
+    @Override
+    public String getOrderIdFromAssignOrder(String assignee, String orderId) {
+        SystemUser systemUser = systemUserRepository.findSystemUser(assignee);
+        return assignOrderInvoiceDetailRepository.getOrderIdFromAssignOrder(systemUser.getId(), orderId);
     }
 
     // check every one minutes

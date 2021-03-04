@@ -21,4 +21,7 @@ public interface AssignOrderInvoiceDetailRepository extends JpaRepository<Assign
             "OI.createdDateAndTime AS orderDateTime, OI.shop.shopId AS shopId, OI.netTotal AS netTotal, OI.customerUser.customerId AS customerId " +
             "FROM AssignOrderInvoiceDetail AO INNER JOIN OrderInvoice OI ON AO.orderInvoiceId.orderId = OI.orderId WHERE OI.status=4 AND AO.assigneeId.id=?1 ORDER BY AO.id")
     public List<CustomEntity8> getOrderAssigneeDetailsByAssignee(String assignee);
+
+    @Query(value = "SELECT AO.order_invoice_id FROM assign_order_invoice_detail AO WHERE AO.assignee_id=?1 AND AO.order_invoice_id=?2", nativeQuery = true)
+    public String getOrderIdFromAssignOrder(String assigneeId, String orderId);
 }
