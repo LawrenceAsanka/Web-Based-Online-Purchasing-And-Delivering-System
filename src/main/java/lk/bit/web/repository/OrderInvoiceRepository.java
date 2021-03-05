@@ -17,9 +17,9 @@ public interface OrderInvoiceRepository extends JpaRepository<OrderInvoice, Stri
     @Query(value = "SELECT * FROM order_invoice WHERE status=0", nativeQuery = true)
     public List<OrderInvoice> getOrderInvoiceByStatus();
 
-    @Query(value = "SELECT OI.orderId AS orderId, OI.createdDateAndTime AS orderDateTime, OI.netTotal AS netTotal ,S.shopName AS shopName," +
-            "S.address1 AS address1, S.address2 AS address2, S.city AS city, S.district AS district, ODI.product.productId AS productId, " +
-            "ODI.product.productName AS productName, ODI.product.imageOne AS productImage, ODI.discount AS discount, " +
+    @Query(value = "SELECT OI.orderId AS orderId, OI.createdDateAndTime AS orderDateTime, OI.netTotal AS netTotal ,OI.customerUser.customerId AS customerId, S.shopName AS shopName," +
+            "OI.paymentMethod AS paymentMethod, S.address1 AS address1, S.address2 AS address2, S.city AS city, S.district AS district, S.contact AS contact, " +
+            "ODI.product.productId AS productId, ODI.product.productName AS productName, ODI.product.imageOne AS productImage, ODI.discount AS discount, " +
             "ODI.quantity AS quantity, ODI.total AS total FROM OrderInvoiceDetail ODI INNER JOIN OrderInvoice OI ON " +
             "ODI.orderInvoiceDetailPK.orderInvoiceId = OI.orderId INNER JOIN OI.shop S WHERE OI.orderId=?1")
     public List<CustomEntity5> getOrderInvoice(String orderId);

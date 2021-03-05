@@ -1,6 +1,7 @@
 package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.OrderInvoiceBO;
+import lk.bit.web.dto.DeliveryOrderDTO;
 import lk.bit.web.dto.OrderInvoiceDTO;
 import lk.bit.web.dto.OrderInvoiceDetailDTO;
 import lk.bit.web.entity.*;
@@ -348,6 +349,17 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
+    public void updateOrderStatusToComplete(String orderId) {
+        Optional<OrderInvoice> optionalOrderInvoice = orderInvoiceRepository.findById(orderId);
+
+        if (optionalOrderInvoice.isPresent()) {
+            optionalOrderInvoice.get().setStatus(5);
+
+            orderInvoiceRepository.save(optionalOrderInvoice.get());
+        }
+    }
+
+    @Override
     public void updateStatusToDelivery(String orderIdArray, String assigneeId) throws IOException {
         String orderIdList = "";
         String message1 = "Please+deliver+below+orders.From+VG+Distributors+";
@@ -378,7 +390,7 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
-    public boolean IExistOrderByOrderId(String id) {
+    public boolean IsExistOrderByOrderId(String id) {
         return orderInvoiceRepository.existsById(id);
     }
 
@@ -391,6 +403,32 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     public String getOrderIdFromAssignOrder(String assignee, String orderId) {
         SystemUser systemUser = systemUserRepository.findSystemUser(assignee);
         return assignOrderInvoiceDetailRepository.getOrderIdFromAssignOrder(systemUser.getId(), orderId);
+    }
+
+    @Override
+    public DeliveryOrderDTO getDeliveryOrderDetail(String orderId) {
+        List<CustomEntity5> orderInvoice = orderInvoiceRepository.getOrderInvoice(orderId);
+        List<DeliveryOrderDTO> deliveryOrderDetails = new ArrayList<>();
+
+        for (CustomEntity5 order : orderInvoice) {
+            DeliveryOrderDTO deliveryOrderDTO = new DeliveryOrderDTO();
+
+            deliveryOrderDTO.setCustomerId(order.getCustomerId());
+
+            CustomerUser customerUser = customerUserRepository.findById(order.getCustomerId()).get();
+            deliveryOrderDTO.setCustomerFullName(customerUser.getCustomerFirstName()+" "+customerUser.getCustomerLastName());
+
+            deliveryOrderDTO.setCustomerContact(customerUser.getContact());
+            deliveryOrderDTO.setOrderId(orderId);
+            deliveryOrderDTO.setShopName(order.getShopName());
+            deliveryOrderDTO.setDeliveryAddress(order.getAddress1()+"|"+order.getAddress2()+"|"+order.getCity()+"|"+order.getDistrict());
+            deliveryOrderDTO.setDeliveryContact(order.getContact());
+            deliveryOrderDTO.setPaymentMethod(order.getPaymentMethod());
+            deliveryOrderDTO.setTotalAmount(order.getNetTotal().toString());
+
+            deliveryOrderDetails.add(deliveryOrderDTO);
+        }
+        return deliveryOrderDetails.get(0);
     }
 
     // check every one minutes

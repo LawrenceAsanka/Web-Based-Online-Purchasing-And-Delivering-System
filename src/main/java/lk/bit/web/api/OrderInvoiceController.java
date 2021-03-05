@@ -3,6 +3,7 @@ package lk.bit.web.api;
 import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ShopBO;
 import lk.bit.web.business.custom.SystemUserBO;
+import lk.bit.web.dto.DeliveryOrderDTO;
 import lk.bit.web.dto.OrderInvoiceDTO;
 import lk.bit.web.util.tm.AssignOrderInvoiceDetailTM;
 import lk.bit.web.util.tm.AssignOrderInvoiceTM;
@@ -92,12 +93,12 @@ public class OrderInvoiceController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/orderDetails")
-    private void getOrderDetail(@RequestParam String orderId, @RequestParam String assignee) {
+    private DeliveryOrderDTO getOrderDetail(@RequestParam String orderId, @RequestParam String assignee) {
 
         if (!orderId.equals(orderInvoiceBO.getOrderIdFromAssignOrder(assignee,orderId ))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        System.out.println("ok");
+        return orderInvoiceBO.getDeliveryOrderDetail(orderId);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -122,7 +123,7 @@ public class OrderInvoiceController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}/cancel")
     private void updateOrderStatus(@PathVariable String id){
-        if (id == null || !orderInvoiceBO.IExistOrderByOrderId(id)) {
+        if (id == null || !orderInvoiceBO.IsExistOrderByOrderId(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         orderInvoiceBO.updateStatus(id);
@@ -135,6 +136,15 @@ public class OrderInvoiceController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         orderInvoiceBO.updateStatusToProcess(orderIdArray);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/completeOrder")
+    private void updateOrderStatusToComplete(@RequestParam("id") String orderId){
+        if (orderId == null || !orderInvoiceBO.IsExistOrderByOrderId(orderId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        orderInvoiceBO.updateOrderStatusToComplete(orderId);
     }
 
 }

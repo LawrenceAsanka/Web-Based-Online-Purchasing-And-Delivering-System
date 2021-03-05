@@ -11,6 +11,10 @@ public interface CustomEntity5 {
 
     BigDecimal getNetTotal();
 
+    String getCustomerId();
+
+    String getPaymentMethod();
+
     String getShopName();
 
     String getAddress1();
@@ -20,6 +24,8 @@ public interface CustomEntity5 {
     String getCity();
 
     String getDistrict();
+
+    String getContact();
 
     String getProductId();
 
