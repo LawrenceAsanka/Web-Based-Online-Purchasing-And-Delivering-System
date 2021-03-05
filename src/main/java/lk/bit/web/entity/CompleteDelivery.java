@@ -18,8 +18,8 @@ public class CompleteDelivery {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "delivery_date_time", nullable = false)
-    private LocalDateTime deliveryDateTime = LocalDateTime.now();
+    @Column(name = "delivered_date_time", nullable = false)
+    private LocalDateTime deliveredDateTime = LocalDateTime.now();
 
     @OneToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false)
