@@ -6,11 +6,8 @@ import lk.bit.web.dto.OrderInvoiceDTO;
 import lk.bit.web.dto.OrderInvoiceDetailDTO;
 import lk.bit.web.entity.*;
 import lk.bit.web.repository.*;
-import lk.bit.web.util.tm.AssignOrderInvoiceDetailTM;
-import lk.bit.web.util.tm.AssignOrderInvoiceTM;
-import lk.bit.web.util.tm.OrderInvoiceTM;
+import lk.bit.web.util.tm.*;
 import lk.bit.web.util.email.EmailSender;
-import lk.bit.web.util.message.TextMsgSender;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -200,27 +197,30 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
-    public List<OrderInvoiceDTO> readOrderInvoiceByStatusComplete() {
-        List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.readOrderInvoiceByOrderStatusComplete();
-        List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
+    public List<CompleteDeliveryDetailTM> readOrderInvoiceByStatusComplete() {
+        List<CustomEntity9> allCompletedDeliveryDetails = completeDeliveryRepository.getAllCompletedDeliveryDetails();
+        List<CompleteDeliveryDetailTM> completeOrderDetails= new ArrayList<>();
 
-        for (OrderInvoice orderInvoice : orderInvoiceList) {
-            OrderInvoiceDTO orderInvoiceDTO = new OrderInvoiceDTO();
+        for (CustomEntity9 orderInvoice : allCompletedDeliveryDetails) {
+            CompleteDeliveryDetailTM completeOrderDetail = new CompleteDeliveryDetailTM();
 
-            String createdDateTime = orderInvoice.getCreatedDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-            String deadlineDateTime = orderInvoice.getDeadlineDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String orderedDateTime = orderInvoice.getOrderedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String deliveredDateTime = orderInvoice.getDeliveredDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
 
-            orderInvoiceDTO.setOrderId(orderInvoice.getOrderId());
-            orderInvoiceDTO.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
-            orderInvoiceDTO.setShopId(orderInvoice.getShop().getShopId());
-            orderInvoiceDTO.setNetTotal(orderInvoice.getNetTotal().toString());
-            orderInvoiceDTO.setCreatedDateTime(createdDateTime);
-            orderInvoiceDTO.setDeadlineDateTime(deadlineDateTime);
-            orderInvoiceDTO.setStatus(orderInvoice.getStatus());
+            completeOrderDetail.setOrderId(orderInvoice.getOrderId());
+            completeOrderDetail.setOrderedDateTime(orderedDateTime);
+            completeOrderDetail.setOrderBy(orderInvoice.getOrderBy());
 
-            orderInvoiceDTOList.add(orderInvoiceDTO);
+            SystemUser systemUser = systemUserRepository.findById(orderInvoice.getDeliverBy()).get();
+            completeOrderDetail.setDeliverBy(systemUser.getFirstName()+" "+systemUser.getLastName());
+
+            completeOrderDetail.setDeliveredDateTime(deliveredDateTime);
+            completeOrderDetail.setPaymentMethod(orderInvoice.getPaymentMethod());
+            completeOrderDetail.setStatus(orderInvoice.getStatus());
+
+            completeOrderDetails.add(completeOrderDetail);
         }
-        return orderInvoiceDTOList;
+        return completeOrderDetails;
     }
 
     @Override
@@ -444,6 +444,32 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
             deliveryOrderDetails.add(deliveryOrderDTO);
         }
         return deliveryOrderDetails.get(0);
+    }
+
+    @Override
+    public List<CompleteDeliveryDetailTM2> getCompletedOrderDetailsByAssignee(String assignee) {
+        SystemUser systemUser = systemUserRepository.findSystemUser(assignee);
+        List<CustomEntity10> completedOrderDetails = completeDeliveryRepository.getAllCompletedDeliveryDetailsByAssignee(systemUser.getId());
+        List<CompleteDeliveryDetailTM2> completeDeliveryDetailTM = new ArrayList<>();
+
+        for (CustomEntity10 orderDetail : completedOrderDetails) {
+            CompleteDeliveryDetailTM2 completeDeliveryDetailTM2 = new CompleteDeliveryDetailTM2();
+
+            completeDeliveryDetailTM2.setOrderId(orderDetail.getOrderId());
+            completeDeliveryDetailTM2.setDeliveryId(orderDetail.getDeliveryId());
+
+            String assignedDateTime = orderDetail.getAssignedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String deliveredDateTime = orderDetail.getDeliveredDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            completeDeliveryDetailTM2.setDeliveredDateTime(deliveredDateTime);
+            completeDeliveryDetailTM2.setAssignedDateTime(assignedDateTime);
+
+            completeDeliveryDetailTM2.setShop(orderDetail.getShopName());
+            completeDeliveryDetailTM2.setNetTotal(orderDetail.getTotalAmount().toString());
+
+            completeDeliveryDetailTM.add(completeDeliveryDetailTM2);
+        }
+
+        return completeDeliveryDetailTM;
     }
 
     // check every one minutes

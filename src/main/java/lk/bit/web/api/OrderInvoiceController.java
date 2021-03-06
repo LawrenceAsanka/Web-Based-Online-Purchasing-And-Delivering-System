@@ -5,9 +5,7 @@ import lk.bit.web.business.custom.ShopBO;
 import lk.bit.web.business.custom.SystemUserBO;
 import lk.bit.web.dto.DeliveryOrderDTO;
 import lk.bit.web.dto.OrderInvoiceDTO;
-import lk.bit.web.util.tm.AssignOrderInvoiceDetailTM;
-import lk.bit.web.util.tm.AssignOrderInvoiceTM;
-import lk.bit.web.util.tm.OrderInvoiceTM;
+import lk.bit.web.util.tm.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -54,7 +52,7 @@ public class OrderInvoiceController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/complete")
-    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusComplete() {
+    private List<CompleteDeliveryDetailTM> readOrderInvoiceDetailsByStatusComplete() {
         return orderInvoiceBO.readOrderInvoiceByStatusComplete();
     }
 
@@ -99,6 +97,16 @@ public class OrderInvoiceController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         return orderInvoiceBO.getDeliveryOrderDetail(orderId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/completedOrderDetails")
+    private List<CompleteDeliveryDetailTM2> getCompleteOrderDetailsByAssignee(@RequestParam("userName") String assignee) {
+
+        if (!systemUserBO.existUser(assignee)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return orderInvoiceBO.getCompletedOrderDetailsByAssignee(assignee);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
