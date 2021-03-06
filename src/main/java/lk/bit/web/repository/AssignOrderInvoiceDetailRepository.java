@@ -24,4 +24,7 @@ public interface AssignOrderInvoiceDetailRepository extends JpaRepository<Assign
 
     @Query(value = "SELECT AO.order_invoice_id FROM assign_order_invoice_detail AO WHERE AO.assignee_id=?1 AND AO.order_invoice_id=?2", nativeQuery = true)
     public String getOrderIdFromAssignOrder(String assigneeId, String orderId);
+
+    @Query(value = "SELECT AO.* FROM assign_order_invoice_detail AO WHERE AO.order_invoice_id=?1", nativeQuery = true)
+    public AssignOrderInvoiceDetail getAssignInvoiceIdByOrderId(String orderId);
 }

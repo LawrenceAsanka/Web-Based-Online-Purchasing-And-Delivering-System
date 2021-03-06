@@ -121,8 +121,17 @@ public class OrderInvoiceController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PutMapping("/{id}/cancel")
-    private void updateOrderStatus(@PathVariable String id){
+    @PostMapping("/completeOrder")
+    private void saveCompleteDeliveryDetails(@RequestParam("id") String orderId){
+        if (orderId == null || !orderInvoiceBO.IsExistOrderByOrderId(orderId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        orderInvoiceBO.saveCompleteDeliveryDetails(orderId);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/{id}/cancel")
+    private void updateStatusToCancel(@PathVariable String id){
         if (id == null || !orderInvoiceBO.IsExistOrderByOrderId(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
@@ -138,13 +147,5 @@ public class OrderInvoiceController {
         orderInvoiceBO.updateStatusToProcess(orderIdArray);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PutMapping("/completeOrder")
-    private void updateOrderStatusToComplete(@RequestParam("id") String orderId){
-        if (orderId == null || !orderInvoiceBO.IsExistOrderByOrderId(orderId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        orderInvoiceBO.updateOrderStatusToComplete(orderId);
-    }
 
 }

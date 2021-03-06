@@ -15,23 +15,18 @@ import java.time.LocalDateTime;
 public class CompleteDelivery {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(length = 30, nullable = false)
+    private String id;
 
     @Column(name = "delivered_date_time", nullable = false)
     private LocalDateTime deliveredDateTime = LocalDateTime.now();
 
     @OneToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "id", nullable = false)
-    private AssignOrderInvoiceDetail orderId;
+    @JoinColumn(name = "assign_invoice_id", referencedColumnName = "id", nullable = false)
+    private AssignOrderInvoiceDetail assignInvoiceId;
 
-    @ManyToOne
-    @JoinColumn(name = "deliver_by", referencedColumnName = "id", nullable = false)
-    private SystemUser deliveryBy;
-
-    public CompleteDelivery(int id, AssignOrderInvoiceDetail orderId, SystemUser deliveryBy) {
+    public CompleteDelivery(String id, AssignOrderInvoiceDetail assignInvoiceId) {
         this.id = id;
-        this.orderId = orderId;
-        this.deliveryBy = deliveryBy;
+        this.assignInvoiceId = assignInvoiceId;
     }
 }

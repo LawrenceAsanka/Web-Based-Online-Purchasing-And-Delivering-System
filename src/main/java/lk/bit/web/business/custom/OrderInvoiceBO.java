@@ -24,7 +24,7 @@ public interface OrderInvoiceBO extends SuperBO{
     List<OrderInvoiceDTO> readOrderInvoiceByCustomerId(String customerId);
     void updateStatus(String orderId);
     void updateStatusToProcess(String orderIdArray);
-    void updateOrderStatusToComplete(String orderId);
+    void saveCompleteDeliveryDetails(String orderId);
     void updateStatusToDelivery(String orderIdArray, String assigneeId) throws IOException;
     boolean IsExistOrderByOrderId(String id);
     int getTotalConfirmOrderCount();
