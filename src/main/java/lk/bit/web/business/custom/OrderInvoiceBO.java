@@ -26,6 +26,7 @@ public interface OrderInvoiceBO extends SuperBO{
     void updateStatusToDelivery(String orderIdArray, String assigneeId) throws IOException;
     boolean IsExistOrderByOrderId(String id);
     int getTotalConfirmOrderCount();
+    int getOrderStatusByOrderId(String orderId);
     String getOrderIdFromAssignOrder(String assignee, String orderId);
     DeliveryOrderDTO getDeliveryOrderDetail(String orderId);
     List<CompleteDeliveryDetailTM2> getCompletedOrderDetailsByAssignee(String assignee);

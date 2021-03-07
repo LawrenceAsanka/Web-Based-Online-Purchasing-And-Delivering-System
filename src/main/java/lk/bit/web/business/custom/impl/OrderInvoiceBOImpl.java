@@ -415,6 +415,17 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
+    public int getOrderStatusByOrderId(String orderId) {
+        Optional<OrderInvoice> optionalOrderInvoice = orderInvoiceRepository.findById(orderId);
+        int orderStatus = 0;
+
+        if (optionalOrderInvoice.isPresent()) {
+            orderStatus =  optionalOrderInvoice.get().getStatus();
+        }
+        return orderStatus;
+    }
+
+    @Override
     public String getOrderIdFromAssignOrder(String assignee, String orderId) {
         SystemUser systemUser = systemUserRepository.findSystemUser(assignee);
         return assignOrderInvoiceDetailRepository.getOrderIdFromAssignOrder(systemUser.getId(), orderId);

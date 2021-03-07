@@ -109,6 +109,16 @@ public class OrderInvoiceController {
         return orderInvoiceBO.getCompletedOrderDetailsByAssignee(assignee);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/orderStatus")
+    private int getOrderStatusByOrderId(@RequestParam("id") String orderId) {
+
+        if (!orderInvoiceBO.IsExistOrderByOrderId(orderId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return orderInvoiceBO.getOrderStatusByOrderId(orderId);
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     private void save(@RequestBody OrderInvoiceDTO orderInvoiceDTO) {
