@@ -26,10 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 @Transactional
@@ -169,6 +166,106 @@ public class CustomerBOImpl implements CustomerBO {
         System.out.println(passwordEncoder.encode(password));
     }
 
+    @Override
+    public List<CustomerDTO> readAllCustomerDetails() {
+        List<CustomerUser> customerUsers = customerUserRepository.findAll();
+        List<CustomerDTO> customerUserDTO = new ArrayList<>();
+
+        for (CustomerUser customer : customerUsers) {
+            CustomerDTO customerDTO = new CustomerDTO();
+
+            customerDTO.setId(customer.getCustomerId());
+            customerDTO.setFirstName(customer.getCustomerFirstName());
+            customerDTO.setEmail(customer.getCustomerEmail());
+            customerDTO.setContact(customer.getContact());
+            customerDTO.setEmailVerified(customer.getEmailVerified());
+            customerDTO.setAccountStatus(customer.getAccountStatus());
+
+            customerUserDTO.add(customerDTO);
+        }
+
+        return customerUserDTO;
+    }
+
+    @Override
+    public void updateCustomerStatus(String customerId, int status) {
+        Optional<CustomerUser> optionalCustomerUser = customerUserRepository.findById(customerId);
+
+        if (optionalCustomerUser.isPresent()) {
+
+            if (status == 1) {
+                optionalCustomerUser.get().setAccountStatus(0);
+            } else {
+                optionalCustomerUser.get().setAccountStatus(1);
+            }
+            customerUserRepository.save(optionalCustomerUser.get());
+        }
+    }
+
+    @Override
+    public int getTotalCountOfRegistered() {
+        return customerUserRepository.getTotalCountOfRegisteredCustomers();
+    }
+
+    @Override
+    public int getTotalCountOfActive() {
+        return customerUserRepository.getTotalCountOfActiveCustomers();
+    }
+
+    @Override
+    public int getTotalCountOfDeactivate() {
+        return customerUserRepository.getTotalCountOfDeactivateCustomers();
+    }
+
+    @Override
+    public int getTotalCountOfVerified() {
+        return customerUserRepository.getTotalCountOfVerifiedCustomers();
+    }
+
+    @Override
+    public int getTotalCountOfUnVerified() {
+        return customerUserRepository.getTotalCountOfUnVerifiedCustomers();
+    }
+
+    @Override
+    public List<CustomerDTO> getCustomerDetailsByStatus(int status) {
+        List<CustomerDTO> customerDTOList = new ArrayList<>();
+
+        if (status == 0) {
+            List<CustomerUser> customerUserActive = customerUserRepository.getCustomerDetailsByStatusActive();
+
+            for (CustomerUser customer : customerUserActive) {
+                CustomerDTO customerDTO = getCustomerDTO(customer);
+                customerDTOList.add(customerDTO);
+            }
+        } else if (status == 1) {
+            List<CustomerUser> customerUserDeactivate = customerUserRepository.getCustomerDetailsByStatusDeactivate();
+
+            for (CustomerUser customerUser : customerUserDeactivate) {
+                CustomerDTO customerDTO = getCustomerDTO(customerUser);
+                customerDTOList.add(customerDTO);
+            }
+        } else if (status == 2) {
+            List<CustomerUser> customerUserVerified = customerUserRepository.getCustomerDetailsByStatusVerified();
+
+            for (CustomerUser customerUser : customerUserVerified) {
+                CustomerDTO customerDTO = getCustomerDTO(customerUser);
+                customerDTOList.add(customerDTO);
+            }
+        } else if (status == 3) {
+            List<CustomerUser> customerUserNotVerified = customerUserRepository.getCustomerDetailsByStatusUnVerified();
+
+            for (CustomerUser customerUser : customerUserNotVerified) {
+                CustomerDTO customerDTO = getCustomerDTO(customerUser);
+                customerDTOList.add(customerDTO);
+            }
+        } else {
+          customerDTOList = readAllCustomerDetails();
+        }
+
+        return customerDTOList;
+    }
+
     private String getCustomerId(){
         String lastCustomerId = customerUserRepository.getCustomerId();
         String newCustomerId = "";
@@ -185,6 +282,19 @@ public class CustomerBOImpl implements CustomerBO {
             }
         }
         return newCustomerId;
+    }
+
+    private CustomerDTO getCustomerDTO(CustomerUser customer){
+        CustomerDTO customerDTO = new CustomerDTO();
+
+        customerDTO.setId(customer.getCustomerId());
+        customerDTO.setFirstName(customer.getCustomerFirstName());
+        customerDTO.setEmail(customer.getCustomerEmail());
+        customerDTO.setContact(customer.getContact());
+        customerDTO.setEmailVerified(customer.getEmailVerified());
+        customerDTO.setAccountStatus(customer.getAccountStatus());
+
+        return customerDTO;
     }
 
     private String buildEmail(String name, String link) {
