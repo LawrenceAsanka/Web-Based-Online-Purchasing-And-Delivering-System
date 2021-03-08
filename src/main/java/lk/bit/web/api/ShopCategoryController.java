@@ -18,11 +18,11 @@ public class ShopCategoryController {
     @Autowired
     private ShopCategoryBO shopCategoryBO;
 
-   /* @ResponseStatus(HttpStatus.OK)
-    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/all")
     private List<ShopCategoryDTO> getAllShopCategoryDetails(){
         return shopCategoryBO.getAllShopCategories();
-    }*/
+    }
 
    /* @ResponseStatus(HttpStatus.OK)
     @GetMapping(name = "/{categoryId}")
@@ -34,29 +34,35 @@ public class ShopCategoryController {
     }*/
 
     @GetMapping()
-    private List<ShopCategoryDTO> getAllActiveCategories(@RequestParam String status){
-        List<ShopCategoryDTO> categoryDTOS = shopCategoryBO.getAllCategoryByIsActivated();
-        return categoryDTOS;
+    private List<ShopCategoryDTO> getAllActiveCategories(@RequestParam String status) {
+        return shopCategoryBO.getAllCategoryByIsActivated();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    private void saveShopCategory(@RequestBody ShopCategoryDTO shopCategoryDetails){
+    private void saveShopCategory(@RequestBody ShopCategoryDTO shopCategoryDetails) {
         if (shopCategoryDetails.getCategoryName() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         shopCategoryBO.saveShopCategory(shopCategoryDetails.getCategoryName());
     }
 
-   /* @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PutMapping(name = "/{categoryId}")
-    private void updateShopCategory(@PathVariable int categoryId,
-                                    @RequestBody ShopCategoryDTO shopCategoryDetails){
-        if (!shopCategoryBO.existShopCategory(categoryId)) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/{categoryId}")
+    private void updateShopCategory(@PathVariable int categoryId, @RequestParam("name") String categoryName){
+        if (!shopCategoryBO.existShopCategory(categoryId) || categoryName == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        shopCategoryBO.updateShopCategory(shopCategoryDetails.getCategoryName(), shopCategoryDetails.getStatus(),
-                categoryId);
-    }*/
+        shopCategoryBO.updateShopCategory(categoryName, categoryId);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping
+    private void updateShopCategory(@RequestParam("id") int categoryId, @RequestParam int status) {
+        if (!shopCategoryBO.existShopCategory(categoryId) || status < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+       shopCategoryBO.updateCategoryStatus(categoryId, status);
+    }
 }
 

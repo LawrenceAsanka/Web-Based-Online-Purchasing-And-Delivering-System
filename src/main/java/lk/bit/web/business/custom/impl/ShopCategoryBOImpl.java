@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ShopCategoryBOImpl implements ShopCategoryBO {
@@ -16,7 +17,7 @@ public class ShopCategoryBOImpl implements ShopCategoryBO {
     @Autowired
     private ShopCategoryRepository shopCategoryRepository;
 
-/*    @Override
+    @Override
     public List<ShopCategoryDTO> getAllShopCategories() {
         List<ShopCategoryDTO> shopCategoryDetails = new ArrayList<>();
         List<ShopCategory> allShopCategories = shopCategoryRepository.findAll();
@@ -25,7 +26,7 @@ public class ShopCategoryBOImpl implements ShopCategoryBO {
                     shopCategory.getStatus()));
         }
         return shopCategoryDetails;
-    }*/
+    }
 
 /*    @Override
     public ShopCategoryDTO getShopCategory(int categoryId) {
@@ -50,13 +51,36 @@ public class ShopCategoryBOImpl implements ShopCategoryBO {
         return categoryDTO;
     }
 
-    /*@Override
-    public void updateShopCategory(String categoryName, String status, int categoryId) {
-        shopCategoryRepository.save(new ShopCategory(categoryId, categoryName, status));
-    }*/
+    @Override
+    public void updateShopCategory(String categoryName, int categoryId) {
+        Optional<ShopCategory> optionalShopCategory = shopCategoryRepository.findById(categoryId);
+
+        if (optionalShopCategory.isPresent()) {
+
+            optionalShopCategory.get().setCategoryName(categoryName);
+
+            shopCategoryRepository.save(optionalShopCategory.get());
+        }
+    }
 
     @Override
     public boolean existShopCategory(int categoryId) {
         return shopCategoryRepository.existsById(categoryId);
+    }
+
+    @Override
+    public void updateCategoryStatus(int id, int status) {
+        Optional<ShopCategory> optionalShopCategory = shopCategoryRepository.findById(id);
+
+        if (optionalShopCategory.isPresent()) {
+
+            if (status == 1) {
+                optionalShopCategory.get().setStatus(0);
+            } else {
+                optionalShopCategory.get().setStatus(1);
+            }
+
+            shopCategoryRepository.save(optionalShopCategory.get());
+        }
     }
 }
