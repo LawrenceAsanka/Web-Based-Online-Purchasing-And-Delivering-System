@@ -11,10 +11,14 @@ import java.util.List;
 public interface OrderInvoiceBO extends SuperBO{
 
     void saveOrder(OrderInvoiceDTO orderInvoiceDTO);
+    List<OrderInvoiceDTO> readOrderInvoiceDetailByStatus(String customerEmail);
     List<OrderInvoiceDTO> readOrderInvoiceDetailByStatus();
     List<OrderInvoiceTM> readOrderInvoiceDetailByOrderId(String orderId);
+    List<OrderInvoiceDTO> readOrderInvoiceByStatusConfirm(String customerEmail);
     List<OrderInvoiceDTO> readOrderInvoiceByStatusConfirm();
+    List<OrderInvoiceDTO> readOrderInvoiceByStatusCancel(String customerEmail);
     List<OrderInvoiceDTO> readOrderInvoiceByStatusCancel();
+    List<OrderInvoiceDTO> readOrderInvoiceByStatusComplete(String customerEmail);
     List<CompleteDeliveryDetailTM> readOrderInvoiceByStatusComplete();
     List<OrderInvoiceDTO> readOrderInvoiceByStatusProcess();
     List<AssignOrderInvoiceTM> readOrderInvoiceByStatusDelivery();

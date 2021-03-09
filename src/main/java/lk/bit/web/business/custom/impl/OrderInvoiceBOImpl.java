@@ -93,6 +93,31 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
+    public List<OrderInvoiceDTO> readOrderInvoiceDetailByStatus(String customerEmail) {
+        CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(customerEmail);
+
+        List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.getOrderInvoiceByStatus(customer.getCustomerId());
+        List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
+
+        for (OrderInvoice orderInvoice : orderInvoiceList) {
+            OrderInvoiceDTO orderInvoiceDTO = new OrderInvoiceDTO();
+
+            String createdDateTime = orderInvoice.getCreatedDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String deadlineDateTime = orderInvoice.getDeadlineDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+            orderInvoiceDTO.setOrderId(orderInvoice.getOrderId());
+            orderInvoiceDTO.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+            orderInvoiceDTO.setShopId(orderInvoice.getShop().getShopName());
+            orderInvoiceDTO.setNetTotal(orderInvoice.getNetTotal().toString());
+            orderInvoiceDTO.setCreatedDateTime(createdDateTime);
+            orderInvoiceDTO.setDeadlineDateTime(deadlineDateTime);
+
+            orderInvoiceDTOList.add(orderInvoiceDTO);
+        }
+        return orderInvoiceDTOList;
+    }
+
+    @Override
     public List<OrderInvoiceDTO> readOrderInvoiceDetailByStatus() {
         List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.getOrderInvoiceByStatus();
         List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
@@ -148,6 +173,33 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
+    public List<OrderInvoiceDTO> readOrderInvoiceByStatusConfirm(String customerEmail) {
+        CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(customerEmail);
+
+        List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.readOrderInvoiceByOrderStatusConfirm(customer.getCustomerId());
+        List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
+
+        for (OrderInvoice orderInvoice : orderInvoiceList) {
+            OrderInvoiceDTO orderInvoiceDTO = new OrderInvoiceDTO();
+
+            String createdDateTime = orderInvoice.getCreatedDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String deadlineDateTime = orderInvoice.getDeadlineDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+            orderInvoiceDTO.setOrderId(orderInvoice.getOrderId());
+            orderInvoiceDTO.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+            orderInvoiceDTO.setShopId(orderInvoice.getShop().getShopId());
+            orderInvoiceDTO.setNetTotal(orderInvoice.getNetTotal().toString());
+            orderInvoiceDTO.setCreatedDateTime(createdDateTime);
+            orderInvoiceDTO.setDeadlineDateTime(deadlineDateTime);
+            orderInvoiceDTO.setStatus(orderInvoice.getStatus());
+
+            orderInvoiceDTOList.add(orderInvoiceDTO);
+        }
+        return orderInvoiceDTOList;
+
+    }
+
+    @Override
     public List<OrderInvoiceDTO> readOrderInvoiceByStatusConfirm() {
         List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.readOrderInvoiceByOrderStatusConfirm();
         List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
@@ -169,7 +221,32 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
             orderInvoiceDTOList.add(orderInvoiceDTO);
         }
         return orderInvoiceDTOList;
+    }
 
+    @Override
+    public List<OrderInvoiceDTO> readOrderInvoiceByStatusCancel(String customerEmail) {
+        CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(customerEmail);
+
+        List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.readOrderInvoiceByOrderStatusCancel(customer.getCustomerId());
+        List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
+
+        for (OrderInvoice orderInvoice : orderInvoiceList) {
+            OrderInvoiceDTO orderInvoiceDTO = new OrderInvoiceDTO();
+
+            String createdDateTime = orderInvoice.getCreatedDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String deadlineDateTime = orderInvoice.getDeadlineDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+            orderInvoiceDTO.setOrderId(orderInvoice.getOrderId());
+            orderInvoiceDTO.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+            orderInvoiceDTO.setShopId(orderInvoice.getShop().getShopId());
+            orderInvoiceDTO.setNetTotal(orderInvoice.getNetTotal().toString());
+            orderInvoiceDTO.setCreatedDateTime(createdDateTime);
+            orderInvoiceDTO.setDeadlineDateTime(deadlineDateTime);
+            orderInvoiceDTO.setStatus(orderInvoice.getStatus());
+
+            orderInvoiceDTOList.add(orderInvoiceDTO);
+        }
+        return orderInvoiceDTOList;
     }
 
     @Override
@@ -197,7 +274,35 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
+    public List<OrderInvoiceDTO> readOrderInvoiceByStatusComplete(String customerEmail) {
+        CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(customerEmail);
+
+        List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.readOrderInvoiceByOrderStatusComplete(customer.getCustomerId());
+        List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
+
+        for (OrderInvoice orderInvoice : orderInvoiceList) {
+            OrderInvoiceDTO orderInvoiceDTO = new OrderInvoiceDTO();
+
+            String createdDateTime = orderInvoice.getCreatedDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String deadlineDateTime = orderInvoice.getDeadlineDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+            orderInvoiceDTO.setOrderId(orderInvoice.getOrderId());
+            orderInvoiceDTO.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+            orderInvoiceDTO.setShopId(orderInvoice.getShop().getShopId());
+            orderInvoiceDTO.setNetTotal(orderInvoice.getNetTotal().toString());
+            orderInvoiceDTO.setCreatedDateTime(createdDateTime);
+            orderInvoiceDTO.setDeadlineDateTime(deadlineDateTime);
+            orderInvoiceDTO.setStatus(orderInvoice.getStatus());
+
+            orderInvoiceDTOList.add(orderInvoiceDTO);
+        }
+        return orderInvoiceDTOList;
+    }
+
+    @Override
     public List<CompleteDeliveryDetailTM> readOrderInvoiceByStatusComplete() {
+//        CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(customerEmail);
+
         List<CustomEntity9> allCompletedDeliveryDetails = completeDeliveryRepository.getAllCompletedDeliveryDetails();
         List<CompleteDeliveryDetailTM> completeOrderDetails= new ArrayList<>();
 

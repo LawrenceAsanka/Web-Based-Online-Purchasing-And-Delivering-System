@@ -3,6 +3,7 @@ package lk.bit.web.repository;
 import lk.bit.web.entity.CompleteDelivery;
 import lk.bit.web.entity.CustomEntity10;
 import lk.bit.web.entity.CustomEntity9;
+import lk.bit.web.entity.OrderInvoice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -27,4 +28,5 @@ public interface CompleteDeliveryRepository extends JpaRepository<CompleteDelive
             "FROM AssignOrderInvoiceDetail AO INNER JOIN CompleteDelivery CD ON AO.id = CD.assignInvoiceId.id " +
             "INNER JOIN OrderInvoice OI ON AO.orderInvoiceId.orderId = OI.orderId WHERE AO.assigneeId.id = ?1 ORDER BY CD.id ")
     public List<CustomEntity10> getAllCompletedDeliveryDetailsByAssignee(String assigneeId);
+
 }

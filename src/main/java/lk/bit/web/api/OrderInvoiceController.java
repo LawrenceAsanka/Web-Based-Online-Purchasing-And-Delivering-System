@@ -1,5 +1,6 @@
 package lk.bit.web.api;
 
+import lk.bit.web.business.custom.CustomerBO;
 import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ShopBO;
 import lk.bit.web.business.custom.SystemUserBO;
@@ -25,11 +26,17 @@ public class OrderInvoiceController {
     private ShopBO shopBO;
     @Autowired
     private SystemUserBO systemUserBO;
+    @Autowired
+    private CustomerBO customerBO;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    private List<OrderInvoiceDTO> readOrderInvoiceDetailByStatus() {
-        return orderInvoiceBO.readOrderInvoiceDetailByStatus();
+    private List<OrderInvoiceDTO> readOrderInvoiceDetailByStatus(@RequestParam(name = "email", required = false) String customerEmail) {
+        if (customerEmail != null) {
+            return orderInvoiceBO.readOrderInvoiceDetailByStatus(customerEmail);
+        } else {
+            return orderInvoiceBO.readOrderInvoiceDetailByStatus();
+        }
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -40,20 +47,29 @@ public class OrderInvoiceController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/confirm")
-    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusConfirm() {
-        return orderInvoiceBO.readOrderInvoiceByStatusConfirm();
+    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusConfirm(@RequestParam(name = "email", required = false) String customerEmail) {
+        if (customerEmail != null) {
+            return orderInvoiceBO.readOrderInvoiceByStatusConfirm(customerEmail);
+        } else {
+            return orderInvoiceBO.readOrderInvoiceByStatusConfirm();
+        }
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/cancel")
-    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusCancel() {
-        return orderInvoiceBO.readOrderInvoiceByStatusCancel();
+    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusCancel(@RequestParam(name = "email", required = false) String customerEmail) {
+        if (customerEmail != null) {
+            return orderInvoiceBO.readOrderInvoiceByStatusCancel(customerEmail);
+        } else {
+            return orderInvoiceBO.readOrderInvoiceByStatusCancel();
+        }
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/complete")
-    private List<CompleteDeliveryDetailTM> readOrderInvoiceDetailsByStatusComplete() {
-        return orderInvoiceBO.readOrderInvoiceByStatusComplete();
+    @GetMapping("/completeWithCustomer")
+    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusComplete(@RequestParam("email") String customerEmail) {
+
+        return orderInvoiceBO.readOrderInvoiceByStatusComplete(customerEmail);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -66,6 +82,13 @@ public class OrderInvoiceController {
     @GetMapping("/delivery")
     private List<AssignOrderInvoiceTM> readOrderInvoiceDetailsByStatusDelivery() {
         return orderInvoiceBO.readOrderInvoiceByStatusDelivery();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/complete")
+    private List<CompleteDeliveryDetailTM> readOrderInvoiceDetailsByStatusComplete() {
+
+        return orderInvoiceBO.readOrderInvoiceByStatusComplete();
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -108,6 +131,7 @@ public class OrderInvoiceController {
         }
         return orderInvoiceBO.getCompletedOrderDetailsByAssignee(assignee);
     }
+
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/orderStatus")
