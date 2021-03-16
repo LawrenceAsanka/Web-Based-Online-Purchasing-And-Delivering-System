@@ -2,6 +2,8 @@ package lk.bit.web.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -13,4 +15,5 @@ public class ReturnDTO {
     private String createdDateTime;
     private String orderId;
     private int status;
+    private List<ReturnDetailDTO> returnDetailDTOList;
 }
