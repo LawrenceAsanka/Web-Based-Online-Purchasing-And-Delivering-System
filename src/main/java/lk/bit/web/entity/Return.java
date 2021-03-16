@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@Table(name = "return")
+@Table(name = "`return`")
 public class Return implements SuperEntity {
 
     @Id
