@@ -27,4 +27,9 @@ public class Return implements SuperEntity {
     @ManyToOne
     @JoinColumn(name = "order_id", referencedColumnName = "order_id", nullable = false)
     private OrderInvoice orderId;
+
+    public Return(String id, OrderInvoice orderId) {
+        this.id = id;
+        this.orderId = orderId;
+    }
 }
