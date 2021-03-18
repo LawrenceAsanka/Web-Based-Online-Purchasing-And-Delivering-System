@@ -4,15 +4,19 @@ import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ReturnBO;
 import lk.bit.web.dto.ReturnDTO;
 import lk.bit.web.dto.ReturnDetailDTO;
+import lk.bit.web.entity.OrderInvoice;
 import lk.bit.web.entity.Return;
 import lk.bit.web.entity.ReturnDetail;
 import lk.bit.web.repository.OrderInvoiceRepository;
 import lk.bit.web.repository.ReturnDetailRepository;
 import lk.bit.web.repository.ReturnRepository;
+import lk.bit.web.util.tm.ReturnTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -41,6 +45,31 @@ public class ReturnBOImpl implements ReturnBO {
                     returnDetailDTO.getReasonToReturn()));
         }
 
+    }
+
+    @Override
+    public List<ReturnTM> readAllByStatusCancel() {
+        List<Return> returnList = returnRepository.readAllByStatusCancel();
+        List<ReturnTM> returnTMList = new ArrayList<>();
+
+        for (Return returnRepo : returnList) {
+            ReturnTM returnTM = new ReturnTM();
+
+            returnTM.setReturnId(returnRepo.getId());
+
+            String createdDateTime = returnRepo.getCreatedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            returnTM.setCreatedDateTime(createdDateTime);
+
+            returnTM.setOrderId(returnRepo.getOrderId().getOrderId());
+
+            OrderInvoice orderInvoice = orderInvoiceRepository.findById(returnRepo.getOrderId().getOrderId()).get();
+            returnTM.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+            returnTM.setCustomer(orderInvoice.getCustomerUser().getCustomerFirstName()+ " " + orderInvoice.getCustomerUser().getCustomerLastName());
+
+            returnTMList.add(returnTM);
+        }
+
+        return returnTMList;
     }
 
     private String getNewReturnId(){

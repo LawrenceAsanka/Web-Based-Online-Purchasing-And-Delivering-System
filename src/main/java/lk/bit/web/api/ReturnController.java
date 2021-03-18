@@ -3,11 +3,14 @@ package lk.bit.web.api;
 import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ReturnBO;
 import lk.bit.web.dto.ReturnDTO;
+import lk.bit.web.util.tm.ReturnTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -17,6 +20,13 @@ public class ReturnController {
     private OrderInvoiceBO orderInvoiceBO;
     @Autowired
     private ReturnBO returnBO;
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/status")
+    private List<ReturnTM> readAllByStatusCancel(@RequestParam String status) {
+        return returnBO.readAllByStatusCancel();
+        //TODO
+    }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
