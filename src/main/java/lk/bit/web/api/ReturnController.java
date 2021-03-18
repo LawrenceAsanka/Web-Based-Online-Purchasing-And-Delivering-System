@@ -3,6 +3,7 @@ package lk.bit.web.api;
 import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ReturnBO;
 import lk.bit.web.dto.ReturnDTO;
+import lk.bit.web.util.tm.ReturnInvoiceTM;
 import lk.bit.web.util.tm.ReturnTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,10 +23,27 @@ public class ReturnController {
     private ReturnBO returnBO;
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/status")
-    private List<ReturnTM> readAllByStatusCancel(@RequestParam String status) {
+    @GetMapping
+    private List<ReturnTM> readAllByStatus() {
+        return returnBO.readAllByStatus();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/cancel")
+    private List<ReturnTM> readAllByStatusCancel() {
         return returnBO.readAllByStatusCancel();
-        //TODO
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/confirm")
+    private List<ReturnTM> readAllByStatusConfirm() {
+        return returnBO.readAllByStatusConfirm();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{returnId}")
+    private List<ReturnInvoiceTM> readAllReturnDetails(@PathVariable String returnId) {
+        return returnBO.readAllReturnDetailsByReturnId(returnId);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -36,5 +54,26 @@ public class ReturnController {
         }
 
         returnBO.saveReturnDetail(returnDTO);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/{returnId}/cancel")
+    private void updateStatusCancel(@PathVariable("returnId") String returnId) {
+        System.out.println(returnId);
+        if (!returnBO.IsReturnExist(returnId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        returnBO.updateStatusToCancel(returnId);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/{returnId}/confirm")
+    private void updateStatusConfirm(@PathVariable String returnId) {
+        if (!returnBO.IsReturnExist(returnId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        returnBO.updateStatusToConfirm(returnId);
     }
 }
