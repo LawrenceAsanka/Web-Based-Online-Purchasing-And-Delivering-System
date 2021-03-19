@@ -89,6 +89,17 @@ public class ReturnController {
         returnBO.saveAssignReturnAndUpdateStatus(returnIdArray, assignedTo);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/completeReturn")
+    private void saveCompleteReturnDetails(@RequestParam String returnIdArray,
+                                             @RequestParam String assignedTo) throws IOException {
+        if (returnIdArray == null || assignedTo == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        returnBO.saveAssignReturnAndUpdateStatus(returnIdArray, assignedTo);
+    }
+
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{returnId}/cancel")
     private void updateStatusCancel(@PathVariable("returnId") String returnId) {

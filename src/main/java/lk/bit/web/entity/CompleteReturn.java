@@ -22,7 +22,7 @@ public class CompleteReturn {
     private LocalDateTime deliveredDateTime = LocalDateTime.now();
 
     @OneToOne
-    @JoinColumn(name = "assign_invoice_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "assign_return_id", referencedColumnName = "id", nullable = false)
     private AssignReturn assignReturnId;
 
     public CompleteReturn(String id, AssignReturn assignReturnId) {
