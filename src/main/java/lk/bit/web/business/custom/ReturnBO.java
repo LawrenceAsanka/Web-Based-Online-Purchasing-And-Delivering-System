@@ -2,6 +2,7 @@ package lk.bit.web.business.custom;
 
 import lk.bit.web.dto.ReturnDTO;
 import lk.bit.web.entity.SuperEntity;
+import lk.bit.web.util.tm.AssignReturnTM;
 import lk.bit.web.util.tm.ReturnInvoiceTM;
 import lk.bit.web.util.tm.ReturnTM;
 
@@ -24,4 +25,8 @@ public interface ReturnBO extends SuperEntity {
     void updateStatusToCancel(String returnId);
 
     void updateStatusToConfirm(String returnId);
+
+    void saveAssignReturnAndUpdateStatus(String returnIdArray, String assignTo);
+
+    List<AssignReturnTM> readAssignReturnDetail();
 }

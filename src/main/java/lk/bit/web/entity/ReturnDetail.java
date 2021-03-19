@@ -37,4 +37,8 @@ public class ReturnDetail implements SuperEntity{
         this.returnQty = returnQty;
         ReasonToReturn = reasonToReturn;
     }
+
+    public ReturnDetail(String returnId) {
+        this.returnDetailPK = new ReturnDetailPK(returnId);
+    }
 }

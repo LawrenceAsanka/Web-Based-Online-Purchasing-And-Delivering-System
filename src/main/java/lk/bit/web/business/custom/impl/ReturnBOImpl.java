@@ -3,12 +3,9 @@ package lk.bit.web.business.custom.impl;
 import lk.bit.web.business.custom.ReturnBO;
 import lk.bit.web.dto.ReturnDTO;
 import lk.bit.web.dto.ReturnDetailDTO;
-import lk.bit.web.entity.OrderInvoice;
-import lk.bit.web.entity.Return;
-import lk.bit.web.entity.ReturnDetail;
-import lk.bit.web.repository.OrderInvoiceRepository;
-import lk.bit.web.repository.ReturnDetailRepository;
-import lk.bit.web.repository.ReturnRepository;
+import lk.bit.web.entity.*;
+import lk.bit.web.repository.*;
+import lk.bit.web.util.tm.AssignReturnTM;
 import lk.bit.web.util.tm.ReturnInvoiceTM;
 import lk.bit.web.util.tm.ReturnTM;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +27,10 @@ public class ReturnBOImpl implements ReturnBO {
     private ReturnDetailRepository returnDetailRepository;
     @Autowired
     private OrderInvoiceRepository orderInvoiceRepository;
+    @Autowired
+    private AssignReturnRepository assignReturnRepository;
+    @Autowired
+    private SystemUserRepository systemUserRepository;
 
     @Override
     public void saveReturnDetail(ReturnDTO returnDTO) {
@@ -65,7 +66,7 @@ public class ReturnBOImpl implements ReturnBO {
 
             OrderInvoice orderInvoice = orderInvoiceRepository.findById(returnRepo.getOrderId().getOrderId()).get();
             returnTM.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
-            returnTM.setCustomer(orderInvoice.getCustomerUser().getCustomerFirstName()+ " " + orderInvoice.getCustomerUser().getCustomerLastName());
+            returnTM.setCustomer(orderInvoice.getCustomerUser().getCustomerFirstName() + " " + orderInvoice.getCustomerUser().getCustomerLastName());
 
             returnTMList.add(returnTM);
         }
@@ -90,7 +91,7 @@ public class ReturnBOImpl implements ReturnBO {
 
             OrderInvoice orderInvoice = orderInvoiceRepository.findById(returnRepo.getOrderId().getOrderId()).get();
             returnTM.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
-            returnTM.setCustomer(orderInvoice.getCustomerUser().getCustomerFirstName()+ " " + orderInvoice.getCustomerUser().getCustomerLastName());
+            returnTM.setCustomer(orderInvoice.getCustomerUser().getCustomerFirstName() + " " + orderInvoice.getCustomerUser().getCustomerLastName());
 
             returnTMList.add(returnTM);
         }
@@ -115,7 +116,7 @@ public class ReturnBOImpl implements ReturnBO {
 
             OrderInvoice orderInvoice = orderInvoiceRepository.findById(returnRepo.getOrderId().getOrderId()).get();
             returnTM.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
-            returnTM.setCustomer(orderInvoice.getCustomerUser().getCustomerFirstName()+ " " + orderInvoice.getCustomerUser().getCustomerLastName());
+            returnTM.setCustomer(orderInvoice.getCustomerUser().getCustomerFirstName() + " " + orderInvoice.getCustomerUser().getCustomerLastName());
 
             returnTMList.add(returnTM);
         }
@@ -170,7 +171,59 @@ public class ReturnBOImpl implements ReturnBO {
         }
     }
 
-    private String getNewReturnId(){
+    @Override
+    public void saveAssignReturnAndUpdateStatus(String returnIdArray, String assignTo) {
+        String[] splitArray = returnIdArray.split(",");
+
+        for (String returnId : splitArray) {
+
+            Optional<Return> optionalReturn = returnRepository.findById(returnId);
+            Optional<SystemUser> optionalSystemUser = systemUserRepository.findById(assignTo);
+
+            if (optionalReturn.isPresent() && optionalSystemUser.isPresent()) {
+
+                optionalReturn.get().setStatus(3);
+
+                assignReturnRepository.save(new AssignReturn(optionalReturn.get(), optionalSystemUser.get()));
+                returnRepository.save(optionalReturn.get());
+            }
+        }
+    }
+
+    @Override
+    public List<AssignReturnTM> readAssignReturnDetail() {
+        List<Return> returnList = returnRepository.readAllByStatusProcessing();
+        List<AssignReturnTM> assignReturnDetails = new ArrayList<>();
+
+        for (Return returnDetail : returnList) {
+
+            AssignReturnTM assignReturnTM = new AssignReturnTM();
+
+            assignReturnTM.setReturnId(returnDetail.getId());
+            assignReturnTM.setOrderId(returnDetail.getOrderId().getOrderId());
+
+            String createdDateTime = returnDetail.getCreatedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            assignReturnTM.setCreatedDateTime(createdDateTime);
+
+            OrderInvoice orderInvoice = orderInvoiceRepository.findById(returnDetail.getOrderId().getOrderId()).get();
+            assignReturnTM.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+            assignReturnTM.setCustomerName(orderInvoice.getCustomerUser().getCustomerFirstName() + " " + orderInvoice.getCustomerUser().getCustomerLastName());
+
+            AssignReturn assignReturn = assignReturnRepository.readAssignReturnDetailByReturnId(returnDetail.getId());
+            SystemUser systemUser = systemUserRepository.findById(assignReturn.getAssigneeId().getId()).get();
+            assignReturnTM.setAssignTo(systemUser.getFirstName() + " " + systemUser.getLastName());
+
+            String assignedDateTime = assignReturn.getAssignedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            assignReturnTM.setAssignedDateTime(assignedDateTime);
+
+            assignReturnDetails.add(assignReturnTM);
+
+        }
+
+        return assignReturnDetails;
+    }
+
+    private String getNewReturnId() {
         String returnId = returnRepository.getReturnId();
         String newReturnId = "";
         if (returnId == null) {
@@ -181,7 +234,7 @@ public class ReturnBOImpl implements ReturnBO {
             if (newId < 10) {
                 newReturnId = "RT0" + newId;
             } else {
-                newReturnId = "RT"+newId;
+                newReturnId = "RT" + newId;
             }
         }
         return newReturnId;

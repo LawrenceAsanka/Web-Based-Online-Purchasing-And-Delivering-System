@@ -3,6 +3,7 @@ package lk.bit.web.api;
 import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ReturnBO;
 import lk.bit.web.dto.ReturnDTO;
+import lk.bit.web.util.tm.AssignReturnTM;
 import lk.bit.web.util.tm.ReturnInvoiceTM;
 import lk.bit.web.util.tm.ReturnTM;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -46,6 +48,12 @@ public class ReturnController {
         return returnBO.readAllReturnDetailsByReturnId(returnId);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/assignReturns")
+    private List<AssignReturnTM> readAllAssignReturnsByStatus() {
+        return returnBO.readAssignReturnDetail();
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     private void saveReturn(@RequestBody ReturnDTO returnDTO) {
@@ -54,6 +62,17 @@ public class ReturnController {
         }
 
         returnBO.saveReturnDetail(returnDTO);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/assigns")
+    private void updateOrderStatusToDelivery(@RequestParam String returnIdArray,
+                                             @RequestParam String assignedTo) throws IOException {
+        if (returnIdArray == null || assignedTo == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        returnBO.saveAssignReturnAndUpdateStatus(returnIdArray, assignedTo);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

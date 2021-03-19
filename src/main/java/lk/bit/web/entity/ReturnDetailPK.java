@@ -16,4 +16,8 @@ public class ReturnDetailPK implements Serializable {
 
     private String returnId;
     private String productId;
+
+    public ReturnDetailPK(String returnId) {
+        this.returnId = returnId;
+    }
 }
