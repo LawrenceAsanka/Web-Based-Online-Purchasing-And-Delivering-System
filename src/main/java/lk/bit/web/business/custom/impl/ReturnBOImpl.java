@@ -32,6 +32,8 @@ public class ReturnBOImpl implements ReturnBO {
     private AssignReturnRepository assignReturnRepository;
     @Autowired
     private SystemUserRepository systemUserRepository;
+    @Autowired
+    private CompleteReturnRepository completeReturnRepository;
 
     @Override
     public void saveReturnDetail(ReturnDTO returnDTO) {
@@ -263,6 +265,23 @@ public class ReturnBOImpl implements ReturnBO {
         return assignDetailTM;
     }
 
+    @Override
+    public void saveCompleteReturnDetails(String returnId) {
+        Optional<Return> optionalReturn = returnRepository.findById(returnId);
+
+        if (optionalReturn.isPresent()) {
+            AssignReturn assignReturn = assignReturnRepository.readAssignReturnDetailByReturnId(returnId);
+
+            // save complete return
+            completeReturnRepository.save(new CompleteReturn(getNewCompleteReturnId(), assignReturn));
+
+            // update status
+            optionalReturn.get().setStatus(4);
+            returnRepository.save(optionalReturn.get());
+        }
+
+    }
+
     private String getNewReturnId() {
         String returnId = returnRepository.getReturnId();
         String newReturnId = "";
@@ -278,5 +297,22 @@ public class ReturnBOImpl implements ReturnBO {
             }
         }
         return newReturnId;
+    }
+
+    private String getNewCompleteReturnId() {
+        String completeReturnId = completeReturnRepository.getCompleteReturnId();
+        String newCompleteReturnId = "";
+        if (completeReturnId == null) {
+            newCompleteReturnId = "CR01";
+        } else {
+            String id = completeReturnId.replaceAll("CR", "");
+            int newId = Integer.parseInt(id) + 1;
+            if (newId < 10) {
+                newCompleteReturnId = "CR0" + newId;
+            } else {
+                newCompleteReturnId = "CR" + newId;
+            }
+        }
+        return newCompleteReturnId;
     }
 }

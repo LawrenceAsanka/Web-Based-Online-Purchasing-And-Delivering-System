@@ -91,13 +91,12 @@ public class ReturnController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/completeReturn")
-    private void saveCompleteReturnDetails(@RequestParam String returnIdArray,
-                                             @RequestParam String assignedTo) throws IOException {
-        if (returnIdArray == null || assignedTo == null) {
+    private void saveCompleteReturnDetails(@RequestParam("id") String returnId){
+        if (returnId == null || !returnBO.IsReturnExist(returnId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
 
-        returnBO.saveAssignReturnAndUpdateStatus(returnIdArray, assignedTo);
+        returnBO.saveCompleteReturnDetails(returnId);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
