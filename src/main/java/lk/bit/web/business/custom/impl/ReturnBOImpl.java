@@ -5,10 +5,7 @@ import lk.bit.web.dto.ReturnDTO;
 import lk.bit.web.dto.ReturnDetailDTO;
 import lk.bit.web.entity.*;
 import lk.bit.web.repository.*;
-import lk.bit.web.util.tm.AssignReturnTM;
-import lk.bit.web.util.tm.DeliveryReturnTM;
-import lk.bit.web.util.tm.ReturnInvoiceTM;
-import lk.bit.web.util.tm.ReturnTM;
+import lk.bit.web.util.tm.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +31,8 @@ public class ReturnBOImpl implements ReturnBO {
     private SystemUserRepository systemUserRepository;
     @Autowired
     private CompleteReturnRepository completeReturnRepository;
+    @Autowired
+    private ShopRepository shopRepository;
 
     @Override
     public void saveReturnDetail(ReturnDTO returnDTO) {
@@ -145,6 +144,41 @@ public class ReturnBOImpl implements ReturnBO {
         }
 
         return returnDetailTM;
+    }
+
+    @Override
+    public List<CompleteReturnTM> readAllCompleteReturnDetailsByAssignee(String assignee) {
+        SystemUser systemUser = systemUserRepository.findSystemUser(assignee);
+        List<CompleteReturnTM> completeReturnTMList = new ArrayList<>();
+
+        if (systemUser != null) {
+            List<CustomEntity12> completeReturnDetailsByAssignee = completeReturnRepository.readAllCompleteReturnDetailsByAssignee(systemUser.getId());
+
+            for (CustomEntity12 detail : completeReturnDetailsByAssignee) {
+                CompleteReturnTM completeReturnTM = new CompleteReturnTM();
+
+                completeReturnTM.setReturnId(detail.getReturnId());
+
+                String assignedDateTime = detail.getAssignedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+                String completedDateTime = detail.getCompletedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+                completeReturnTM.setAssignedDateTime(assignedDateTime);
+                completeReturnTM.setCompletedDateTime(completedDateTime);
+
+                OrderInvoice orderInvoice = orderInvoiceRepository.findById(detail.getOrderId()).get();
+                completeReturnTM.setShop(orderInvoice.getShop().getShopName());
+                completeReturnTM.setAddress(
+                        orderInvoice.getShop().getAddress1()+" "+
+                                orderInvoice.getShop().getAddress2()+" "+
+                                orderInvoice.getShop().getCity()+" "+
+                                orderInvoice.getShop().getDistrict()
+                );
+
+                completeReturnTMList.add(completeReturnTM);
+            }
+
+        }
+        return completeReturnTMList;
     }
 
     @Override

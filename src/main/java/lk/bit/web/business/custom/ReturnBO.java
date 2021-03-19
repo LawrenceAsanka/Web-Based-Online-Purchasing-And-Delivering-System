@@ -2,10 +2,7 @@ package lk.bit.web.business.custom;
 
 import lk.bit.web.dto.ReturnDTO;
 import lk.bit.web.entity.SuperEntity;
-import lk.bit.web.util.tm.AssignReturnTM;
-import lk.bit.web.util.tm.DeliveryReturnTM;
-import lk.bit.web.util.tm.ReturnInvoiceTM;
-import lk.bit.web.util.tm.ReturnTM;
+import lk.bit.web.util.tm.*;
 
 import java.util.List;
 
@@ -20,6 +17,8 @@ public interface ReturnBO extends SuperEntity {
     List<ReturnTM> readAllByStatusConfirm();
 
     List<ReturnInvoiceTM> readAllReturnDetailsByReturnId(String returnId);
+
+    List<CompleteReturnTM> readAllCompleteReturnDetailsByAssignee(String assignee);
 
     boolean IsReturnExist(String returnId);
 

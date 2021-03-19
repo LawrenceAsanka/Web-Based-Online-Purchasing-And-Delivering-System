@@ -3,10 +3,7 @@ package lk.bit.web.api;
 import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ReturnBO;
 import lk.bit.web.dto.ReturnDTO;
-import lk.bit.web.util.tm.AssignReturnTM;
-import lk.bit.web.util.tm.DeliveryReturnTM;
-import lk.bit.web.util.tm.ReturnInvoiceTM;
-import lk.bit.web.util.tm.ReturnTM;
+import lk.bit.web.util.tm.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,11 +58,17 @@ public class ReturnController {
         if (userName == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        List<DeliveryReturnTM> deliveryReturnTMS = returnBO.readAllAssignReturnDetailByAssignee(userName);
-        for (DeliveryReturnTM deliveryReturnTM : deliveryReturnTMS) {
-            System.out.println(deliveryReturnTM.getAssignedDateTime());
+        return returnBO.readAllAssignReturnDetailByAssignee(userName);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/completeReturns")
+    private List<CompleteReturnTM> readAllCompletedReturnsDetailsByAssignee(@RequestParam String userName) {
+        if (userName == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return deliveryReturnTMS;
+
+        return returnBO.readAllCompleteReturnDetailsByAssignee(userName);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
