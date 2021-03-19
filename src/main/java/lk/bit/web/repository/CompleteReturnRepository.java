@@ -15,7 +15,7 @@ public interface CompleteReturnRepository extends JpaRepository<CompleteReturn, 
     @Query(value = "SELECT AR.return_id AS returnId, AR.assigned_date_time AS assignedDateTime, " +
             "CR.returned_date_time AS completedDateTime, R.order_id AS orderId FROM complete_return CR " +
             "INNER JOIN assigned_return AR on CR.assign_return_id = AR.id " +
-            "INNER JOIN `return` R on AR.return_id = R.id", nativeQuery = true)
+            "INNER JOIN `return` R on AR.return_id = R.id WHERE assignee_id=?1 AND status=4", nativeQuery = true)
     public List<CustomEntity12> readAllCompleteReturnDetailsByAssignee(String assigneeId);
 }
 
