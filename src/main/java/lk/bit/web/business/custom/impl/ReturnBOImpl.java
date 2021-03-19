@@ -6,6 +6,7 @@ import lk.bit.web.dto.ReturnDetailDTO;
 import lk.bit.web.entity.*;
 import lk.bit.web.repository.*;
 import lk.bit.web.util.tm.AssignReturnTM;
+import lk.bit.web.util.tm.DeliveryReturnTM;
 import lk.bit.web.util.tm.ReturnInvoiceTM;
 import lk.bit.web.util.tm.ReturnTM;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -221,6 +222,45 @@ public class ReturnBOImpl implements ReturnBO {
         }
 
         return assignReturnDetails;
+    }
+
+    @Override
+    public List<DeliveryReturnTM> readAllAssignReturnDetailByAssignee(String assignee) {
+        SystemUser systemUser = systemUserRepository.findSystemUser(assignee);
+        List<DeliveryReturnTM> assignDetailTM = new ArrayList<>();
+
+        if (systemUser != null) {
+            List<CustomEntity11> assignDetails = assignReturnRepository.readAssignReturnDetailByAssignee(systemUser.getId());
+
+            for (CustomEntity11 assignDetail : assignDetails) {
+                DeliveryReturnTM deliveryReturnTM = new DeliveryReturnTM();
+//                System.out.println(deliveryReturnTM.getAssignedDateTime());
+
+                deliveryReturnTM.setReturnId(assignDetail.getReturnId());
+                deliveryReturnTM.setOrderId(assignDetail.getOrderId());
+
+                String assignedDateTime = assignDetail.getAssignedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+                deliveryReturnTM.setAssignedDateTime(assignedDateTime);
+
+                Optional<OrderInvoice> orderInvoice = orderInvoiceRepository.findById(assignDetail.getOrderId());
+
+                if (orderInvoice.isPresent()) {
+
+                    deliveryReturnTM.setCustomerName(orderInvoice.get().getCustomerUser().getCustomerFirstName()+" "+
+                            orderInvoice.get().getCustomerUser().getCustomerLastName());
+                    deliveryReturnTM.setReturnAddress(
+                                    orderInvoice.get().getShop().getAddress1()+" "+
+                                    orderInvoice.get().getShop().getAddress2()+" "+
+                                    orderInvoice.get().getShop().getCity()+" "+
+                                    orderInvoice.get().getShop().getDistrict()
+                    );
+                }
+
+                assignDetailTM.add(deliveryReturnTM);
+            }
+
+        }
+        return assignDetailTM;
     }
 
     private String getNewReturnId() {

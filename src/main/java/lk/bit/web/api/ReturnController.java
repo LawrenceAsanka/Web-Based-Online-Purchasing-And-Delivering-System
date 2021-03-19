@@ -4,6 +4,7 @@ import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ReturnBO;
 import lk.bit.web.dto.ReturnDTO;
 import lk.bit.web.util.tm.AssignReturnTM;
+import lk.bit.web.util.tm.DeliveryReturnTM;
 import lk.bit.web.util.tm.ReturnInvoiceTM;
 import lk.bit.web.util.tm.ReturnTM;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,19 @@ public class ReturnController {
     @GetMapping("/assignReturns")
     private List<AssignReturnTM> readAllAssignReturnsByStatus() {
         return returnBO.readAssignReturnDetail();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/assignee")
+    private List<DeliveryReturnTM> readAllAssignReturnsDetailsByAssignee(@RequestParam String userName) {
+        if (userName == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        List<DeliveryReturnTM> deliveryReturnTMS = returnBO.readAllAssignReturnDetailByAssignee(userName);
+        for (DeliveryReturnTM deliveryReturnTM : deliveryReturnTMS) {
+            System.out.println(deliveryReturnTM.getAssignedDateTime());
+        }
+        return deliveryReturnTMS;
     }
 
     @ResponseStatus(HttpStatus.CREATED)

@@ -20,8 +20,8 @@ public interface AssignReturnRepository extends JpaRepository<AssignReturn, Inte
     @Query(value = "SELECT * FROM assigned_return WHERE return_id=?1",nativeQuery = true)
     public AssignReturn readAssignReturnDetailByReturnId(String returnId);
 
-    @Query(value = "SELECT AR.assignedDateTime AS assignedDateTime, R.orderId AS orderId," +
-            "R.id AS returnId FROM AssignReturn AR INNER JOIN Return R ON AR.returnId.orderId = R.id " +
+    @Query(value = "SELECT AR.assignedDateTime AS assignedDateTime, R.orderId.orderId AS orderId, " +
+            "R.id AS returnId FROM AssignReturn AR INNER JOIN Return R ON AR.returnId.id = R.id " +
             "WHERE R.status=3 AND AR.assigneeId.id=?1 ORDER BY AR.id")
-    public List<CustomEntity11> getOrderAssigneeDetailsByAssignee(String assignee);
+    public List<CustomEntity11> readAssignReturnDetailByAssignee(String assignee);
 }
