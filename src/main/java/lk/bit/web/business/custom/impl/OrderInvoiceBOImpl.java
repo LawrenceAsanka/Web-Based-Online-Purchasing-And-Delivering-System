@@ -57,6 +57,30 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
 
         if (customer != null && shop.isPresent()) {
 
+            // update credit limit
+            String totalNetTotalByCustomer = orderInvoiceRepository.getTotalNetTotalByCustomer(customer.getCustomerId());
+            int total1 = Integer.parseInt(totalNetTotalByCustomer.split("\\.")[0]);
+            int total2 = total1 + Integer.parseInt(orderInvoiceDTO.getNetTotal().split("\\.")[0]);
+            System.out.println(total2);
+
+            if (total2 == 50000) {
+                customer.setCreditLimit(new BigDecimal("20000"));
+            } else if (50000 < total2 && total2 <= 60000) {
+                customer.setCreditLimit(new BigDecimal("25000"));
+            } else if (60000 < total2 && total2 <= 70000) {
+                customer.setCreditLimit(new BigDecimal("30000"));
+            } else if (70000 < total2 && total2 <= 80000) {
+                customer.setCreditLimit(new BigDecimal("35000"));
+            }else if (80000 < total2 && total2 <= 90000) {
+                customer.setCreditLimit(new BigDecimal("40000"));
+            }else if (90000 < total2 && total2 <= 100000) {
+                customer.setCreditLimit(new BigDecimal("45000"));
+            }else if(total2 > 100000){
+                customer.setCreditLimit(new BigDecimal("50000"));
+            }
+            customerUserRepository.save(customer);
+            // end of update credit limit..
+
             // payment method check
             if (orderInvoiceDTO.getPaymentMethod().equals("1")) {
                 paymentMethod = PaymentMethod.COD.name();
@@ -75,9 +99,6 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
                         orderInvoiceDetailDTO.getTotal(), orderInvoiceDetailDTO.getDiscount()
                 ));
 
-                emailSender.sendEmail(customer.getCustomerEmail(), buildOrderEmail(orderId, getDateAndTime(),
-                        new BigDecimal(orderInvoiceDTO.getNetTotal()), shop.get()), "Order #" + orderId + " placed successfully");
-
                 Optional<Product> product = productRepository.findById(orderInvoiceDetailDTO.getProductId());
                 if (product.isPresent()) {
                     int currentQuantity = product.get().getCurrentQuantity();
@@ -87,6 +108,10 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
 
 
                 }
+
+                // send email
+                emailSender.sendEmail(customer.getCustomerEmail(), buildOrderEmail(orderId, getDateAndTime(),
+                        new BigDecimal(orderInvoiceDTO.getNetTotal()), shop.get()), "Order #" + orderId + " placed successfully");
             }
 
         }

@@ -20,5 +20,6 @@ public class CustomerDTO {
     private Role role;
     private int emailVerified;
     private int accountStatus;
+    private String creditLimit;
 
 }

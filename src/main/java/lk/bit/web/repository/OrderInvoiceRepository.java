@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -53,4 +54,7 @@ public interface OrderInvoiceRepository extends JpaRepository<OrderInvoice, Stri
 
     @Query(value = "SELECT COUNT(*) FROM order_invoice WHERE status=2 ", nativeQuery = true)
     public int getTotalConfirmOrderCount();
+
+    @Query(value = "SELECT SUM(net_total) FROM order_invoice WHERE customer_id=?1", nativeQuery = true)
+    public String getTotalNetTotalByCustomer(String customerId);
 }

@@ -3,6 +3,7 @@ package lk.bit.web.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @AllArgsConstructor
@@ -34,6 +35,9 @@ public class CustomerUser implements SuperEntity {
 
     @Column(nullable = false,length = 15)
     private String contact;
+
+    @Column(name = "credit_limit", nullable = false)
+    private BigDecimal creditLimit = new BigDecimal("0.00");
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
