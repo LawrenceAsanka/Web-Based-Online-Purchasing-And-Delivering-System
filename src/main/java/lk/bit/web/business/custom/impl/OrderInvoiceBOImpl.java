@@ -10,10 +10,13 @@ import lk.bit.web.util.tm.*;
 import lk.bit.web.util.email.EmailSender;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -45,75 +48,109 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     @Autowired
     private EmailSender emailSender;
     @Autowired
+    private CreditorRepository creditorRepository;
+    @Autowired
+    private Environment env;
+    @Autowired
     private ModelMapper mapper;
 
     @Override
-    public void saveOrder(OrderInvoiceDTO orderInvoiceDTO) {
+    public void saveOrderByCOD(OrderInvoiceDTO orderInvoiceDTO) {
 
         CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(orderInvoiceDTO.getCustomerId());
         Optional<Shop> shop = shopRepository.findById(orderInvoiceDTO.getShopId());
-        String orderId = getOrderId();
-        String paymentMethod = null;
 
         if (customer != null && shop.isPresent()) {
 
             // update credit limit
+
             String totalNetTotalByCustomer = orderInvoiceRepository.getTotalNetTotalByCustomer(customer.getCustomerId());
-            int total1 = Integer.parseInt(totalNetTotalByCustomer.split("\\.")[0]);
-            int total2 = total1 + Integer.parseInt(orderInvoiceDTO.getNetTotal().split("\\.")[0]);
-            System.out.println(total2);
 
-            if (total2 == 50000) {
-                customer.setCreditLimit(new BigDecimal("20000"));
-            } else if (50000 < total2 && total2 <= 60000) {
-                customer.setCreditLimit(new BigDecimal("25000"));
-            } else if (60000 < total2 && total2 <= 70000) {
-                customer.setCreditLimit(new BigDecimal("30000"));
-            } else if (70000 < total2 && total2 <= 80000) {
-                customer.setCreditLimit(new BigDecimal("35000"));
-            }else if (80000 < total2 && total2 <= 90000) {
-                customer.setCreditLimit(new BigDecimal("40000"));
-            }else if (90000 < total2 && total2 <= 100000) {
-                customer.setCreditLimit(new BigDecimal("45000"));
-            }else if(total2 > 100000){
-                customer.setCreditLimit(new BigDecimal("50000"));
-            }
-            customerUserRepository.save(customer);
-            // end of update credit limit..
-
-            // payment method check
-            if (orderInvoiceDTO.getPaymentMethod().equals("1")) {
-                paymentMethod = PaymentMethod.COD.name();
-            } else if (orderInvoiceDTO.getPaymentMethod().equals("2")) {
-                paymentMethod = PaymentMethod.CREDIT.name();
-            }
-
-            orderInvoiceRepository.save(new OrderInvoice(orderId, customer, shop.get(), new BigDecimal(orderInvoiceDTO.getNetTotal()),
-                    paymentMethod, LocalDateTime.now().plusHours(3)));
-
-            List<OrderInvoiceDetailDTO> orderInvoiceDetail = orderInvoiceDTO.getOrderInvoiceDetail();
-
-            for (OrderInvoiceDetailDTO orderInvoiceDetailDTO : orderInvoiceDetail) {
-                orderInvoiceDetailRepository.save(new OrderInvoiceDetail(
-                        orderId, orderInvoiceDetailDTO.getProductId(), orderInvoiceDetailDTO.getQuantity(),
-                        orderInvoiceDetailDTO.getTotal(), orderInvoiceDetailDTO.getDiscount()
-                ));
-
-                Optional<Product> product = productRepository.findById(orderInvoiceDetailDTO.getProductId());
-                if (product.isPresent()) {
-                    int currentQuantity = product.get().getCurrentQuantity();
-                    product.get().setCurrentQuantity(currentQuantity - orderInvoiceDetailDTO.getQuantity());
-
-                    productRepository.save(product.get());
-
-
+            if (totalNetTotalByCustomer != null) {
+                int total1 = Integer.parseInt(totalNetTotalByCustomer.split("\\.")[0]);
+                int total2 = total1 + Integer.parseInt(orderInvoiceDTO.getNetTotal().split("\\.")[0]);
+                System.out.println("total 1: " + total1);
+                System.out.println("total 2:" + total2);
+                if (total2 == 50000) {
+                    customer.setCreditLimit(new BigDecimal("20000"));
+                } else if (50000 < total2 && total2 <= 60000) {
+                    customer.setCreditLimit(new BigDecimal("25000"));
+                } else if (60000 < total2 && total2 <= 70000) {
+                    customer.setCreditLimit(new BigDecimal("30000"));
+                } else if (70000 < total2 && total2 <= 80000) {
+                    customer.setCreditLimit(new BigDecimal("35000"));
+                } else if (80000 < total2 && total2 <= 90000) {
+                    customer.setCreditLimit(new BigDecimal("40000"));
+                } else if (90000 < total2 && total2 <= 100000) {
+                    customer.setCreditLimit(new BigDecimal("45000"));
+                } else if (total2 > 100000) {
+                    customer.setCreditLimit(new BigDecimal("50000"));
                 }
+                customerUserRepository.save(customer);
+            }
+            // end of update credit limit.
 
-                // send email
-                emailSender.sendEmail(customer.getCustomerEmail(), buildOrderEmail(orderId, getDateAndTime(),
-                        new BigDecimal(orderInvoiceDTO.getNetTotal()), shop.get()), "Order #" + orderId + " placed successfully");
+            saveOrderInvoiceDetails(orderInvoiceDTO, customer, shop);
+
+        }
+    }
+
+    @Override
+    public void saveOrderByCredit(OrderInvoiceDTO orderInvoiceDTO) {
+
+        CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(orderInvoiceDTO.getCustomerId());
+        Optional<Shop> shop = shopRepository.findById(orderInvoiceDTO.getShopId());
+
+
+            //save invoice details
+            saveOrderInvoiceDetails(orderInvoiceDTO, customer, shop);
+    }
+
+    @Override
+    public void saveCreditProve(String customerEmail, String netTotal, MultipartFile nicFrontImage, MultipartFile nicBackImage) {
+        CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(customerEmail);
+
+        String creditorId = getCreditorId();
+        long settleDay = 0;
+
+        if (!nicFrontImage.isEmpty() && !nicBackImage.isEmpty() && customer.getCustomerId() != null) {
+
+            int total = Integer.parseInt(netTotal);
+
+            if (total <= 20000) {
+                settleDay = 10;
+            } else if (total <= 25000) {
+                settleDay = 12;
+            } else if (total <= 30000) {
+                settleDay = 14;
+            } else if (total <= 35000) {
+                settleDay = 16;
+            }else if (total <= 40000) {
+                settleDay = 18;
+            }else if (total <= 45000) {
+                settleDay = 20;
+            }else if(total <= 50000){
+                settleDay = 21;
             }
 
+            // check whether folder is exist or not
+           String uploadDir = env.getProperty("static.path") + "creditor/" + creditorId;
+           File file = new File(uploadDir);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+
+            //save NIC image locally
+            try {
+                nicFrontImage.transferTo(new File(file.getAbsolutePath() + "/" + nicFrontImage.getOriginalFilename()));
+                nicBackImage.transferTo(new File(file.getAbsolutePath() + "/" + nicBackImage.getOriginalFilename()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            //save creditor details
+            creditorRepository.save(new Creditor(creditorId, nicFrontImage.getOriginalFilename(), nicBackImage.getOriginalFilename(),
+                    new BigDecimal(netTotal), LocalDateTime.now().plusDays(settleDay) , customer));
         }
     }
 
@@ -675,18 +712,72 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
         return newId;
     }
 
+    private String getCreditorId() {
+        String lastCreditorId = creditorRepository.getLastCreditorId();
+        String newId = "";
+
+        if (lastCreditorId == null) {
+            newId = "CR01";
+        } else {
+            String replaceId = lastCreditorId.replaceAll("CR", "");
+            int id = Integer.parseInt(replaceId) + 1;
+            if (id < 10) {
+                newId = "CR0" + id;
+            } else {
+                newId = "CR" + id;
+            }
+        }
+        return newId;
+    }
+
     private String getDateAndTime() {
         LocalDateTime now = LocalDateTime.now();
         return now.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
     }
 
-    private OrderInvoiceDTO getOrderInvoiceDTO(OrderInvoice orderInvoice){
+    private void saveOrderInvoiceDetails(OrderInvoiceDTO orderInvoiceDTO, CustomerUser customer,Optional<Shop> shop){
+        String orderId = getOrderId();
+        String paymentMethod = "";
+
+        if (orderInvoiceDTO.getPaymentMethod().equals("1")) {
+            paymentMethod =   PaymentMethod.COD.name();
+        } else {
+            paymentMethod =   PaymentMethod.CREDIT.name();
+        }
+
+        orderInvoiceRepository.save(new OrderInvoice(orderId, customer, shop.get(), new BigDecimal(orderInvoiceDTO.getNetTotal()),
+                paymentMethod, LocalDateTime.now().plusHours(3)));
+
+        List<OrderInvoiceDetailDTO> orderInvoiceDetail = orderInvoiceDTO.getOrderInvoiceDetail();
+
+        for (OrderInvoiceDetailDTO orderInvoiceDetailDTO : orderInvoiceDetail) {
+            orderInvoiceDetailRepository.save(new OrderInvoiceDetail(
+                    orderId, orderInvoiceDetailDTO.getProductId(), orderInvoiceDetailDTO.getQuantity(),
+                    orderInvoiceDetailDTO.getTotal(), orderInvoiceDetailDTO.getDiscount()
+            ));
+
+            Optional<Product> product = productRepository.findById(orderInvoiceDetailDTO.getProductId());
+            if (product.isPresent()) {
+                int currentQuantity = product.get().getCurrentQuantity();
+                product.get().setCurrentQuantity(currentQuantity - orderInvoiceDetailDTO.getQuantity());
+
+                productRepository.save(product.get());
+
+            }
+        }
+
+        // send email
+        emailSender.sendEmail(customer.getCustomerEmail(), buildOrderEmail(orderId, getDateAndTime(),
+                new BigDecimal(orderInvoiceDTO.getNetTotal()), shop.get()), "Order #" + orderId + " placed successfully");
+    };
+
+   /* private OrderInvoiceDTO getOrderInvoiceDTO(OrderInvoice orderInvoice){
         return mapper.map(orderInvoice, OrderInvoiceDTO.class);
     }
 
     private OrderInvoiceTM getOrderInvoiceTM(CustomEntity5 customEntity5){
         return mapper.map(customEntity5, OrderInvoiceTM.class);
-    }
+    }*/
 
     private String buildOrderEmail(String orderId, String dateTime, BigDecimal netTotal, Shop shop) {
 

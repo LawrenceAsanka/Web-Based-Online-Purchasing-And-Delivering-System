@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
@@ -145,11 +146,28 @@ public class OrderInvoiceController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    private void save(@RequestBody OrderInvoiceDTO orderInvoiceDTO) {
-        if (orderInvoiceDTO == null || !shopBO.existShopById(orderInvoiceDTO.getShopId())) {
+    private void saveOrder(@RequestBody OrderInvoiceDTO orderInvoiceDTO) {
+        if (orderInvoiceDTO.getNetTotal() == null || !shopBO.existShopById(orderInvoiceDTO.getShopId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        orderInvoiceBO.saveOrder(orderInvoiceDTO);
+        if (orderInvoiceDTO.getPaymentMethod().equals("1")) {
+            orderInvoiceBO.saveOrderByCOD(orderInvoiceDTO);
+        } else {
+            orderInvoiceBO.saveOrderByCredit(orderInvoiceDTO);
+        }
+
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(path= "/credit",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    private void saveCreditOrderProve(@RequestParam("customer") String customerEmail,
+                                   @RequestParam("netTotal") String netTotal,
+                                   @RequestParam("nicFrontImage") MultipartFile nicFrontImage,
+                                   @RequestParam("nicBackImage") MultipartFile nicBackImage) {
+        if (customerEmail == null || nicFrontImage.isEmpty() || nicBackImage.isEmpty() || netTotal == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        orderInvoiceBO.saveCreditProve(customerEmail, netTotal, nicFrontImage, nicBackImage);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
