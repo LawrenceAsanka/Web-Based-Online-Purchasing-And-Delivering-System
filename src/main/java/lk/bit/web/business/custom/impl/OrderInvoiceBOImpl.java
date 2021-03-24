@@ -55,10 +55,11 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     private ModelMapper mapper;
 
     @Override
-    public void saveOrderByCOD(OrderInvoiceDTO orderInvoiceDTO) {
+    public String saveOrderByCOD(OrderInvoiceDTO orderInvoiceDTO) {
 
         CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(orderInvoiceDTO.getCustomerId());
         Optional<Shop> shop = shopRepository.findById(orderInvoiceDTO.getShopId());
+        OrderInvoice orderInvoice = new OrderInvoice();
 
         if (customer != null && shop.isPresent()) {
 
@@ -90,31 +91,36 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
             }
             // end of update credit limit.
 
-            saveOrderInvoiceDetails(orderInvoiceDTO, customer, shop);
+            orderInvoice = saveOrderInvoiceDetails(orderInvoiceDTO, customer, shop);
 
         }
+        return orderInvoice.getOrderId();
     }
 
     @Override
-    public void saveOrderByCredit(OrderInvoiceDTO orderInvoiceDTO) {
+    public String saveOrderByCredit(OrderInvoiceDTO orderInvoiceDTO) {
 
         CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(orderInvoiceDTO.getCustomerId());
         Optional<Shop> shop = shopRepository.findById(orderInvoiceDTO.getShopId());
 
 
             //save invoice details
-            saveOrderInvoiceDetails(orderInvoiceDTO, customer, shop);
+        OrderInvoice orderInvoice = saveOrderInvoiceDetails(orderInvoiceDTO, customer, shop);
+
+        return orderInvoice.getOrderId();
     }
 
     @Override
-    public void saveCreditProve(String customerEmail, String netTotal, MultipartFile nicFrontImage, MultipartFile nicBackImage) {
+    public void saveCreditProve(String customerEmail, String orderId, MultipartFile nicFrontImage, MultipartFile nicBackImage) {
+        System.out.println(orderId);
         CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(customerEmail);
-
+        Optional<OrderInvoice> optionalOrderInvoice = orderInvoiceRepository.findById(orderId);
         String creditorId = getCreditorId();
         long settleDay = 0;
 
-        if (!nicFrontImage.isEmpty() && !nicBackImage.isEmpty() && customer.getCustomerId() != null) {
+        if (!nicFrontImage.isEmpty() && !nicBackImage.isEmpty() && customer.getCustomerId() != null && optionalOrderInvoice.isPresent()) {
 
+            String netTotal = optionalOrderInvoice.get().getNetTotal().toString().split("\\.")[0];
             int total = Integer.parseInt(netTotal);
 
             if (total <= 20000) {
@@ -149,8 +155,8 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
             }
 
             //save creditor details
-            creditorRepository.save(new Creditor(creditorId, nicFrontImage.getOriginalFilename(), nicBackImage.getOriginalFilename(),
-                    new BigDecimal(netTotal), LocalDateTime.now().plusDays(settleDay) , customer));
+            creditorRepository.save(new CreditDetail(creditorId, nicFrontImage.getOriginalFilename(), nicBackImage.getOriginalFilename(),
+                    optionalOrderInvoice.get().getNetTotal(), LocalDateTime.now().plusDays(settleDay) , optionalOrderInvoice.get(), customer));
         }
     }
 
@@ -735,7 +741,7 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
         return now.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
     }
 
-    private void saveOrderInvoiceDetails(OrderInvoiceDTO orderInvoiceDTO, CustomerUser customer,Optional<Shop> shop){
+    private OrderInvoice saveOrderInvoiceDetails(OrderInvoiceDTO orderInvoiceDTO, CustomerUser customer,Optional<Shop> shop){
         String orderId = getOrderId();
         String paymentMethod = "";
 
@@ -745,7 +751,7 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
             paymentMethod =   PaymentMethod.CREDIT.name();
         }
 
-        orderInvoiceRepository.save(new OrderInvoice(orderId, customer, shop.get(), new BigDecimal(orderInvoiceDTO.getNetTotal()),
+        OrderInvoice savedOrderInvoice = orderInvoiceRepository.save(new OrderInvoice(orderId, customer, shop.get(), new BigDecimal(orderInvoiceDTO.getNetTotal()),
                 paymentMethod, LocalDateTime.now().plusHours(3)));
 
         List<OrderInvoiceDetailDTO> orderInvoiceDetail = orderInvoiceDTO.getOrderInvoiceDetail();
@@ -769,7 +775,9 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
         // send email
         emailSender.sendEmail(customer.getCustomerEmail(), buildOrderEmail(orderId, getDateAndTime(),
                 new BigDecimal(orderInvoiceDTO.getNetTotal()), shop.get()), "Order #" + orderId + " placed successfully");
-    };
+
+        return savedOrderInvoice;
+    }
 
    /* private OrderInvoiceDTO getOrderInvoiceDTO(OrderInvoice orderInvoice){
         return mapper.map(orderInvoice, OrderInvoiceDTO.class);

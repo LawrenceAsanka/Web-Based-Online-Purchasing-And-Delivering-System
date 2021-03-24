@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface OrderInvoiceBO extends SuperBO{
 
-    void saveOrderByCOD(OrderInvoiceDTO orderInvoiceDTO);
-    void saveOrderByCredit(OrderInvoiceDTO orderInvoiceDTO);
-    void saveCreditProve(String customerEmail, String netTotal,MultipartFile nicFrontImage, MultipartFile nicBackImage);
+    String saveOrderByCOD(OrderInvoiceDTO orderInvoiceDTO);
+    String saveOrderByCredit(OrderInvoiceDTO orderInvoiceDTO);
+    void saveCreditProve(String customerEmail, String orderId, MultipartFile nicFrontImage, MultipartFile nicBackImage);
     List<OrderInvoiceDTO> readOrderInvoiceDetailByStatus(String customerEmail);
     List<OrderInvoiceDTO> readOrderInvoiceDetailByStatus();
     List<OrderInvoiceTM> readOrderInvoiceDetailByOrderId(String orderId);

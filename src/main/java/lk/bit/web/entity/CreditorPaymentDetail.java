@@ -27,6 +27,6 @@ public class CreditorPaymentDetail implements SuperEntity{
     */
     @ManyToOne
     @JoinColumn(name = "creditor_id",referencedColumnName = "id" , nullable = false)
-    private Creditor creditor;
+    private CreditDetail creditDetail;
 
 }

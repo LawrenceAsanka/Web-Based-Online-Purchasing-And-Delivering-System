@@ -23,14 +23,14 @@ public class AssignCredit implements SuperEntity{
 
     @OneToOne
     @JoinColumn(name = "credit_id", referencedColumnName = "id", nullable = false)
-    private Creditor creditor;
+    private CreditDetail creditDetail;
 
     @ManyToOne
     @JoinColumn(name = "assignee_id", referencedColumnName = "id", nullable = false)
     private SystemUser assigneeId;
 
-    public AssignCredit(Creditor creditor, SystemUser assigneeId) {
-        this.creditor = creditor;
+    public AssignCredit(CreditDetail creditDetail, SystemUser assigneeId) {
+        this.creditDetail = creditDetail;
         this.assigneeId = assigneeId;
     }
 }

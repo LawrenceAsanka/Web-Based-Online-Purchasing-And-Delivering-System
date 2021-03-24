@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class CreditorDTO {
+public class CreditDetailDTO {
 
     private String id;
     private String nicFrontImage;
@@ -17,5 +17,6 @@ public class CreditorDTO {
     private String lastDateToSettle;
     private int isEmailSent;
     private int isSettle;
+    private int isAssigned;
     private String customerId;
 }

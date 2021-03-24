@@ -146,28 +146,30 @@ public class OrderInvoiceController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    private void saveOrder(@RequestBody OrderInvoiceDTO orderInvoiceDTO) {
+    private String saveOrder(@RequestBody OrderInvoiceDTO orderInvoiceDTO) {
+        String orderId= null;
         if (orderInvoiceDTO.getNetTotal() == null || !shopBO.existShopById(orderInvoiceDTO.getShopId())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         if (orderInvoiceDTO.getPaymentMethod().equals("1")) {
-            orderInvoiceBO.saveOrderByCOD(orderInvoiceDTO);
+            orderId = orderInvoiceBO.saveOrderByCOD(orderInvoiceDTO);
         } else {
-            orderInvoiceBO.saveOrderByCredit(orderInvoiceDTO);
+           orderId =  orderInvoiceBO.saveOrderByCredit(orderInvoiceDTO);
         }
 
+        return orderId;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path= "/credit",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     private void saveCreditOrderProve(@RequestParam("customer") String customerEmail,
-                                   @RequestParam("netTotal") String netTotal,
+                                   @RequestParam("orderId") String orderId,
                                    @RequestParam("nicFrontImage") MultipartFile nicFrontImage,
                                    @RequestParam("nicBackImage") MultipartFile nicBackImage) {
-        if (customerEmail == null || nicFrontImage.isEmpty() || nicBackImage.isEmpty() || netTotal == null) {
+        if (customerEmail == null || nicFrontImage.isEmpty() || nicBackImage.isEmpty() || orderId == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        orderInvoiceBO.saveCreditProve(customerEmail, netTotal, nicFrontImage, nicBackImage);
+        orderInvoiceBO.saveCreditProve(customerEmail, orderId, nicFrontImage, nicBackImage);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
