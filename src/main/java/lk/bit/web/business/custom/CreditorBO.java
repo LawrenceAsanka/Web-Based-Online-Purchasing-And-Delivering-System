@@ -20,4 +20,5 @@ public interface CreditorBO extends SuperBO {
     List<CreditCollectionTM> readAllCreditDetailsByAssignee(String assignee);
     void updateCreditAmountAndDate(String creditId, String extendDate, String newAmount);
     void updateIsSettleStatus(String creditId);
+
 }

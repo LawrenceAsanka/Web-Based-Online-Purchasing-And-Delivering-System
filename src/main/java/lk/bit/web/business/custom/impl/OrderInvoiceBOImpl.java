@@ -673,9 +673,10 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
                 CustomerUser customerUser = customerUserRepository.findById(detail.getCustomerId()).get();
                 String[] address = detail.getDeliveryAddress().split("\\|");
 
+                String createdDateTime = orderInvoice.getCreatedDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
                 //Send Confirmation Email
                 String bodyMessage = buildConfirmEmail(detail.getCustomerFullName(), orderInvoice.getOrderId(),
-                        "", detail.getShopName(), address[0], address[1], address[2], address[3], detail.getDeliveryContact());
+                        createdDateTime, detail.getShopName(), address[0], address[1], address[2], address[3], detail.getDeliveryContact());
 
                 emailSender.sendEmail(customerUser.getCustomerEmail(), bodyMessage, "Your order #"+orderInvoice.getOrderId()+" has been confirmed");
             }
