@@ -2,6 +2,7 @@ package lk.bit.web.api;
 
 import lk.bit.web.business.custom.CreditorBO;
 import lk.bit.web.dto.CreditDetailDTO;
+import lk.bit.web.util.tm.CreditCollectionTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -46,6 +47,16 @@ public class CreditorController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/assignee")
+    private List<CreditCollectionTM> readAllCreditDetailsByAssignee(@RequestParam("userName") String assignee){
+        if (assignee == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        return creditorBO.readAllCreditDetailsByAssignee(assignee);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/assign")
     private void saveCreditAssign(@RequestParam("creditIdArray") String creditArray,
                                   @RequestParam("assignedTo") String assignTo){
@@ -54,5 +65,17 @@ public class CreditorController {
         }
 
         creditorBO.saveCreditAssign(creditArray, assignTo);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PutMapping("/extendDate")
+    private void saveCreditAssign(@RequestParam("creditId") String creditId,
+                                  @RequestParam("extendDate") String extendDate,
+                                  @RequestParam("amount") String newAmount){
+        if (creditId == null && extendDate == null && newAmount ==null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        creditorBO.updateCreditAmountAndDate(creditId, extendDate, newAmount);
     }
 }

@@ -2,17 +2,14 @@ package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.CreditorBO;
 import lk.bit.web.dto.CreditDetailDTO;
-import lk.bit.web.entity.AssignCredit;
-import lk.bit.web.entity.CreditDetail;
-import lk.bit.web.entity.CustomerUser;
-import lk.bit.web.entity.SystemUser;
-import lk.bit.web.repository.AssignCreditRepository;
-import lk.bit.web.repository.CreditorRepository;
-import lk.bit.web.repository.CustomerUserRepository;
-import lk.bit.web.repository.SystemUserRepository;
+import lk.bit.web.entity.*;
+import lk.bit.web.repository.*;
+import lk.bit.web.util.tm.CreditCollectionTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -20,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Transactional
 public class CreditorBOImpl implements CreditorBO {
     @Autowired
     private CreditorRepository creditorRepository;
@@ -29,6 +27,8 @@ public class CreditorBOImpl implements CreditorBO {
     private AssignCreditRepository assignCreditRepository;
     @Autowired
     private SystemUserRepository systemUserRepository;
+    @Autowired
+    private OrderInvoiceRepository orderInvoiceRepository;
 
     @Override
     public int getCountOfNotSettleCreditByCustomer(String customerEmail) {
@@ -240,6 +240,59 @@ public class CreditorBOImpl implements CreditorBO {
                 optionalCreditor.get().setIsAssigned(1);
                 creditorRepository.save(optionalCreditor.get());
             }
+        }
+    }
+
+    @Override
+    public List<CreditCollectionTM> readAllCreditDetailsByAssignee(String assignee) {
+        List<CreditCollectionTM> creditCollectionTMList = new ArrayList<>();
+        SystemUser systemUser = systemUserRepository.findSystemUser(assignee);
+
+        if (systemUser != null) {
+            List<CustomEntity13> creditList = creditorRepository.readCreditDetailsByAssignee(systemUser.getId());
+
+            for (CustomEntity13 credit : creditList) {
+
+                Optional<OrderInvoice> optionalOrderInvoice = orderInvoiceRepository.findById(credit.getOrderId());
+                Optional<CreditDetail> optionalCreditDetail = creditorRepository.findById(credit.getCreditId());
+
+                if (optionalOrderInvoice.isPresent() && optionalCreditDetail.isPresent()) {
+                    OrderInvoice order = optionalOrderInvoice.get();
+                    CreditDetail creditDetail = optionalCreditDetail.get();
+
+                    String creditDate = creditDetail.getCreditDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+                    String address = order.getShop().getAddress1() + " " + order.getShop().getAddress2() + " " + order.getShop().getCity()+
+                            " "+ order.getShop().getDistrict();
+
+                    CreditCollectionTM creditCollectionTM = new CreditCollectionTM(
+                            credit.getCreditId(), order.getCustomerUser().getCustomerId()+"-"+order.getCustomerUser().getCustomerFirstName(),
+                            order.getShop().getShopName(), address,creditDate,creditDetail.getTotalCreditAmount().toString()
+                            );
+
+                    creditCollectionTMList.add(creditCollectionTM);
+                }
+            }
+        }
+        return creditCollectionTMList;
+    }
+
+    @Override
+    public void updateCreditAmountAndDate(String creditId, String extendDate, String newAmount) {
+        System.out.println("credit id:" + creditId);
+        Optional<CreditDetail> optionalCreditDetail = creditorRepository.findById(creditId);
+
+        if (optionalCreditDetail.isPresent()) {
+            // update date and amount
+            LocalDateTime lastDateToSettle = optionalCreditDetail.get().getLastDateToSettle();
+
+            optionalCreditDetail.get().setTotalCreditAmount(new BigDecimal(newAmount));
+            optionalCreditDetail.get().setLastDateToSettle(lastDateToSettle.plusDays(Long.parseLong(extendDate)));
+
+            creditorRepository.save(optionalCreditDetail.get());
+
+            int assignCreditId = assignCreditRepository.readAssignCreditByCreditId(creditId);
+            System.out.println("1"+assignCreditId);
+            assignCreditRepository.deleteById(assignCreditId);
         }
     }
 }
