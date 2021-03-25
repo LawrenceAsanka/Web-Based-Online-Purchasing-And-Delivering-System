@@ -278,7 +278,6 @@ public class CreditorBOImpl implements CreditorBO {
 
     @Override
     public void updateCreditAmountAndDate(String creditId, String extendDate, String newAmount) {
-        System.out.println("credit id:" + creditId);
         Optional<CreditDetail> optionalCreditDetail = creditorRepository.findById(creditId);
 
         if (optionalCreditDetail.isPresent()) {
@@ -287,12 +286,23 @@ public class CreditorBOImpl implements CreditorBO {
 
             optionalCreditDetail.get().setTotalCreditAmount(new BigDecimal(newAmount));
             optionalCreditDetail.get().setLastDateToSettle(lastDateToSettle.plusDays(Long.parseLong(extendDate)));
+            optionalCreditDetail.get().setIsAssigned(0);
 
             creditorRepository.save(optionalCreditDetail.get());
 
             int assignCreditId = assignCreditRepository.readAssignCreditByCreditId(creditId);
-            System.out.println("1"+assignCreditId);
             assignCreditRepository.deleteById(assignCreditId);
+        }
+    }
+
+    @Override
+    public void updateIsSettleStatus(String creditId) {
+        Optional<CreditDetail> optionalCreditDetail = creditorRepository.findById(creditId);
+
+        if (optionalCreditDetail.isPresent()) {
+            optionalCreditDetail.get().setIsSettle(1);
+
+            creditorRepository.save(optionalCreditDetail.get());
         }
     }
 }

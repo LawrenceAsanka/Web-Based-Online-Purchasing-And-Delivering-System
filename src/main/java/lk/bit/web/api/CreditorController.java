@@ -67,6 +67,16 @@ public class CreditorController {
         creditorBO.saveCreditAssign(creditArray, assignTo);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PutMapping("/complete")
+    private void updateIsSettleStatus(@RequestParam("id") String creditId){
+        if (creditId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        creditorBO.updateIsSettleStatus(creditId);
+    }
+
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/extendDate")
     private void saveCreditAssign(@RequestParam("creditId") String creditId,

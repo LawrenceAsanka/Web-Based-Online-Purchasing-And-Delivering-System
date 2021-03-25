@@ -18,6 +18,6 @@ public interface CreditorRepository extends JpaRepository<CreditDetail, String> 
     int getCountOfNotSettleCreditByCustomer(String customerId);
 
     @Query(value = "SELECT CD.id AS creditId, OI.order_id AS orderId FROM creditor_detail CD INNER JOIN assigned_credit AC on CD.id = AC.credit_id " +
-            "INNER JOIN order_invoice OI on CD.order_id = OI.order_id WHERE AC.assignee_id=?1", nativeQuery = true)
+            "INNER JOIN order_invoice OI on CD.order_id = OI.order_id WHERE AC.assignee_id=?1 AND CD.is_settle=0", nativeQuery = true)
     List<CustomEntity13> readCreditDetailsByAssignee(String assignee);
 }
