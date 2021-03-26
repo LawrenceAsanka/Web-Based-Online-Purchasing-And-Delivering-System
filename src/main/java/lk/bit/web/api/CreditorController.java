@@ -2,6 +2,7 @@ package lk.bit.web.api;
 
 import lk.bit.web.business.custom.CreditorBO;
 import lk.bit.web.dto.CreditDetailDTO;
+import lk.bit.web.util.tm.CompleteCreditCollectionTM;
 import lk.bit.web.util.tm.CreditCollectionTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,6 +55,20 @@ public class CreditorController {
         }
 
         return creditorBO.readAllCreditDetailsByAssignee(assignee);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/complete")
+    private List<CompleteCreditCollectionTM> readAllCompleteCreditCollectionDetails(){
+
+        return creditorBO.readAllCompleteCreditCollectionDetails();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/completeCredits")
+    private List<CompleteCreditCollectionTM> readAllCompleteCreditCollectionDetailsByAssignee(@RequestParam("userName") String assignee){
+
+        return creditorBO.readAllCompleteCreditCollectionDetailsByAssignee(assignee);
     }
 
     @ResponseStatus(HttpStatus.CREATED)

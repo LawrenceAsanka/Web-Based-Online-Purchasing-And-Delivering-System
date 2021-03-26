@@ -5,6 +5,7 @@ import lk.bit.web.dto.CreditDetailDTO;
 import lk.bit.web.entity.*;
 import lk.bit.web.repository.*;
 import lk.bit.web.util.email.EmailSender;
+import lk.bit.web.util.tm.CompleteCreditCollectionTM;
 import lk.bit.web.util.tm.CreditCollectionTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -78,7 +79,7 @@ public class CreditorBOImpl implements CreditorBO {
 
         for (CreditDetail creditDetail : creditDetailList) {
             if (creditDetail.getLastDateToSettle().toLocalDate().equals(LocalDateTime.now().toLocalDate()) && creditDetail.getIsAssigned() == 0 &&
-            creditDetail.getOrderInvoice().getStatus() == 5) {
+                    creditDetail.getOrderInvoice().getStatus() == 5) {
 
                 CreditDetailDTO creditDetailDTO = new CreditDetailDTO();
                 creditDetailDTO.setId(creditDetail.getId());
@@ -265,13 +266,13 @@ public class CreditorBOImpl implements CreditorBO {
                     CreditDetail creditDetail = optionalCreditDetail.get();
 
                     String creditDate = creditDetail.getCreditDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-                    String address = order.getShop().getAddress1() + " " + order.getShop().getAddress2() + " " + order.getShop().getCity()+
-                            " "+ order.getShop().getDistrict();
+                    String address = order.getShop().getAddress1() + " " + order.getShop().getAddress2() + " " + order.getShop().getCity() +
+                            " " + order.getShop().getDistrict();
 
                     CreditCollectionTM creditCollectionTM = new CreditCollectionTM(
-                            credit.getCreditId(), order.getCustomerUser().getCustomerId()+"-"+order.getCustomerUser().getCustomerFirstName(),
-                            order.getShop().getShopName(), address,creditDate,creditDetail.getTotalCreditAmount().toString()
-                            );
+                            credit.getCreditId(), order.getCustomerUser().getCustomerId() + "-" + order.getCustomerUser().getCustomerFirstName(),
+                            order.getShop().getShopName(), address, creditDate, creditDetail.getTotalCreditAmount().toString()
+                    );
 
                     creditCollectionTMList.add(creditCollectionTM);
                 }
@@ -310,8 +311,67 @@ public class CreditorBOImpl implements CreditorBO {
         }
     }
 
+    @Override
+    public List<CompleteCreditCollectionTM> readAllCompleteCreditCollectionDetails() {
+        List<CustomEntity14> creditCollectionDetails = creditorRepository.readAllCompleteCreditCollectionDetails();
+        List<CompleteCreditCollectionTM> completeCreditCollectionTMList = new ArrayList<>();
+
+        for (CustomEntity14 detail : creditCollectionDetails) {
+            CompleteCreditCollectionTM collectionTM = new CompleteCreditCollectionTM();
+
+            String creditDate = detail.getCreditDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            Optional<CustomerUser> optionalCustomerUser = customerUserRepository.findById(detail.getCreditor());
+            Optional<SystemUser> optionalSystemUser = systemUserRepository.findById(detail.getAssignee());
+
+            if (optionalCustomerUser.isPresent() && optionalSystemUser.isPresent()) {
+                collectionTM.setCreditId(detail.getCreditId());
+                collectionTM.setOrderId(detail.getOrderId());
+                collectionTM.setCreditDate(creditDate);
+                collectionTM.setCreditor(optionalCustomerUser.get().getCustomerId()+" - "+optionalCustomerUser.get().getCustomerFirstName());
+                collectionTM.setCollectBy(optionalSystemUser.get().getFirstName() + " " + optionalSystemUser.get().getLastName());
+                collectionTM.setCollectedDate(detail.getSettleDay().toLocalDate().toString());
+                collectionTM.setCreditAmount(detail.getCreditAmount().toString());
+
+                completeCreditCollectionTMList.add(collectionTM);
+            }
+        }
+
+        return completeCreditCollectionTMList;
+    }
+
+    @Override
+    public List<CompleteCreditCollectionTM> readAllCompleteCreditCollectionDetailsByAssignee(String assignee) {
+        List<CustomEntity14> creditCollectionDetails = creditorRepository.readAllCompleteCreditCollectionDetails();
+        List<CompleteCreditCollectionTM> completeCreditCollectionTMList = new ArrayList<>();
+        SystemUser systemUser = systemUserRepository.findSystemUser(assignee);
+
+        for (CustomEntity14 detail : creditCollectionDetails) {
+            String creditDate = detail.getCreditDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            Optional<CustomerUser> optionalCustomerUser = customerUserRepository.findById(detail.getCreditor());
+            Optional<SystemUser> optionalSystemUser = systemUserRepository.findById(detail.getAssignee());
+
+            if (detail.getAssignee().equals(systemUser.getId())) {
+                CompleteCreditCollectionTM collectionTM = new CompleteCreditCollectionTM();
+
+                if (optionalCustomerUser.isPresent() && optionalSystemUser.isPresent()) {
+                    collectionTM.setCreditId(detail.getCreditId());
+                    collectionTM.setOrderId(detail.getOrderId());
+                    collectionTM.setCreditDate(creditDate);
+                    collectionTM.setCreditor(optionalCustomerUser.get().getCustomerId() + " - " + optionalCustomerUser.get().getCustomerFirstName());
+                    collectionTM.setCollectBy(optionalSystemUser.get().getFirstName() + " " + optionalSystemUser.get().getLastName());
+                    collectionTM.setCollectedDate(detail.getSettleDay().toLocalDate().toString());
+                    collectionTM.setCreditAmount(detail.getCreditAmount().toString());
+
+                    completeCreditCollectionTMList.add(collectionTM);
+                }
+            }
+        }
+
+        return completeCreditCollectionTMList;
+    }
+
     @Scheduled(cron = "* 0/30 9 * * *")
-    protected void sentEmail(){
+    protected void sentEmail() {
         List<CreditDetail> allCreditors = creditorRepository.findAll();
 
         for (CreditDetail creditor : allCreditors) {
@@ -335,7 +395,7 @@ public class CreditorBOImpl implements CreditorBO {
         }
     }
 
-    private String buildReminderEmail(String customerName, String orderId, String dueDate, BigDecimal amount){
+    private String buildReminderEmail(String customerName, String orderId, String dueDate, BigDecimal amount) {
         return "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\" " +
                 "xmlns:o=\"urn:schemas-microsoft-com:office:office\"><head><meta charset=\"UTF-8\"><meta content=\"width=device-width, initial-scale=1\" name=\"viewport\">" +
                 "<meta name=\"x-apple-disable-message-reformatting\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta content=\"telephone=no\" name=\"format-detection\">" +
@@ -370,9 +430,9 @@ public class CreditorBOImpl implements CreditorBO {
                 "<tr><td align=\"left\" style=\"Margin:0;padding-top:10px;padding-bottom:10px;padding-left:20px;padding-right:20px\"><table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px\"><tr>" +
                 "<td valign=\"top\" align=\"center\" style=\"padding:0;Margin:0;width:560px\"><table style=\"mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:separate;border-spacing:0px;border-radius:0px\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" role=\"presentation\"><tr>" +
                 "<td align=\"left\" style=\"padding:0;Margin:0;padding-top:5px;padding-bottom:5px;padding-right:40px\"><p style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px\">" +
-                "Hi <strong>"+customerName+"</strong>,<br><br></p>\n" +
+                "Hi <strong>" + customerName + "</strong>,<br><br></p>\n" +
                 "</td></tr><tr><td align=\"left\" style=\"padding:0;Margin:0\"><p style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:28px;color:#333333;font-size:14px\">" +
-                "This is to remind you that payment of an invoice for an invoice number <strong>#"+orderId+"</strong>&nbsp;is due on <strong>"+dueDate+"</strong>. The total credit amount is <strong>Rs. "+amount+"</strong>. Please make your payments on the date.<br><br>If you have any questions, please contact us at " +
+                "This is to remind you that payment of an invoice for an invoice number <strong>#" + orderId + "</strong>&nbsp;is due on <strong>" + dueDate + "</strong>. The total credit amount is <strong>Rs. " + amount + "</strong>. Please make your payments on the date.<br><br>If you have any questions, please contact us at " +
                 "<a target=\"_blank\" href=\"mailto:vgdistributors@gmail.com\" style=\"-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#2CB543;font-size:14px\">vgdisrtributors@gmail.com<br></a></p></td>\n" +
                 "</tr><tr><td align=\"left\" style=\"padding:0;Margin:0;padding-top:5px;padding-bottom:5px;padding-right:5px\"><p style=\"Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:21px;color:#333333;font-size:14px\">" +
                 "Thank you!<br>VG Distributors</p></td></tr></table></td></tr></table></td></tr></table></td></tr></table></td></tr></table></div></body></html>";

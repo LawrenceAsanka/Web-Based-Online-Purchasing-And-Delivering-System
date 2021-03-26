@@ -10,6 +10,7 @@ import lombok.*;
 public class CompleteCreditCollectionTM {
 
     private String creditId;
+    private String orderId;
     private String creditDate;
     private String creditor;
     private String collectBy;
