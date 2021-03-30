@@ -316,6 +316,28 @@ public class ReturnBOImpl implements ReturnBO {
 
     }
 
+    @Override
+    public List<ReturnDTO> readAllAssignReturnsDetailsByCustomer(String email) {
+        List<Return> returnList = returnRepository.findAll();
+        List<ReturnDTO> returnDTOList = new ArrayList<>();
+
+        for (Return detail : returnList) {
+            ReturnDTO returnDTO = new ReturnDTO();
+
+            returnDTO.setReturnId(detail.getId());
+
+            String createdDateTime = detail.getCreatedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            returnDTO.setCreatedDateTime(createdDateTime);
+
+            returnDTO.setOrderId(detail.getOrderId().getOrderId());
+            returnDTO.setStatus(detail.getStatus());
+
+            returnDTOList.add(returnDTO);
+        }
+
+        return returnDTOList;
+    }
+
     private String getNewReturnId() {
         String returnId = returnRepository.getReturnId();
         String newReturnId = "";

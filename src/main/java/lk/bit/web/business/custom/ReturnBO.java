@@ -33,4 +33,6 @@ public interface ReturnBO extends SuperEntity {
     List<DeliveryReturnTM> readAllAssignReturnDetailByAssignee(String assignee);
 
     void saveCompleteReturnDetails(String returnId);
+
+    List<ReturnDTO> readAllAssignReturnsDetailsByCustomer(String email);
 }

@@ -29,6 +29,12 @@ public class ReturnController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{returnId}")
+    private List<ReturnInvoiceTM> readAllReturnDetails(@PathVariable String returnId) {
+        return returnBO.readAllReturnDetailsByReturnId(returnId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/cancel")
     private List<ReturnTM> readAllByStatusCancel() {
         return returnBO.readAllByStatusCancel();
@@ -38,12 +44,6 @@ public class ReturnController {
     @GetMapping("/confirm")
     private List<ReturnTM> readAllByStatusConfirm() {
         return returnBO.readAllByStatusConfirm();
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/{returnId}")
-    private List<ReturnInvoiceTM> readAllReturnDetails(@PathVariable String returnId) {
-        return returnBO.readAllReturnDetailsByReturnId(returnId);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -69,6 +69,15 @@ public class ReturnController {
         }
 
         return returnBO.readAllCompleteReturnDetailsByAssignee(userName);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/customers")
+    private List<ReturnDTO> readAllAssignReturnsDetailsByCustomer(@RequestParam String email) {
+        if (email == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return returnBO.readAllAssignReturnsDetailsByCustomer(email);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
