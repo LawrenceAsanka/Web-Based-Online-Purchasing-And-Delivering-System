@@ -29,4 +29,11 @@ public class PurchaseInvoiceController {
         return purchaseInvoiceBO.readPurchaseDetailsById(purchaseId);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    private void deletePurchaseDetail(@PathVariable("id") String purchaseId){
+        System.out.println(purchaseId);
+        purchaseInvoiceBO.deletePurchaseInvoice(purchaseId);
+    }
+
 }

@@ -2,10 +2,7 @@ package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.PurchaseInvoiceBO;
 import lk.bit.web.dto.PurchaseInvoiceDTO;
-import lk.bit.web.entity.CustomEntity15;
-import lk.bit.web.entity.Product;
-import lk.bit.web.entity.PurchaseInvoice;
-import lk.bit.web.entity.PurchaseInvoiceDetail;
+import lk.bit.web.entity.*;
 import lk.bit.web.repository.ProductRepository;
 import lk.bit.web.repository.PurchaseInvoiceDetailRepository;
 import lk.bit.web.repository.PurchaseInvoiceRepository;
@@ -71,6 +68,17 @@ public class PurchaseInvoiceBOImpl implements PurchaseInvoiceBO {
         }
 
         return purchaseDetailTMList;
+    }
+
+    @Override
+    public void deletePurchaseInvoice(String purchaseId) {
+        List<CustomEntity15> purchaseDetailsList = purchaseInvoiceRepository.readAllPurchaseDetailsById(purchaseId);
+
+        for (CustomEntity15 detail : purchaseDetailsList) {
+            purchaseInvoiceDetailRepository.deleteById(new PurchaseInvoiceDetailPK(detail.getPurchaseId(), detail.getProductId()));
+        }
+
+        purchaseInvoiceRepository.deleteById(purchaseId);
     }
 
     //Purchase product mail

@@ -10,4 +10,5 @@ public interface PurchaseInvoiceBO extends SuperBO {
 
     public List<PurchaseInvoiceDTO> readAllPurchaseDetails();
     public List<PurchaseDetailTM> readPurchaseDetailsById(String purchaseId);
+    public void deletePurchaseInvoice(String purchaseId);
 }
