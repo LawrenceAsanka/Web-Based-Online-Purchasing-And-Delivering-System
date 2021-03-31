@@ -13,6 +13,6 @@ public class PurchaseDetailTM {
     private String purchasedDateTime;
     private String productId;
     private String product;
-    private String Unit;
-    private String totalQty;
+    private int Unit;
+    private int totalQty;
 }

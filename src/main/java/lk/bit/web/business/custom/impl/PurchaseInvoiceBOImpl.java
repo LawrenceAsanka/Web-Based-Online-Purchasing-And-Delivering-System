@@ -1,6 +1,8 @@
 package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.PurchaseInvoiceBO;
+import lk.bit.web.dto.PurchaseInvoiceDTO;
+import lk.bit.web.entity.CustomEntity15;
 import lk.bit.web.entity.Product;
 import lk.bit.web.entity.PurchaseInvoice;
 import lk.bit.web.entity.PurchaseInvoiceDetail;
@@ -8,11 +10,13 @@ import lk.bit.web.repository.ProductRepository;
 import lk.bit.web.repository.PurchaseInvoiceDetailRepository;
 import lk.bit.web.repository.PurchaseInvoiceRepository;
 import lk.bit.web.util.email.EmailSender;
+import lk.bit.web.util.tm.PurchaseDetailTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +33,45 @@ public class PurchaseInvoiceBOImpl implements PurchaseInvoiceBO {
     @Autowired
     private EmailSender emailSender;
 
+    @Override
+    public List<PurchaseInvoiceDTO> readAllPurchaseDetails() {
+        List<PurchaseInvoice> purchaseInvoiceList = purchaseInvoiceRepository.findAll();
+        List<PurchaseInvoiceDTO> purchaseInvoiceDTOList = new ArrayList<>();
 
+        for (PurchaseInvoice purchaseInvoice : purchaseInvoiceList) {
+            PurchaseInvoiceDTO purchaseInvoiceDTO = new PurchaseInvoiceDTO();
+            String purchaseDateTime = purchaseInvoice.getPurchaseDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+            purchaseInvoiceDTO.setPurchaseId(purchaseInvoice.getId());
+            purchaseInvoiceDTO.setPurchaseDateTime(purchaseDateTime);
+
+            purchaseInvoiceDTOList.add(purchaseInvoiceDTO);
+        }
+
+        return purchaseInvoiceDTOList;
+    }
+
+    @Override
+    public List<PurchaseDetailTM> readPurchaseDetailsById(String purchaseId) {
+        List<CustomEntity15> purchaseDetails = purchaseInvoiceRepository.readAllPurchaseDetailsById(purchaseId);
+        List<PurchaseDetailTM> purchaseDetailTMList = new ArrayList<>();
+
+        for (CustomEntity15 purchaseDetail : purchaseDetails) {
+            PurchaseDetailTM purchaseDetailTM = new PurchaseDetailTM();
+            String purchaseDateTime = purchaseDetail.getDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+            purchaseDetailTM.setPurchaseId(purchaseDetail.getPurchaseId());
+            purchaseDetailTM.setPurchasedDateTime(purchaseDateTime);
+            purchaseDetailTM.setProductId(purchaseDetail.getProductId());
+            purchaseDetailTM.setProduct(purchaseDetail.getProductName()+" - "+purchaseDetail.getProductWeight());
+            purchaseDetailTM.setUnit((purchaseDetail.getPurchaseQty() / purchaseDetail.getQtyPerUnit()));
+            purchaseDetailTM.setTotalQty(purchaseDetail.getPurchaseQty());
+
+            purchaseDetailTMList.add(purchaseDetailTM);
+        }
+
+        return purchaseDetailTMList;
+    }
 
     //Purchase product mail
     //Every friday 10.30am
