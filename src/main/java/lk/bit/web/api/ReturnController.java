@@ -48,8 +48,14 @@ public class ReturnController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/assignReturns")
-    private List<AssignReturnTM> readAllAssignReturnsByStatus() {
-        return returnBO.readAssignReturnDetail();
+    private List<AssignReturnTM> readAllAssignReturnsByStatusProcessing() {
+        return returnBO.readAssignReturnDetailByStatusProcessing();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/complete")
+    private List<AssignReturnTM> readAllAssignReturnsByStatusComplete() {
+        return returnBO.readAssignReturnDetailByStatusComplete();
     }
 
     @ResponseStatus(HttpStatus.OK)

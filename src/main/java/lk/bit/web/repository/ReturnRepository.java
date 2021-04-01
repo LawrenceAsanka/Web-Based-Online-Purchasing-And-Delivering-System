@@ -22,4 +22,7 @@ public interface ReturnRepository extends JpaRepository<Return, String> {
 
     @Query(value = "SELECT * FROM `return`WHERE status=3 ORDER BY id",nativeQuery = true)
     public List<Return> readAllByStatusProcessing();
+
+    @Query(value = "SELECT * FROM `return`WHERE status=4 ORDER BY id",nativeQuery = true)
+    public List<Return> readAllByStatusComplete();
 }

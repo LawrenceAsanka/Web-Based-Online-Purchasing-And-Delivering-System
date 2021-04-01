@@ -28,7 +28,9 @@ public interface ReturnBO extends SuperEntity {
 
     void saveAssignReturnAndUpdateStatus(String returnIdArray, String assignTo);
 
-    List<AssignReturnTM> readAssignReturnDetail();
+    List<AssignReturnTM> readAssignReturnDetailByStatusProcessing();
+
+    List<AssignReturnTM> readAssignReturnDetailByStatusComplete();
 
     List<DeliveryReturnTM> readAllAssignReturnDetailByAssignee(String assignee);
 

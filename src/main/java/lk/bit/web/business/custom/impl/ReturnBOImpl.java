@@ -1,6 +1,7 @@
 package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.ReturnBO;
+import lk.bit.web.dto.CompleteReturnDTO;
 import lk.bit.web.dto.ReturnDTO;
 import lk.bit.web.dto.ReturnDetailDTO;
 import lk.bit.web.entity.*;
@@ -228,7 +229,7 @@ public class ReturnBOImpl implements ReturnBO {
     }
 
     @Override
-    public List<AssignReturnTM> readAssignReturnDetail() {
+    public List<AssignReturnTM> readAssignReturnDetailByStatusProcessing() {
         List<Return> returnList = returnRepository.readAllByStatusProcessing();
         List<AssignReturnTM> assignReturnDetails = new ArrayList<>();
 
@@ -247,11 +248,47 @@ public class ReturnBOImpl implements ReturnBO {
             assignReturnTM.setCustomerName(orderInvoice.getCustomerUser().getCustomerFirstName() + " " + orderInvoice.getCustomerUser().getCustomerLastName());
 
             AssignReturn assignReturn = assignReturnRepository.readAssignReturnDetailByReturnId(returnDetail.getId());
+            //complete assign eka read karnna
             SystemUser systemUser = systemUserRepository.findById(assignReturn.getAssigneeId().getId()).get();
             assignReturnTM.setAssignTo(systemUser.getFirstName() + " " + systemUser.getLastName());
 
             String assignedDateTime = assignReturn.getAssignedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
             assignReturnTM.setAssignedDateTime(assignedDateTime);
+
+            assignReturnDetails.add(assignReturnTM);
+
+        }
+
+        return assignReturnDetails;
+    }
+
+    @Override
+    public List<AssignReturnTM> readAssignReturnDetailByStatusComplete() {
+        List<Return> returnList = returnRepository.readAllByStatusComplete();
+        List<AssignReturnTM> assignReturnDetails = new ArrayList<>();
+
+        for (Return returnDetail : returnList) {
+
+            AssignReturnTM assignReturnTM = new AssignReturnTM();
+
+            assignReturnTM.setReturnId(returnDetail.getId());
+            assignReturnTM.setOrderId(returnDetail.getOrderId().getOrderId());
+
+            String createdDateTime = returnDetail.getCreatedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            assignReturnTM.setCreatedDateTime(createdDateTime);
+
+            OrderInvoice orderInvoice = orderInvoiceRepository.findById(returnDetail.getOrderId().getOrderId()).get();
+            assignReturnTM.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+            assignReturnTM.setCustomerName(orderInvoice.getCustomerUser().getCustomerFirstName() + " " + orderInvoice.getCustomerUser().getCustomerLastName());
+
+            AssignReturn assignReturn = assignReturnRepository.readAssignReturnDetailByReturnId(returnDetail.getId());
+            CompleteReturn completeReturn = completeReturnRepository.readCompleteReturnByAssignReturnId(assignReturn.getId());
+
+            SystemUser systemUser = systemUserRepository.findById(assignReturn.getAssigneeId().getId()).get();
+            assignReturnTM.setAssignTo(systemUser.getFirstName() + " " + systemUser.getLastName());
+
+            String returnDateTime = completeReturn.getDeliveredDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            assignReturnTM.setAssignedDateTime(returnDateTime);
 
             assignReturnDetails.add(assignReturnTM);
 
