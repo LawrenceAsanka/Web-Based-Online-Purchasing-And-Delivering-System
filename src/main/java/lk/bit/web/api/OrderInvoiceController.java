@@ -27,8 +27,6 @@ public class OrderInvoiceController {
     private ShopBO shopBO;
     @Autowired
     private SystemUserBO systemUserBO;
-    @Autowired
-    private CustomerBO customerBO;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
@@ -44,6 +42,12 @@ public class OrderInvoiceController {
     @GetMapping("/{id}")
     private List<OrderInvoiceTM> readOrderInvoiceDetailByOrderId(@PathVariable String id) {
         return orderInvoiceBO.readOrderInvoiceDetailByOrderId(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/newOrdersCount")
+    private int readNewOrdersCount() {
+        return orderInvoiceBO.getTotalNewOrderCount();
     }
 
     @ResponseStatus(HttpStatus.OK)

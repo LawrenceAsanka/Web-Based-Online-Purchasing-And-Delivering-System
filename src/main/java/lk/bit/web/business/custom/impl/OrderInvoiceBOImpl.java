@@ -588,6 +588,11 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     }
 
     @Override
+    public int getTotalNewOrderCount() {
+        return orderInvoiceRepository.getTotalNewOrderCount();
+    }
+
+    @Override
     public int getOrderStatusByOrderId(String orderId) {
         Optional<OrderInvoice> optionalOrderInvoice = orderInvoiceRepository.findById(orderId);
         int orderStatus = 0;

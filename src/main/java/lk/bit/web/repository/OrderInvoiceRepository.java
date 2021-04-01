@@ -55,6 +55,9 @@ public interface OrderInvoiceRepository extends JpaRepository<OrderInvoice, Stri
     @Query(value = "SELECT COUNT(*) FROM order_invoice WHERE status=2 ", nativeQuery = true)
     public int getTotalConfirmOrderCount();
 
+    @Query(value = "SELECT COUNT(*) FROM order_invoice WHERE status=0 ", nativeQuery = true)
+    public int getTotalNewOrderCount();
+
     @Query(value = "SELECT SUM(net_total) FROM order_invoice WHERE customer_id=?1", nativeQuery = true)
     public String getTotalNetTotalByCustomer(String customerId);
 }
