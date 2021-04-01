@@ -375,6 +375,11 @@ public class ReturnBOImpl implements ReturnBO {
         return returnDTOList;
     }
 
+    @Override
+    public int readNewReturnCount() {
+        return returnRepository.readNewReturnCount();
+    }
+
     private String getNewReturnId() {
         String returnId = returnRepository.getReturnId();
         String newReturnId = "";

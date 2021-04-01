@@ -59,6 +59,12 @@ public class ReturnController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/newReturnsCount")
+    private int readNewReturnCount() {
+        return returnBO.readNewReturnCount();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/assignee")
     private List<DeliveryReturnTM> readAllAssignReturnsDetailsByAssignee(@RequestParam String userName) {
         if (userName == null) {
