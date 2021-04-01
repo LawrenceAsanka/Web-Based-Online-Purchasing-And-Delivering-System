@@ -42,7 +42,6 @@ public class ComplainController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{status}")
     private List<ComplainDTO> getComplaintDetailsByStatus(@PathVariable int status){
-//        System.out.println(status);
         return complainBO.getComplaintDetailsByStatus(status);
     }
 
@@ -62,15 +61,18 @@ public class ComplainController {
         return complainBO.getTotalComplaintCount();
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/newComplainsCount")
+    private int getTotalComplainCountByResponseStatus(){
+        return complainBO.getTotalComplaintCountByResponseStatus();
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     private void save(@RequestBody ComplainDTO complainDTO){
-        if (complainBO.IsComplaintExist(complainDTO.getId())) {
+        if (complainDTO.getMsgSubject() == null || complainDTO.getMsgDescription() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-
-        CustomerDTO customerDTO = customerBO.findCustomerByEmail(complainDTO.getCreatedBy());
-        complainDTO.setCreatedBy(customerDTO.getId());
 
         complainBO.save(complainDTO);
     }
@@ -78,7 +80,6 @@ public class ComplainController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{id}")
     private void updateDeletedByCustomer(@PathVariable String id){
-        System.out.println("id -"+id);
         if (!complainBO.IsComplaintExist(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

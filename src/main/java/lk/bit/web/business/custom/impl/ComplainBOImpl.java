@@ -2,6 +2,7 @@ package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.ComplainBO;
 import lk.bit.web.dto.ComplainDTO;
+import lk.bit.web.dto.CustomerDTO;
 import lk.bit.web.entity.Complain;
 import lk.bit.web.entity.ComplainSolution;
 import lk.bit.web.entity.CustomEntity6;
@@ -33,17 +34,13 @@ public class ComplainBOImpl implements ComplainBO {
     private ModelMapper mapper;
 
     @Override
-    @Transactional(readOnly = true)
     public void save(ComplainDTO complainDTO) {
-        Optional<CustomerUser> optionalCustomerUser = customerUserRepository.findById(complainDTO.getCreatedBy());
+        CustomerUser customer = customerUserRepository.getCustomerByCustomerEmail(complainDTO.getCreatedBy());
 
-        if (optionalCustomerUser.isPresent()) {
-
-            Complain complain = mapper.map(complainDTO, Complain.class);
-            complain.setId(getNewComplaintId());
-            complain.setCustomer(optionalCustomerUser.get());
-
-            complainRepository.save(complain);
+        if (customer != null) {
+            System.out.println(customer.getCustomerId());
+            complainRepository.save(new Complain(getNewComplaintId(), complainDTO.getMsgSubject(),
+                    complainDTO.getMsgDescription(), customer));
         }
     }
 
@@ -54,7 +51,6 @@ public class ComplainBOImpl implements ComplainBO {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ComplainDTO> getComplaintDetailsByAdmin() {
         List<Complain> complainList = complainRepository.getComplaintDetailsByAdminStatus();
         List<ComplainDTO> complainDTOList = new ArrayList<>();
@@ -81,7 +77,6 @@ public class ComplainBOImpl implements ComplainBO {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ComplainDTO> getComplaintDetailsByStatus(int status) {
         List<Complain> complainList = new ArrayList<>();
 
@@ -115,7 +110,6 @@ public class ComplainBOImpl implements ComplainBO {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ComplainDTO> getComplaintDetailsByCustomerId(String customerId) {
 
         List<Complain> complainList = complainRepository.getComplainDetailsByCustomerId(customerId);
@@ -144,7 +138,6 @@ public class ComplainBOImpl implements ComplainBO {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public void updateIsDeleted(String complaintId) {
         Optional<Complain> optionalComplain = complainRepository.findById(complaintId);
 
@@ -157,13 +150,16 @@ public class ComplainBOImpl implements ComplainBO {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public int getTotalComplaintCount() {
        return complainRepository.getTotalComplainCount();
     }
 
     @Override
-    @Transactional(readOnly = true)
+    public int getTotalComplaintCountByResponseStatus() {
+        return complainRepository.getTotalComplainCountByResponseStatus();
+    }
+
+    @Override
     public List<SolutionTM> getAllComplainAndComplainSolutionDetails() {
         List<CustomEntity6> complainSolutionDetails = complainRepository.getAllComplainAndComplainSolutionDetails();
         List<SolutionTM> solutionDetails = new ArrayList<>();

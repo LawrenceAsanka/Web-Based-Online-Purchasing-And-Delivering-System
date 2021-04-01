@@ -26,6 +26,9 @@ public interface ComplainRepository extends JpaRepository<Complain, String> {
     @Query(value = "SELECT COUNT(*) FROM complaint", nativeQuery = true)
     public int getTotalComplainCount();
 
+    @Query(value = "SELECT COUNT(*) FROM complaint WHERE res_status = 0", nativeQuery = true)
+    public int getTotalComplainCountByResponseStatus();
+
     @Query(value = "SELECT C.id AS complainId, C.msgSubject AS complainSubject, C.msgDescription AS complainDesc," +
             "C.createdDateTime AS complainCreatedDate, CS.createdDateTime AS solutionCreatedDate, CS.msgDescription AS solutionDesc," +
             "CS.status AS solutionStatus FROM Complain C INNER JOIN ComplainSolution CS ON C.id = CS.complain.id WHERE C.isDeleteByCustomer=0")

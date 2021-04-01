@@ -15,6 +15,7 @@ public interface ComplainBO extends SuperBO {
     public List<ComplainDTO> getComplaintDetailsByCustomerId(String customerId);
     public void updateIsDeleted(String complaintId);
     public int getTotalComplaintCount();
+    public int getTotalComplaintCountByResponseStatus();
     public List<SolutionTM> getAllComplainAndComplainSolutionDetails();
     public List<SolutionTM> getAllComplainAndComplainSolutionDetailsById(String complainId);
     public void updateIsDeletedByCustomer(String complainId);
