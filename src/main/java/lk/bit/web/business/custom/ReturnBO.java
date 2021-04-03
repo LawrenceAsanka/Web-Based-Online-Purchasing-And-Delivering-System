@@ -39,4 +39,8 @@ public interface ReturnBO extends SuperEntity {
     List<ReturnDTO> readAllAssignReturnsDetailsByCustomer(String email);
 
     int readNewReturnCount();
+
+    int readAllTodayReturnCount();
+
+    int readATotalCompleteReturnsCount();
 }

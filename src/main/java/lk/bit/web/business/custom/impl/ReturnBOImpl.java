@@ -1,7 +1,6 @@
 package lk.bit.web.business.custom.impl;
 
 import lk.bit.web.business.custom.ReturnBO;
-import lk.bit.web.dto.CompleteReturnDTO;
 import lk.bit.web.dto.ReturnDTO;
 import lk.bit.web.dto.ReturnDetailDTO;
 import lk.bit.web.entity.*;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -378,6 +378,16 @@ public class ReturnBOImpl implements ReturnBO {
     @Override
     public int readNewReturnCount() {
         return returnRepository.readNewReturnCount();
+    }
+
+    @Override
+    public int readAllTodayReturnCount() {
+        return assignReturnRepository.readAllTodayReturnCount(LocalDate.now().toString());
+    }
+
+    @Override
+    public int readATotalCompleteReturnsCount() {
+        return completeReturnRepository.readAllCompleteReturnCount(LocalDate.now().toString());
     }
 
     private String getNewReturnId() {

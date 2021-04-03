@@ -24,4 +24,8 @@ public interface AssignReturnRepository extends JpaRepository<AssignReturn, Inte
             "R.id AS returnId FROM AssignReturn AR INNER JOIN Return R ON AR.returnId.id = R.id " +
             "WHERE R.status=3 AND AR.assigneeId.id=?1 ORDER BY AR.id")
     public List<CustomEntity11> readAssignReturnDetailByAssignee(String assignee);
+
+    @Query(value = "SELECT COUNT(AR.return_id) FROM assigned_return AR " +
+            "WHERE DATE(AR.assigned_date_time) = ?1", nativeQuery = true)
+    public int readAllTodayReturnCount(String dateNow);
 }

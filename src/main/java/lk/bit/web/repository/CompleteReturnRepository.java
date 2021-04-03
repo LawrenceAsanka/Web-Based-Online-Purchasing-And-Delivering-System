@@ -21,4 +21,7 @@ public interface CompleteReturnRepository extends JpaRepository<CompleteReturn, 
 
     @Query(value = "SELECT * FROM complete_return WHERE assign_return_id = ?1", nativeQuery = true)
     public CompleteReturn readCompleteReturnByAssignReturnId(int AssignReturnId);
+
+    @Query(value = "SELECT COUNT(*) FROM complete_return CR WHERE DATE(CR.returned_date_time) = ?1",nativeQuery = true)
+    public int readAllCompleteReturnCount(String dateNow);
 }

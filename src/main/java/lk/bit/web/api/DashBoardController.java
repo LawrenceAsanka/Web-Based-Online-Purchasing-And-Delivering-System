@@ -1,6 +1,7 @@
 package lk.bit.web.api;
 
 import lk.bit.web.business.custom.OrderInvoiceBO;
+import lk.bit.web.business.custom.ReturnBO;
 import lk.bit.web.util.tm.SalesGraphTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,15 +15,29 @@ import java.util.List;
 public class DashBoardController {
     @Autowired
     private OrderInvoiceBO orderInvoiceBO;
+    @Autowired
+    private ReturnBO returnBO;
 
-    @GetMapping("/todayOrderCount")
-    private int readAllTodayOrderCount() {
+    @GetMapping("/totalOrdersCount")
+    private int readAllTotalOrdersCount() {
         return orderInvoiceBO.readAllTodayOrderCount();
     }
 
-    @GetMapping("/todayDeliverCount")
-    private int readAllTodayDeliverCount() {
+    @GetMapping("/completeOrdersCount")
+    private int readAllTotalCompleteOrdersCount() {
         return orderInvoiceBO.readAllTodayDeliveryCount();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/totalReturnsCount")
+    private int readAllTotalReturnsCount() {
+        return returnBO.readAllTodayReturnCount();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/completeReturnsCount")
+    private int readAllTotalCompleteReturnsCount() {
+        return returnBO.readATotalCompleteReturnsCount();
     }
 
     @ResponseStatus(HttpStatus.OK)
