@@ -10,4 +10,8 @@ public interface AssignCreditRepository extends JpaRepository<AssignCredit, Inte
 
     @Query(value = "SELECT id FROM assigned_credit WHERE credit_id=?1", nativeQuery = true)
     int readAssignCreditByCreditId(String creditId);
+
+    @Query(value = "SELECT COUNT(AC.credit_id) FROM assigned_credit AC " +
+            "WHERE DATE(AC.assigned_date_time) = ?1", nativeQuery = true)
+    public int readTodayCreditsCount(String dateNow);
 }
