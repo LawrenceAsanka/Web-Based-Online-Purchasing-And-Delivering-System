@@ -148,6 +148,13 @@ public class OrderInvoiceController {
         return orderInvoiceBO.getOrderStatusByOrderId(orderId);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/netTotals")
+    private List<SalesGraphTM> getNetTotalByMonth() {
+
+        return orderInvoiceBO.readNetTotalByMonth();
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     private String saveOrder(@RequestBody OrderInvoiceDTO orderInvoiceDTO) {

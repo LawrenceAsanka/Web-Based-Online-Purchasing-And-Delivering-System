@@ -27,4 +27,8 @@ public interface AssignOrderInvoiceDetailRepository extends JpaRepository<Assign
 
     @Query(value = "SELECT AO.* FROM assign_order_invoice_detail AO WHERE AO.order_invoice_id=?1", nativeQuery = true)
     public AssignOrderInvoiceDetail getAssignInvoiceIdByOrderId(String orderId);
+
+    @Query(value = "SELECT COUNT(AOI.order_invoice_id) FROM assign_order_invoice_detail AOI " +
+            "WHERE DATE(AOI.assigned_date_time) = ?1", nativeQuery = true)
+    public int readAllTodayOrderCount(String dateNow);
 }

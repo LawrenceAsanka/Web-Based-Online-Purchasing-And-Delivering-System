@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -659,6 +660,29 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
         }
 
         return completeDeliveryDetailTM;
+    }
+
+    @Override
+    public List<SalesGraphTM> readNetTotalByMonth() {
+        List<CustomEntity16> netTotalList = orderInvoiceRepository.readNetTotalByMonth("2021");
+        List<SalesGraphTM> salesGraphTMList = new ArrayList<>();
+
+        for (CustomEntity16 netTotal : netTotalList) {
+            SalesGraphTM salesGraphTM = new SalesGraphTM();
+
+            salesGraphTM.setMonth(netTotal.getMonth());
+            salesGraphTM.setNetTotal(netTotal.getNetTotal().toString().replaceAll(".00", ""));
+
+            salesGraphTMList.add(salesGraphTM);
+        }
+
+        return salesGraphTMList;
+    }
+
+    @Override
+    public int readAllTodayOrderCount() {
+        System.out.println(LocalDate.now().toString());
+       return assignOrderInvoiceDetailRepository.readAllTodayOrderCount(LocalDate.now().toString());
     }
 
     // check every one minutes

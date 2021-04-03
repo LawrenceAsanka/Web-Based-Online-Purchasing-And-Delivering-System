@@ -38,4 +38,6 @@ public interface OrderInvoiceBO extends SuperBO{
     String getOrderIdFromAssignOrder(String assignee, String orderId);
     DeliveryOrderDTO getDeliveryOrderDetail(String orderId);
     List<CompleteDeliveryDetailTM2> getCompletedOrderDetailsByAssignee(String assignee);
+    List<SalesGraphTM> readNetTotalByMonth();
+    int readAllTodayOrderCount();
 }

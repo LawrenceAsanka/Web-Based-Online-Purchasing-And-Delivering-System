@@ -1,5 +1,6 @@
 package lk.bit.web.repository;
 
+import lk.bit.web.entity.CustomEntity16;
 import lk.bit.web.entity.CustomEntity5;
 import lk.bit.web.entity.OrderInvoice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -60,4 +61,9 @@ public interface OrderInvoiceRepository extends JpaRepository<OrderInvoice, Stri
 
     @Query(value = "SELECT SUM(net_total) FROM order_invoice WHERE customer_id=?1", nativeQuery = true)
     public String getTotalNetTotalByCustomer(String customerId);
+
+    @Query(value = "SELECT UCASE(MONTHNAME(OI.created_date_time)) AS month, " +
+            "SUM(OI.net_total) AS netTotal FROM order_invoice OI WHERE OI.status = 5 AND YEAR(OI.created_date_time)=?1 " +
+            "GROUP BY UCASE(MONTHNAME(OI.created_date_time))", nativeQuery = true)
+    public List<CustomEntity16> readNetTotalByMonth(String year);
 }
