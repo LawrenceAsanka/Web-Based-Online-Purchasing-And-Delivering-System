@@ -40,4 +40,5 @@ public interface OrderInvoiceBO extends SuperBO{
     List<CompleteDeliveryDetailTM2> getCompletedOrderDetailsByAssignee(String assignee);
     List<SalesGraphTM> readNetTotalByMonth();
     int readAllTodayOrderCount();
+    int readAllTodayDeliveryCount();
 }

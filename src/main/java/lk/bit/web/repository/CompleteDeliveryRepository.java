@@ -29,4 +29,7 @@ public interface CompleteDeliveryRepository extends JpaRepository<CompleteDelive
             "INNER JOIN OrderInvoice OI ON AO.orderInvoiceId.orderId = OI.orderId WHERE AO.assigneeId.id = ?1 ORDER BY CD.id ")
     public List<CustomEntity10> getAllCompletedDeliveryDetailsByAssignee(String assigneeId);
 
+    @Query(value = "SELECT COUNT(*) FROM complete_delivery CD WHERE DATE(CD.delivered_date_time) = ?1",nativeQuery = true)
+    public int readAllTodayDeliveryCount(String dateNow);
+
 }

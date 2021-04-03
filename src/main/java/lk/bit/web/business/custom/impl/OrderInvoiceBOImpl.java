@@ -681,8 +681,12 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
 
     @Override
     public int readAllTodayOrderCount() {
-        System.out.println(LocalDate.now().toString());
        return assignOrderInvoiceDetailRepository.readAllTodayOrderCount(LocalDate.now().toString());
+    }
+
+    @Override
+    public int readAllTodayDeliveryCount() {
+        return completeDeliveryRepository.readAllTodayDeliveryCount(LocalDate.now().toString());
     }
 
     // check every one minutes

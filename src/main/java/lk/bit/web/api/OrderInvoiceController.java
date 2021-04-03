@@ -45,12 +45,6 @@ public class OrderInvoiceController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/newOrdersCount")
-    private int readNewOrdersCount() {
-        return orderInvoiceBO.getTotalNewOrderCount();
-    }
-
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/confirm")
     private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusConfirm(@RequestParam(name = "email", required = false) String customerEmail) {
         if (customerEmail != null) {
@@ -146,13 +140,6 @@ public class OrderInvoiceController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         return orderInvoiceBO.getOrderStatusByOrderId(orderId);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/netTotals")
-    private List<SalesGraphTM> getNetTotalByMonth() {
-
-        return orderInvoiceBO.readNetTotalByMonth();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
