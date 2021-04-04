@@ -7,6 +7,7 @@ import lk.bit.web.util.tm.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface OrderInvoiceBO extends SuperBO{
@@ -41,4 +42,7 @@ public interface OrderInvoiceBO extends SuperBO{
     List<SalesGraphTM> readNetTotalByMonth();
     int readAllTodayOrderCount();
     int readAllTodayDeliveryCount();
+    BigDecimal readTotalNetAmountByDate();
+    BigDecimal readTotalCreditAmountByDate();
+    BigDecimal readTotalCODAmountByDate();
 }

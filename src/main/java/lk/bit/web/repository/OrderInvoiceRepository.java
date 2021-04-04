@@ -66,4 +66,22 @@ public interface OrderInvoiceRepository extends JpaRepository<OrderInvoice, Stri
             "SUM(OI.net_total) AS netTotal FROM order_invoice OI WHERE OI.status = 5 AND YEAR(OI.created_date_time)=?1 " +
             "GROUP BY UCASE(MONTHNAME(OI.created_date_time))", nativeQuery = true)
     public List<CustomEntity16> readNetTotalByMonth(String year);
+
+    @Query(value = "SELECT SUM(OI.net_total) FROM order_invoice OI INNER JOIN assign_order_invoice_detail AOI " +
+            "on OI.order_id = AOI.order_invoice_id INNER JOIN complete_delivery CD " +
+            "on AOI.id = CD.assign_invoice_id WHERE DATE(CD.delivered_date_time) = ?1",
+            nativeQuery = true)
+    public BigDecimal readTotalNetAmountByDate(String date);
+
+    @Query(value = "SELECT SUM(OI.net_total) FROM order_invoice OI INNER JOIN assign_order_invoice_detail AOI " +
+            "on OI.order_id = AOI.order_invoice_id INNER JOIN complete_delivery CD " +
+            "on AOI.id = CD.assign_invoice_id WHERE DATE(CD.delivered_date_time) = ?1 AND OI.payment_method = ?2",
+            nativeQuery = true)
+    public BigDecimal readTotalCreditAmount(String date, String paymentMethod);
+
+    @Query(value = "SELECT SUM(OI.net_total) FROM order_invoice OI INNER JOIN assign_order_invoice_detail AOI " +
+            "on OI.order_id = AOI.order_invoice_id INNER JOIN complete_delivery CD " +
+            "on AOI.id = CD.assign_invoice_id WHERE DATE(CD.delivered_date_time) = ?1 AND OI.payment_method = ?2",
+            nativeQuery = true)
+    public BigDecimal readTotalCODAmount(String date, String paymentMethod);
 }

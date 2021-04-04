@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -368,6 +369,16 @@ public class CreditorBOImpl implements CreditorBO {
         }
 
         return completeCreditCollectionTMList;
+    }
+
+    @Override
+    public int readTodayCreditsCount() {
+        return creditorRepository.readTodayCreditsCount(LocalDate.now().toString());
+    }
+
+    @Override
+    public int readTodayCompleteCreditsCount() {
+        return creditorRepository.readTodayCompleteCreditCollectionsCount(LocalDate.now().toString());
     }
 
     @Scheduled(cron = "* 0/30 9 * * *")

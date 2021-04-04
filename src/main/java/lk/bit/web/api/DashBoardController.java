@@ -1,5 +1,6 @@
 package lk.bit.web.api;
 
+import lk.bit.web.business.custom.CreditorBO;
 import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ReturnBO;
 import lk.bit.web.util.tm.SalesGraphTM;
@@ -17,6 +18,8 @@ public class DashBoardController {
     private OrderInvoiceBO orderInvoiceBO;
     @Autowired
     private ReturnBO returnBO;
+    @Autowired
+    private CreditorBO creditorBO;
 
     @GetMapping("/totalOrdersCount")
     private int readAllTotalOrdersCount() {
@@ -41,6 +44,18 @@ public class DashBoardController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/totalCreditsCount")
+    private int readAllTotalCreditsCount() {
+        return creditorBO.readTodayCreditsCount();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/completeCreditsCount")
+    private int readAllCompleteCreditsCount() {
+        return creditorBO.readTodayCompleteCreditsCount();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/netTotals")
     private List<SalesGraphTM> getNetTotalByMonth() {
         return orderInvoiceBO.readNetTotalByMonth();
@@ -51,4 +66,23 @@ public class DashBoardController {
     private int readNewOrdersCount() {
         return orderInvoiceBO.getTotalNewOrderCount();
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/netTotalAmount")
+    private String readTotalNetAmountByDate() {
+        return orderInvoiceBO.readTotalNetAmountByDate().toString();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/codTotalAmount")
+    private String readTotalCODAmountByDate() {
+        return orderInvoiceBO.readTotalCODAmountByDate().toString();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/creditTotalAmount")
+    private String readTotalCreditAmountByDate() {
+        return orderInvoiceBO.readTotalCreditAmountByDate().toString();
+    }
+
 }

@@ -28,4 +28,12 @@ public interface CreditorRepository extends JpaRepository<CreditDetail, String> 
             "FROM creditor_detail CD INNER JOIN assigned_credit AC on CD.id = AC.credit_id " +
             "WHERE is_settle=1", nativeQuery = true)
     List<CustomEntity14> readAllCompleteCreditCollectionDetails();
+
+    @Query(value = "SELECT COUNT(*) FROM creditor_detail C " +
+            "WHERE DATE(C.last_date_to_settle) = ?1 AND C.is_settle = 0", nativeQuery = true)
+    public int readTodayCreditsCount(String dateNow);
+
+    @Query(value = "SELECT COUNT(*) FROM creditor_payment_detail CPD " +
+            "WHERE DATE(CPD.paid_date_time) = ?1", nativeQuery = true)
+    public int readTodayCompleteCreditCollectionsCount(String dateNow);
 }

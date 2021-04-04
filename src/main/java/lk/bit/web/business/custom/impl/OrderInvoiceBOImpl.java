@@ -689,6 +689,42 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
         return completeDeliveryRepository.readAllTodayDeliveryCount(LocalDate.now().toString());
     }
 
+    @Override
+    public BigDecimal readTotalNetAmountByDate() {
+        BigDecimal totalNetAmount = new BigDecimal("0.00");
+        BigDecimal netAmount = orderInvoiceRepository.readTotalNetAmountByDate(LocalDate.now().minusDays(1).toString());
+        if (netAmount != null) {
+            totalNetAmount = netAmount;
+        }
+
+        return totalNetAmount;
+    }
+
+    @Override
+    public BigDecimal readTotalCreditAmountByDate() {
+        BigDecimal totalCreditAmount = new BigDecimal("0.00");
+        BigDecimal creditAmount = orderInvoiceRepository.readTotalCreditAmount(LocalDate.now().minusDays(1).toString(),
+                PaymentMethod.CREDIT.name());
+        if (creditAmount != null) {
+            totalCreditAmount = creditAmount;
+        }
+
+        return totalCreditAmount;
+    }
+
+    @Override
+    public BigDecimal readTotalCODAmountByDate() {
+        BigDecimal totalCodAmount = new BigDecimal("0.00");
+        BigDecimal codAmount = orderInvoiceRepository.readTotalCODAmount(LocalDate.now().minusDays(1).toString(),
+                PaymentMethod.COD.name());
+
+        if (codAmount != null) {
+            totalCodAmount = codAmount;
+        }
+
+        return totalCodAmount;
+    }
+
     // check every one minutes
     @Scheduled(cron = "*/60 * * * * *")
     protected void autoConfirmOrder() {
