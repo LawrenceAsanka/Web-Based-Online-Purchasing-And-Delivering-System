@@ -37,7 +37,7 @@ public class SystemUserController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public SystemUserDTO getUser(@PathVariable("id") @Valid @Pattern(regexp = "U\\d{3}") String userId) {
-        if (userId == null && !systemUserBO.existUser(userId)) {
+        if (!systemUserBO.existUser(userId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         return systemUserBO.getRequestedUser(userId);
@@ -46,8 +46,19 @@ public class SystemUserController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/salesPerson")
     public List<SystemUserDTO> getUser() {
-
         return systemUserBO.getSystemUserByRoleSalePerson();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/activeUsers")
+    public List<UserTM> readActivateUsersDetails() {
+        return systemUserBO.readActiveUsersDetails();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/deactivateUsers")
+    public List<UserTM> readDeactivateUsersDetails() {
+        return systemUserBO.readDeactivateUsersDetails();
     }
 
     @ResponseStatus(HttpStatus.CREATED)

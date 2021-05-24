@@ -51,28 +51,14 @@ public class CreditorBOImpl implements CreditorBO {
         for (CreditDetail creditDetail : creditDetailList) {
             if (creditDetail.getOrderInvoice().getStatus() >= 2) {
 
-                CreditDetailDTO creditDetailDTO = new CreditDetailDTO();
-                creditDetailDTO.setId(creditDetail.getId());
-                creditDetailDTO.setNicFrontImage(creditDetail.getNicFrontImage());
-                creditDetailDTO.setNicBackImage(creditDetail.getNicBackImage());
-                creditDetailDTO.setTotalCreditAmount(creditDetail.getTotalCreditAmount().toString());
-
-                String creditDate = creditDetail.getCreditDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-                String lastDateToSettle = creditDetail.getLastDateToSettle().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-
-                creditDetailDTO.setCreditDate(creditDate);
-                creditDetailDTO.setLastDateToSettle(lastDateToSettle);
-                creditDetailDTO.setIsEmailSent(creditDetail.getIsEmailSent());
-                creditDetailDTO.setIsSettle(creditDetail.getIsSettle());
-                creditDetailDTO.setCustomerId(creditDetail.getCustomerUser().getCustomerId());
-
-                creditDetailDTOList.add(creditDetailDTO);
+                creditDetailDTOList.add(getCreditDetailDTO(creditDetail));
             }
         }
 
         return creditDetailDTOList;
     }
 
+    //Today Collections
     @Override
     public List<CreditDetailDTO> readAllCreditorDetailsByDateAndStatus() {
         List<CreditDetail> creditDetailList = creditorRepository.findAll();
@@ -82,22 +68,7 @@ public class CreditorBOImpl implements CreditorBO {
             if (creditDetail.getLastDateToSettle().toLocalDate().equals(LocalDateTime.now().toLocalDate()) && creditDetail.getIsAssigned() == 0 &&
                     creditDetail.getOrderInvoice().getStatus() == 5) {
 
-                CreditDetailDTO creditDetailDTO = new CreditDetailDTO();
-                creditDetailDTO.setId(creditDetail.getId());
-                creditDetailDTO.setNicFrontImage(creditDetail.getNicFrontImage());
-                creditDetailDTO.setNicBackImage(creditDetail.getNicBackImage());
-                creditDetailDTO.setTotalCreditAmount(creditDetail.getTotalCreditAmount().toString());
-
-                String creditDate = creditDetail.getCreditDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-                String lastDateToSettle = creditDetail.getLastDateToSettle().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-
-                creditDetailDTO.setCreditDate(creditDate);
-                creditDetailDTO.setLastDateToSettle(lastDateToSettle);
-                creditDetailDTO.setIsEmailSent(creditDetail.getIsEmailSent());
-                creditDetailDTO.setIsSettle(creditDetail.getIsSettle());
-                creditDetailDTO.setCustomerId(creditDetail.getCustomerUser().getCustomerId());
-
-                creditDetailDTOList.add(creditDetailDTO);
+                creditDetailDTOList.add(getCreditDetailDTO(creditDetail));
             }
         }
         return creditDetailDTOList;
@@ -110,22 +81,8 @@ public class CreditorBOImpl implements CreditorBO {
 
         for (CreditDetail creditDetail : creditDetailList) {
             if (creditDetail.getIsEmailSent() == 0) {
-                CreditDetailDTO creditDetailDTO = new CreditDetailDTO();
-                creditDetailDTO.setId(creditDetail.getId());
-                creditDetailDTO.setNicFrontImage(creditDetail.getNicFrontImage());
-                creditDetailDTO.setNicBackImage(creditDetail.getNicBackImage());
-                creditDetailDTO.setTotalCreditAmount(creditDetail.getTotalCreditAmount().toString());
 
-                String creditDate = creditDetail.getCreditDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-                String lastDateToSettle = creditDetail.getLastDateToSettle().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-
-                creditDetailDTO.setCreditDate(creditDate);
-                creditDetailDTO.setLastDateToSettle(lastDateToSettle);
-                creditDetailDTO.setIsEmailSent(creditDetail.getIsEmailSent());
-                creditDetailDTO.setIsSettle(creditDetail.getIsSettle());
-                creditDetailDTO.setCustomerId(creditDetail.getCustomerUser().getCustomerId());
-
-                creditDetailDTOList.add(creditDetailDTO);
+                creditDetailDTOList.add(getCreditDetailDTO(creditDetail));
             }
         }
         return creditDetailDTOList;
@@ -138,22 +95,8 @@ public class CreditorBOImpl implements CreditorBO {
 
         for (CreditDetail creditDetail : creditDetailList) {
             if (creditDetail.getIsEmailSent() == 1) {
-                CreditDetailDTO creditDetailDTO = new CreditDetailDTO();
-                creditDetailDTO.setId(creditDetail.getId());
-                creditDetailDTO.setNicFrontImage(creditDetail.getNicFrontImage());
-                creditDetailDTO.setNicBackImage(creditDetail.getNicBackImage());
-                creditDetailDTO.setTotalCreditAmount(creditDetail.getTotalCreditAmount().toString());
 
-                String creditDate = creditDetail.getCreditDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-                String lastDateToSettle = creditDetail.getLastDateToSettle().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-
-                creditDetailDTO.setCreditDate(creditDate);
-                creditDetailDTO.setLastDateToSettle(lastDateToSettle);
-                creditDetailDTO.setIsEmailSent(creditDetail.getIsEmailSent());
-                creditDetailDTO.setIsSettle(creditDetail.getIsSettle());
-                creditDetailDTO.setCustomerId(creditDetail.getCustomerUser().getCustomerId());
-
-                creditDetailDTOList.add(creditDetailDTO);
+                creditDetailDTOList.add(getCreditDetailDTO(creditDetail));
             }
         }
         return creditDetailDTOList;
@@ -166,22 +109,8 @@ public class CreditorBOImpl implements CreditorBO {
 
         for (CreditDetail creditDetail : creditDetailList) {
             if (creditDetail.getIsSettle() == 1) {
-                CreditDetailDTO creditDetailDTO = new CreditDetailDTO();
-                creditDetailDTO.setId(creditDetail.getId());
-                creditDetailDTO.setNicFrontImage(creditDetail.getNicFrontImage());
-                creditDetailDTO.setNicBackImage(creditDetail.getNicBackImage());
-                creditDetailDTO.setTotalCreditAmount(creditDetail.getTotalCreditAmount().toString());
 
-                String creditDate = creditDetail.getCreditDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-                String lastDateToSettle = creditDetail.getLastDateToSettle().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-
-                creditDetailDTO.setCreditDate(creditDate);
-                creditDetailDTO.setLastDateToSettle(lastDateToSettle);
-                creditDetailDTO.setIsEmailSent(creditDetail.getIsEmailSent());
-                creditDetailDTO.setIsSettle(creditDetail.getIsSettle());
-                creditDetailDTO.setCustomerId(creditDetail.getCustomerUser().getCustomerId());
-
-                creditDetailDTOList.add(creditDetailDTO);
+                creditDetailDTOList.add(getCreditDetailDTO(creditDetail));
             }
         }
         return creditDetailDTOList;
@@ -194,22 +123,8 @@ public class CreditorBOImpl implements CreditorBO {
 
         for (CreditDetail creditDetail : creditDetailList) {
             if (creditDetail.getIsSettle() == 0) {
-                CreditDetailDTO creditDetailDTO = new CreditDetailDTO();
-                creditDetailDTO.setId(creditDetail.getId());
-                creditDetailDTO.setNicFrontImage(creditDetail.getNicFrontImage());
-                creditDetailDTO.setNicBackImage(creditDetail.getNicBackImage());
-                creditDetailDTO.setTotalCreditAmount(creditDetail.getTotalCreditAmount().toString());
 
-                String creditDate = creditDetail.getCreditDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-                String lastDateToSettle = creditDetail.getLastDateToSettle().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-
-                creditDetailDTO.setCreditDate(creditDate);
-                creditDetailDTO.setLastDateToSettle(lastDateToSettle);
-                creditDetailDTO.setIsEmailSent(creditDetail.getIsEmailSent());
-                creditDetailDTO.setIsSettle(creditDetail.getIsSettle());
-                creditDetailDTO.setCustomerId(creditDetail.getCustomerUser().getCustomerId());
-
-                creditDetailDTOList.add(creditDetailDTO);
+                creditDetailDTOList.add(getCreditDetailDTO(creditDetail));
             }
         }
         return creditDetailDTOList;
@@ -301,12 +216,14 @@ public class CreditorBOImpl implements CreditorBO {
         }
     }
 
+    //complete credit and update isSettle status
     @Override
     public void updateIsSettleStatus(String creditId) {
         Optional<CreditDetail> optionalCreditDetail = creditorRepository.findById(creditId);
 
         if (optionalCreditDetail.isPresent()) {
             optionalCreditDetail.get().setIsSettle(1);
+            optionalCreditDetail.get().setLastDateToSettle(LocalDateTime.now());
 
             creditorRepository.save(optionalCreditDetail.get());
         }
@@ -321,6 +238,7 @@ public class CreditorBOImpl implements CreditorBO {
             CompleteCreditCollectionTM collectionTM = new CompleteCreditCollectionTM();
 
             String creditDate = detail.getCreditDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String settleDate = detail.getSettleDay().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
             Optional<CustomerUser> optionalCustomerUser = customerUserRepository.findById(detail.getCreditor());
             Optional<SystemUser> optionalSystemUser = systemUserRepository.findById(detail.getAssignee());
 
@@ -328,9 +246,9 @@ public class CreditorBOImpl implements CreditorBO {
                 collectionTM.setCreditId(detail.getCreditId());
                 collectionTM.setOrderId(detail.getOrderId());
                 collectionTM.setCreditDate(creditDate);
-                collectionTM.setCreditor(optionalCustomerUser.get().getCustomerId()+" - "+optionalCustomerUser.get().getCustomerFirstName());
+                collectionTM.setCreditor(optionalCustomerUser.get().getCustomerId() + " - " + optionalCustomerUser.get().getCustomerFirstName());
                 collectionTM.setCollectBy(optionalSystemUser.get().getFirstName() + " " + optionalSystemUser.get().getLastName());
-                collectionTM.setCollectedDate(detail.getSettleDay().toLocalDate().toString());
+                collectionTM.setCollectedDate(settleDate);
                 collectionTM.setCreditAmount(detail.getCreditAmount().toString());
 
                 completeCreditCollectionTMList.add(collectionTM);
@@ -379,6 +297,104 @@ public class CreditorBOImpl implements CreditorBO {
     @Override
     public int readTodayCompleteCreditsCount() {
         return creditorRepository.readTodayCompleteCreditCollectionsCount(LocalDate.now().toString());
+    }
+
+    @Override
+    public List<CreditDetailDTO> readCreditorDetailsByDateRange(int dateType, String startDate, String endDate) {
+        List<CreditDetail> creditDetailList = creditorRepository.findAll();
+        List<CreditDetailDTO> creditDetailDTOList = new ArrayList<>();
+
+        for (CreditDetail creditDetail : creditDetailList) {
+            if (creditDetail.getOrderInvoice().getStatus() >= 2) {
+                LocalDate localDate1 = creditDetail.getCreditDate().toLocalDate();
+                LocalDate localDate2 = creditDetail.getLastDateToSettle().toLocalDate();
+
+                CreditDetailDTO creditDetailDTO = getCreditDetailDTO(creditDetail);
+
+                if (dateType == 0) {
+                    if (localDate1.isEqual(LocalDate.parse(startDate)) || localDate1.isEqual(LocalDate.parse(endDate)) ||
+                            (localDate1.isAfter(LocalDate.parse(startDate)) && localDate1.isBefore(LocalDate.parse(endDate)))) {
+
+                        creditDetailDTOList.add(creditDetailDTO);
+                    }
+                } else {
+                    if (localDate2.isEqual(LocalDate.parse(startDate)) || localDate2.isEqual(LocalDate.parse(endDate)) ||
+                            (localDate2.isAfter(LocalDate.parse(startDate)) && localDate2.isBefore(LocalDate.parse(endDate)))) {
+
+                        creditDetailDTOList.add(creditDetailDTO);
+                    }
+                }
+            }
+        }
+
+        return creditDetailDTOList;
+    }
+
+    @Override
+    public List<CompleteCreditCollectionTM> readCompleteCreditorDetailsByDateRange(int dateType, String startDate, String endDate) {
+//        System.out.println(dateType);
+        List<CustomEntity14> creditCollectionDetails = creditorRepository.readAllCompleteCreditCollectionDetails();
+        List<CompleteCreditCollectionTM> completeCreditCollectionTMList = new ArrayList<>();
+
+        for (CustomEntity14 detail : creditCollectionDetails) {
+            CompleteCreditCollectionTM collectionTM = new CompleteCreditCollectionTM();
+            LocalDate localDate1 = detail.getCreditDate().toLocalDate();
+            LocalDate localDate2 = detail.getSettleDay().toLocalDate();
+
+            String creditDate = detail.getCreditDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            String settleDate = detail.getSettleDay().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+            Optional<CustomerUser> optionalCustomerUser = customerUserRepository.findById(detail.getCreditor());
+            Optional<SystemUser> optionalSystemUser = systemUserRepository.findById(detail.getAssignee());
+
+            if (optionalCustomerUser.isPresent() && optionalSystemUser.isPresent()) {
+                collectionTM.setCreditId(detail.getCreditId());
+                collectionTM.setOrderId(detail.getOrderId());
+                collectionTM.setCreditDate(creditDate);
+                collectionTM.setCreditor(optionalCustomerUser.get().getCustomerId() + " - " + optionalCustomerUser.get().getCustomerFirstName());
+                collectionTM.setCollectBy(optionalSystemUser.get().getFirstName() + " " + optionalSystemUser.get().getLastName());
+                collectionTM.setCollectedDate(settleDate);
+                collectionTM.setCreditAmount(detail.getCreditAmount().toString());
+
+                if (dateType == 0) {
+                    completeCreditCollectionTMList.add(collectionTM);
+
+                } else if (dateType == 1) {
+                    if (localDate1.isEqual(LocalDate.parse(startDate)) || localDate1.isEqual(LocalDate.parse(endDate)) ||
+                            (localDate1.isAfter(LocalDate.parse(startDate)) && localDate1.isBefore(LocalDate.parse(endDate)))) {
+
+                        completeCreditCollectionTMList.add(collectionTM);
+                    }
+                } else {
+                    if (localDate2.isEqual(LocalDate.parse(startDate)) || localDate2.isEqual(LocalDate.parse(endDate)) ||
+                            (localDate2.isAfter(LocalDate.parse(startDate)) && localDate2.isBefore(LocalDate.parse(endDate)))) {
+
+                        completeCreditCollectionTMList.add(collectionTM);
+                    }
+                }
+            }
+        }
+
+        return completeCreditCollectionTMList;
+    }
+
+    private CreditDetailDTO getCreditDetailDTO(CreditDetail creditDetail){
+        CreditDetailDTO creditDetailDTO = new CreditDetailDTO();
+
+        creditDetailDTO.setId(creditDetail.getId());
+        creditDetailDTO.setNicFrontImage(creditDetail.getNicFrontImage());
+        creditDetailDTO.setNicBackImage(creditDetail.getNicBackImage());
+        creditDetailDTO.setTotalCreditAmount(creditDetail.getTotalCreditAmount().toString());
+
+        String creditDate = creditDetail.getCreditDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+//                String lastDateToSettle = creditDetail.getLastDateToSettle().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+        creditDetailDTO.setCreditDate(creditDate);
+        creditDetailDTO.setLastDateToSettle(creditDetail.getLastDateToSettle().toLocalDate().toString());
+        creditDetailDTO.setIsEmailSent(creditDetail.getIsEmailSent());
+        creditDetailDTO.setIsSettle(creditDetail.getIsSettle());
+        creditDetailDTO.setCustomerId(creditDetail.getCustomerUser().getCustomerId());
+
+        return creditDetailDTO;
     }
 
     @Scheduled(cron = "* 0/30 9 * * *")

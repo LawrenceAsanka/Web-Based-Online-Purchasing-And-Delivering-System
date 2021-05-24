@@ -109,7 +109,7 @@ public class CustomerController {
     @PutMapping("/resetPassword")
     private void updatePassword(@RequestParam("id") String customerId, @RequestParam String password) {
         CustomerDTO customer = customerBO.findCustomerById(customerId);
-        System.out.println(password);
+
         if (customer == null || password == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }

@@ -10,5 +10,7 @@ public interface CustomEntity3 {
 
     String getUserName();
 
+    String getRemarks();
+
     String getNetAmount();
 }

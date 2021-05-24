@@ -47,4 +47,10 @@ public class AdvertisementController {
                                  @RequestParam String status){
         advertisementBO.updateAdsStatus(adsId,status);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(value= "/{id}")
+    private void deleteAd(@PathVariable("id") int adId){
+        advertisementBO.deleteAd(adId);
+    }
 }

@@ -92,4 +92,9 @@ public class AdvertisementBOImpl implements AdvertisementBO {
         }
         return advertisementTMList;
     }
+
+    @Override
+    public void deleteAd(int id) {
+        advertisementRepository.deleteById(id);
+    }
 }

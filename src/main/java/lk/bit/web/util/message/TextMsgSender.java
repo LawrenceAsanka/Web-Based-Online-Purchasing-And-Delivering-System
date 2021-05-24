@@ -8,7 +8,7 @@ import java.net.URL;
 public class TextMsgSender {
 
     public void sendTextMsg(String receiver, String text) throws IOException {
-        URL message = new URL("http://textit.biz/sendmsg/index.php?id=94774924237&pw=7727&to="+receiver+"&text="+text+"&from=VG+DISTRIBUTORS");
+        URL message = new URL("http://textit.biz/sendmsg/index.php?id=94774924237&pw=7727&to="+receiver+"&text="+text);
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(message.openStream()));
 

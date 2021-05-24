@@ -17,6 +17,9 @@ public class ProductTM {
     private String quantity;
     private String discountPerUnit;
     private String offerStatus;
+    private String image1;
+    private String image2;
+    private String image3;
     private String status;
 
 }

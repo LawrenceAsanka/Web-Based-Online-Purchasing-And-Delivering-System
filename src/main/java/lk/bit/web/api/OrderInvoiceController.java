@@ -1,6 +1,5 @@
 package lk.bit.web.api;
 
-import lk.bit.web.business.custom.CustomerBO;
 import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ShopBO;
 import lk.bit.web.business.custom.SystemUserBO;
@@ -99,9 +98,9 @@ public class OrderInvoiceController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/assignee")
     private List<AssignOrderInvoiceDetailTM> readOrderInvoiceDetailsByAssignee(@RequestParam("userName") String assigneeName) {
-        if (!systemUserBO.existUser(assigneeName)) {
+        /*if (!systemUserBO.existUser(assigneeName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+        }*/
         return orderInvoiceBO.readOrderInvoiceByAssignee(assigneeName);
     }
 
@@ -125,9 +124,9 @@ public class OrderInvoiceController {
     @GetMapping("/completedOrderDetails")
     private List<CompleteDeliveryDetailTM2> getCompleteOrderDetailsByAssignee(@RequestParam("userName") String assignee) {
 
-        if (!systemUserBO.existUser(assignee)) {
+        /*if (!systemUserBO.existUser(assignee)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+        }*/
         return orderInvoiceBO.getCompletedOrderDetailsByAssignee(assignee);
     }
 
@@ -140,6 +139,36 @@ public class OrderInvoiceController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
         return orderInvoiceBO.getOrderStatusByOrderId(orderId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/filterByDates")
+    private List<OrderInvoiceDTO> readOrderInvoiceDetailsByStatusCancelAndDate(@RequestParam("startDate") String startDate,
+                                                                               @RequestParam("endDate") String endDate) {
+        if (startDate == null && endDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return orderInvoiceBO.readOrderInvoiceByStatusCancelAndDate(startDate, endDate);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/filterByOrderDates")
+    private List<CompleteDeliveryDetailTM> readDetailsByOrderedDateRange(@RequestParam("startDate") String startDate,
+                                                         @RequestParam("endDate") String endDate){
+        if (startDate == null && endDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return orderInvoiceBO.readOrderInvoiceByStatusCompleteAndOrderedDate(startDate, endDate);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/filterByDeliveredDates")
+    private List<CompleteDeliveryDetailTM> readDetailsByDeliveredDateRange(@RequestParam("startDate") String startDate,
+                                                                  @RequestParam("endDate") String endDate){
+        if (startDate == null && endDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return orderInvoiceBO.readOrderInvoiceByStatusCompleteAndDeliveredDate(startDate, endDate);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -190,7 +219,7 @@ public class OrderInvoiceController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PostMapping("/{id}/cancel")
+    @PutMapping("/{id}/cancel")
     private void updateStatusToCancel(@PathVariable String id){
         if (id == null || !orderInvoiceBO.IsExistOrderByOrderId(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);

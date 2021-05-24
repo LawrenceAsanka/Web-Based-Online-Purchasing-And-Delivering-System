@@ -6,6 +6,7 @@ import lk.bit.web.dto.OrderInvoiceDTO;
 import lk.bit.web.dto.OrderInvoiceDetailDTO;
 import lk.bit.web.entity.*;
 import lk.bit.web.repository.*;
+import lk.bit.web.util.message.TextMsgSender;
 import lk.bit.web.util.tm.*;
 import lk.bit.web.util.email.EmailSender;
 import org.modelmapper.ModelMapper;
@@ -71,8 +72,8 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
             if (totalNetTotalByCustomer != null) {
                 int total1 = Integer.parseInt(totalNetTotalByCustomer.split("\\.")[0]);
                 int total2 = total1 + Integer.parseInt(orderInvoiceDTO.getNetTotal().split("\\.")[0]);
-                System.out.println("total 1: " + total1);
-                System.out.println("total 2:" + total2);
+//                System.out.println("total 1: " + total1);
+//                System.out.println("total 2:" + total2);
                 if (total2 == 50000) {
                     customer.setCreditLimit(new BigDecimal("20000"));
                 } else if (50000 < total2 && total2 <= 60000) {
@@ -551,7 +552,7 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
     @Override
     public void updateStatusToDelivery(String orderIdArray, String assigneeId) throws IOException {
         String orderIdList = "";
-        String message1 = "Please+deliver+below+orders.From+VG+Distributors+";
+        String message1 = "Please+deliver+below+orders.From+VG+Distributors%0a";
         Optional<SystemUser> optionalSystemUser = systemUserRepository.findById(assigneeId);
 
         String[] orderIds = orderIdArray.split(",");
@@ -569,13 +570,14 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
                 orderInvoiceRepository.save(optionalOrderInvoice.get());
 
             }
-            orderIdList += "#"+orderId+"+";
+            orderIdList += "#"+orderId+",";
         }
 
-        String finalMessage = message1+orderIdList;
-//        System.out.println(finalMessage);
-      /*  TextMsgSender textMsgSender = new TextMsgSender();
-        textMsgSender.sendTextMsg(optionalSystemUser.get().getContact(), finalMessage );*/
+        String finalMessage = "You+have+some+orders+to+deliver.Thank+You.+FROM+VG+DISTRIBUTORS";
+        /*System.out.println(finalMessage);
+        System.out.println(orderIdList);*/
+        TextMsgSender textMsgSender = new TextMsgSender();
+        textMsgSender.sendTextMsg(optionalSystemUser.get().getContact(), finalMessage );
     }
 
     @Override
@@ -725,6 +727,103 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
         return totalCodAmount;
     }
 
+    @Override
+    public List<CompleteDeliveryDetailTM> readOrderInvoiceByStatusCompleteAndOrderedDate(String startDate, String endDate) {
+        List<CustomEntity9> allCompletedDeliveryDetails = completeDeliveryRepository.getAllCompletedDeliveryDetails();
+        List<CompleteDeliveryDetailTM> completeOrderDetails= new ArrayList<>();
+
+        for (CustomEntity9 orderInvoice : allCompletedDeliveryDetails) {
+            CompleteDeliveryDetailTM completeOrderDetail = new CompleteDeliveryDetailTM();
+
+            LocalDate localDate = orderInvoice.getOrderedDateTime().toLocalDate();
+
+            if (localDate.isEqual(LocalDate.parse(startDate)) || localDate.isEqual(LocalDate.parse(endDate)) ||
+                    (localDate.isAfter(LocalDate.parse(startDate)) && localDate.isBefore(LocalDate.parse(endDate)))) {
+
+                String orderedDateTime = orderInvoice.getOrderedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+                String deliveredDateTime = orderInvoice.getDeliveredDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+                completeOrderDetail.setOrderId(orderInvoice.getOrderId());
+                completeOrderDetail.setOrderedDateTime(orderedDateTime);
+                completeOrderDetail.setOrderBy(orderInvoice.getOrderBy());
+
+                SystemUser systemUser = systemUserRepository.findById(orderInvoice.getDeliverBy()).get();
+                completeOrderDetail.setDeliverBy(systemUser.getFirstName()+" "+systemUser.getLastName());
+
+                completeOrderDetail.setDeliveredDateTime(deliveredDateTime);
+                completeOrderDetail.setPaymentMethod(orderInvoice.getPaymentMethod());
+                completeOrderDetail.setStatus(orderInvoice.getStatus());
+
+                completeOrderDetails.add(completeOrderDetail);
+            }
+
+        }
+        return completeOrderDetails;
+    }
+
+    @Override
+    public List<CompleteDeliveryDetailTM> readOrderInvoiceByStatusCompleteAndDeliveredDate(String startDate, String endDate) {
+        List<CustomEntity9> allCompletedDeliveryDetails = completeDeliveryRepository.getAllCompletedDeliveryDetails();
+        List<CompleteDeliveryDetailTM> completeOrderDetails= new ArrayList<>();
+
+        for (CustomEntity9 orderInvoice : allCompletedDeliveryDetails) {
+            CompleteDeliveryDetailTM completeOrderDetail = new CompleteDeliveryDetailTM();
+
+            LocalDate localDate = orderInvoice.getDeliveredDateTime().toLocalDate();
+
+            if (localDate.isEqual(LocalDate.parse(startDate)) || localDate.isEqual(LocalDate.parse(endDate)) ||
+                    (localDate.isAfter(LocalDate.parse(startDate)) && localDate.isBefore(LocalDate.parse(endDate)))) {
+
+                String orderedDateTime = orderInvoice.getOrderedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+                String deliveredDateTime = orderInvoice.getDeliveredDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+                completeOrderDetail.setOrderId(orderInvoice.getOrderId());
+                completeOrderDetail.setOrderedDateTime(orderedDateTime);
+                completeOrderDetail.setOrderBy(orderInvoice.getOrderBy());
+
+                SystemUser systemUser = systemUserRepository.findById(orderInvoice.getDeliverBy()).get();
+                completeOrderDetail.setDeliverBy(systemUser.getFirstName()+" "+systemUser.getLastName());
+
+                completeOrderDetail.setDeliveredDateTime(deliveredDateTime);
+                completeOrderDetail.setPaymentMethod(orderInvoice.getPaymentMethod());
+                completeOrderDetail.setStatus(orderInvoice.getStatus());
+
+                completeOrderDetails.add(completeOrderDetail);
+            }
+
+        }
+        return completeOrderDetails;
+    }
+
+    @Override
+    public List<OrderInvoiceDTO> readOrderInvoiceByStatusCancelAndDate(String startDate, String endDate) {
+        List<OrderInvoice> orderInvoiceList = orderInvoiceRepository.readOrderInvoiceByOrderStatusCancel();
+        List<OrderInvoiceDTO> orderInvoiceDTOList= new ArrayList<>();
+
+        for (OrderInvoice orderInvoice : orderInvoiceList) {
+            OrderInvoiceDTO orderInvoiceDTO = new OrderInvoiceDTO();
+
+            LocalDate localDate = orderInvoice.getCreatedDateAndTime().toLocalDate();
+
+            if (localDate.isEqual(LocalDate.parse(startDate)) || localDate.isEqual(LocalDate.parse(endDate)) ||
+                    (localDate.isAfter(LocalDate.parse(startDate)) && localDate.isBefore(LocalDate.parse(endDate)))) {
+                String createdDateTime = orderInvoice.getCreatedDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+                String deadlineDateTime = orderInvoice.getDeadlineDateAndTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+
+                orderInvoiceDTO.setOrderId(orderInvoice.getOrderId());
+                orderInvoiceDTO.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+                orderInvoiceDTO.setShopId(orderInvoice.getShop().getShopId());
+                orderInvoiceDTO.setNetTotal(orderInvoice.getNetTotal().toString());
+                orderInvoiceDTO.setCreatedDateTime(createdDateTime);
+                orderInvoiceDTO.setDeadlineDateTime(deadlineDateTime);
+                orderInvoiceDTO.setStatus(orderInvoice.getStatus());
+
+                orderInvoiceDTOList.add(orderInvoiceDTO);
+            }
+        }
+        return orderInvoiceDTOList;
+    }
+
     // check every one minutes
     @Scheduled(cron = "*/60 * * * * *")
     protected void autoConfirmOrder() {
@@ -793,14 +892,14 @@ public class OrderInvoiceBOImpl implements OrderInvoiceBO {
         String newId = "";
 
         if (lastCreditorId == null) {
-            newId = "CR01";
+            newId = "CRE01";
         } else {
-            String replaceId = lastCreditorId.replaceAll("CR", "");
+            String replaceId = lastCreditorId.replaceAll("CRE", "");
             int id = Integer.parseInt(replaceId) + 1;
             if (id < 10) {
-                newId = "CR0" + id;
+                newId = "CRE0" + id;
             } else {
-                newId = "CR" + id;
+                newId = "CRE" + id;
             }
         }
         return newId;

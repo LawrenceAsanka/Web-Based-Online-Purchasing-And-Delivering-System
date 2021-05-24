@@ -4,6 +4,7 @@ import lk.bit.web.dto.ReturnDTO;
 import lk.bit.web.entity.SuperEntity;
 import lk.bit.web.util.tm.*;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ReturnBO extends SuperEntity {
@@ -26,7 +27,7 @@ public interface ReturnBO extends SuperEntity {
 
     void updateStatusToConfirm(String returnId);
 
-    void saveAssignReturnAndUpdateStatus(String returnIdArray, String assignTo);
+    void saveAssignReturnAndUpdateStatus(String returnIdArray, String assignTo) throws IOException;
 
     List<AssignReturnTM> readAssignReturnDetailByStatusProcessing();
 
@@ -36,11 +37,19 @@ public interface ReturnBO extends SuperEntity {
 
     void saveCompleteReturnDetails(String returnId);
 
-    List<ReturnDTO> readAllAssignReturnsDetailsByCustomer(String email);
+    List<ReturnDTO> readAllAssignReturnsDetailsByCustomerEmail(String email);
+
+    List<ReturnDTO> readAllAssignReturnsDetailsByCustomerId(String id);
 
     int readNewReturnCount();
 
     int readAllTodayReturnCount();
 
     int readATotalCompleteReturnsCount();
+
+    List<ReturnTM> readAllReturnDetailsByDateRange(String startDate, String endDate);
+
+    List<AssignReturnTM> readReturnDetailsByStatusCompleteAndCreateDateRange(String startDate, String endDate);
+
+    List<AssignReturnTM> readReturnDetailsByStatusCompleteAndReturnDateRange(String startDate, String endDate);
 }

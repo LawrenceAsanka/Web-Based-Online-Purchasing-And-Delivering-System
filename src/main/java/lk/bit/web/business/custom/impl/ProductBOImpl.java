@@ -141,7 +141,8 @@ public class ProductBOImpl implements ProductBO {
         List<ProductTM> products = new ArrayList<>();
         allProducts.forEach(p -> {
             products.add(new ProductTM(p.getProductId(), p.getProductName(), p.getProductCategory(),
-                    p.getProductSellingPrice(), p.getProductBuyingPrice(), p.getProductQuantity(),p.getDiscountPerUnit(),p.getOfferStatus(), p.getProductStatus()));
+                    p.getProductSellingPrice(), p.getProductBuyingPrice(), p.getProductQuantity(),
+                    p.getDiscountPerUnit(),p.getOfferStatus(), p.getImageOne(), p.getImageTwo(), p.getImageThree(), p.getProductStatus()));
         });
         return products;
     }
@@ -153,7 +154,7 @@ public class ProductBOImpl implements ProductBO {
         category.forEach(p -> {
             products.add(new ProductTM(p.getProductId(), p.getProductName(), p.getProductCategory(),
                     p.getProductSellingPrice(), p.getProductBuyingPrice(), p.getProductQuantity(),p.getDiscountPerUnit(),
-                    p.getOfferStatus(), p.getProductStatus()));
+                    p.getOfferStatus(), p.getImageOne(), p.getImageTwo(), p.getImageThree(), p.getProductStatus()));
         });
         return products;
     }

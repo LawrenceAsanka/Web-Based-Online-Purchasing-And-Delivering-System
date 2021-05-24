@@ -82,7 +82,7 @@ public class CustomerBOImpl implements CustomerBO {
                         passwordEncoder.encode(signUpDetails.getPassword()), signUpDetails.getContact(), Role.ROLE_CUSTOMER));
 
         // confirmation link
-        String link = "http://localhost:63342/BIT-frontend/template/customer/login.html";
+        String link = "http://localhost:63342/BIT-frontend/template/customer/index.html?verified=true";
         emailSender.sendEmail(signUpDetails.getEmail(), buildEmail(signUpDetails.getFirstName(), link), "Confirm Your Email");
 
         return savedToken;
@@ -162,8 +162,7 @@ public class CustomerBOImpl implements CustomerBO {
     public void updatePassword(String customerId, String password) {
         Optional<CustomerUser> optionalCustomerUser = customerUserRepository.findById(customerId);
 
-        optionalCustomerUser.ifPresent(customerUser -> System.out.println(customerUser.getPassword()));
-        System.out.println(passwordEncoder.encode(password));
+        optionalCustomerUser.ifPresent(customerUser -> customerUser.setPassword(passwordEncoder.encode(password)));
     }
 
     @Override

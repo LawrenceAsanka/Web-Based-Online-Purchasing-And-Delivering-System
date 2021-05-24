@@ -103,9 +103,8 @@ public class SystemUserBOImpl implements SystemUserBO {
     }
 
     @Override
-    public boolean existUser(String userName) {
-        SystemUser systemUser = systemUserRepository.findSystemUser(userName);
-        return systemUser != null;
+    public boolean existUser(String userId) {
+        return systemUserRepository.existsById(userId);
     }
 
     @Override
@@ -136,6 +135,33 @@ public class SystemUserBOImpl implements SystemUserBO {
         //UserRole userRole = userRoleRepository.findByName(user.getRole());
         systemUser.setStatus(status);
         systemUserRepository.save(systemUser);
+    }
+
+    @Override
+    public List<UserTM> readActiveUsersDetails() {
+        List<CustomEntity> allUsers = systemUserRepository.getAllUsers();
+        List<UserTM> users = new ArrayList<>();
+        for (CustomEntity user : allUsers) {
+            if (user.getUserStatus().equals("ACTIVE")) {
+                users.add(new UserTM(user.getUserId(), user.getFirstName(), user.getLastName(), user.getAddress(),
+                        user.getNIC(), user.getContact(), user.getUsername(), user.getUserRole(), user.getUserStatus()));
+            }
+
+        }
+        return users;
+    }
+
+    @Override
+    public List<UserTM> readDeactivateUsersDetails() {
+        List<CustomEntity> allUsers = systemUserRepository.getAllUsers();
+        List<UserTM> users = new ArrayList<>();
+        for (CustomEntity user : allUsers) {
+            if (user.getUserStatus().equals("DEACTIVE")) {
+                users.add(new UserTM(user.getUserId(), user.getFirstName(), user.getLastName(), user.getAddress(),
+                        user.getNIC(), user.getContact(), user.getUsername(), user.getUserRole(), user.getUserStatus()));
+            }
+        }
+        return users;
     }
 
 

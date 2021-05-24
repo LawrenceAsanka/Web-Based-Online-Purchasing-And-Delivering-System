@@ -19,10 +19,14 @@ public interface SystemUserBO extends UserDetailsService,SuperBO {
 
     void updateUser(SystemUserDTO user,String status, String id);
 
-    boolean existUser(String userName);
+    boolean existUser(String userId);
 
     String getLastUserId();
 
     void updateStatus(String userId, String status);
+
+    List<UserTM> readActiveUsersDetails();
+
+    List<UserTM> readDeactivateUsersDetails();
 
 }

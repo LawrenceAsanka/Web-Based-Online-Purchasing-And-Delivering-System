@@ -38,14 +38,24 @@ public class SupplierInvoiceController {
         return supplierInvoiceBO.getInvoiceDetail(invoiceNumber);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/filterByDates")
+    private List<InvoiceDetailTM> readDetailsByDateRange(@RequestParam("startDate") String startDate,
+                                        @RequestParam("endDate") String endDate){
+        if (startDate == null && endDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+       return supplierInvoiceBO.readAllInvoiceDetailsByDateRange(startDate, endDate);
+    }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     private void saveSupplierInvoice(@RequestBody SupplierInvoiceDTO invoiceDetails){
-        if (!systemUserBO.existUser(invoiceDetails.getUserName()) || invoiceDetails.getInvoiceNumber() == null) {
-            System.out.println(invoiceDetails.getUserName());
+        if (invoiceDetails.getInvoiceNumber() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-       supplierInvoiceBO.saveSupplierInvoice(invoiceDetails);
+
+        supplierInvoiceBO.saveSupplierInvoice(invoiceDetails);
     }
 
 }

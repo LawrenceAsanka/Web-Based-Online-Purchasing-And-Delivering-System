@@ -21,7 +21,7 @@ public class Product implements SuperEntity {
     @Column(name = "product_name", length = 50, nullable = false)
     private String productName;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", columnDefinition = "TEXT", nullable = false)
     private String productDescription;
 
     @Column(name = "quantity_per_unit", columnDefinition = "INT", nullable = false)

@@ -20,6 +20,9 @@ public class SupplierInvoice implements SuperEntity {
     @Column(name = "created_date_time",nullable = false)
     private String dateAndTime;
 
+    @Column
+    private String remarks;
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
     private SystemUser systemUser;

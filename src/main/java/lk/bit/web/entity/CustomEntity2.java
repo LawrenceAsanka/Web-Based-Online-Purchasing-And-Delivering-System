@@ -18,5 +18,11 @@ public interface CustomEntity2 {
 
     String getOfferStatus();
 
+    String getImageOne();
+
+    String getImageTwo();
+
+    String getImageThree();
+
     String getProductStatus();
 }

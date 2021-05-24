@@ -24,12 +24,12 @@ public class SystemUser implements SuperEntity {
     private String id;
 
     @NotEmpty(message = "first name cannot be null")
-    @Size(min = 4)
+    @Size(min = 3)
     @Column(name = "first_name", length = 100, nullable = false)
     private String firstName;
 
     @NotEmpty(message = "last name cannot be null")
-    @Size(min = 4)
+    @Size(min = 3)
     @Column(name = "last_name", length = 100, nullable = false)
     private String lastName;
 

@@ -15,4 +15,6 @@ public interface AdvertisementBO extends SuperBO {
     void updateAdsStatus(int id,String status);
 
     List<AdvertisementTM> getAdvertisementDetail();
+
+    void deleteAd(int id);
 }

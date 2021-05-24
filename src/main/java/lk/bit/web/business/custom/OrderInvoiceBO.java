@@ -45,4 +45,7 @@ public interface OrderInvoiceBO extends SuperBO{
     BigDecimal readTotalNetAmountByDate();
     BigDecimal readTotalCreditAmountByDate();
     BigDecimal readTotalCODAmountByDate();
+    List<CompleteDeliveryDetailTM> readOrderInvoiceByStatusCompleteAndOrderedDate(String startDate, String endDate);
+    List<CompleteDeliveryDetailTM> readOrderInvoiceByStatusCompleteAndDeliveredDate(String startDate, String endDate);
+    List<OrderInvoiceDTO> readOrderInvoiceByStatusCancelAndDate(String startDate, String endDate);
 }

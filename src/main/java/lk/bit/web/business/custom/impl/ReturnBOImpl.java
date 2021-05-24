@@ -5,11 +5,13 @@ import lk.bit.web.dto.ReturnDTO;
 import lk.bit.web.dto.ReturnDetailDTO;
 import lk.bit.web.entity.*;
 import lk.bit.web.repository.*;
+import lk.bit.web.util.message.TextMsgSender;
 import lk.bit.web.util.tm.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ public class ReturnBOImpl implements ReturnBO {
     private SystemUserRepository systemUserRepository;
     @Autowired
     private CompleteReturnRepository completeReturnRepository;
+    @Autowired
+    private CustomerUserRepository customerUserRepository;
     @Autowired
     private ShopRepository shopRepository;
 
@@ -210,13 +214,13 @@ public class ReturnBOImpl implements ReturnBO {
     }
 
     @Override
-    public void saveAssignReturnAndUpdateStatus(String returnIdArray, String assignTo) {
+    public void saveAssignReturnAndUpdateStatus(String returnIdArray, String assignTo) throws IOException {
         String[] splitArray = returnIdArray.split(",");
+        Optional<SystemUser> optionalSystemUser = systemUserRepository.findById(assignTo);
 
         for (String returnId : splitArray) {
 
             Optional<Return> optionalReturn = returnRepository.findById(returnId);
-            Optional<SystemUser> optionalSystemUser = systemUserRepository.findById(assignTo);
 
             if (optionalReturn.isPresent() && optionalSystemUser.isPresent()) {
 
@@ -226,6 +230,11 @@ public class ReturnBOImpl implements ReturnBO {
                 returnRepository.save(optionalReturn.get());
             }
         }
+        String finalMessage = "You+have+assigned+some+returns.+Please+check.Thank+You.+FROM+VG+DISTRIBUTORS";
+        /*System.out.println(finalMessage);
+        System.out.println(orderIdList);*/
+        TextMsgSender textMsgSender = new TextMsgSender();
+        textMsgSender.sendTextMsg(optionalSystemUser.get().getContact(), finalMessage );
     }
 
     @Override
@@ -354,24 +363,65 @@ public class ReturnBOImpl implements ReturnBO {
     }
 
     @Override
-    public List<ReturnDTO> readAllAssignReturnsDetailsByCustomer(String email) {
-        List<Return> returnList = returnRepository.findAll();
+    public List<ReturnDTO> readAllAssignReturnsDetailsByCustomerEmail(String email) {
+        CustomerUser customerUser = customerUserRepository.getCustomerByCustomerEmail(email);
         List<ReturnDTO> returnDTOList = new ArrayList<>();
 
-        for (Return detail : returnList) {
-            ReturnDTO returnDTO = new ReturnDTO();
+        if (customerUser != null) {
+            List<Return> returnList = returnRepository.findAll();
 
-            returnDTO.setReturnId(detail.getId());
+            for (Return detail : returnList) {
+                if (detail.getOrderId().getCustomerUser().equals(customerUser)) {
+                    ReturnDTO returnDTO = new ReturnDTO();
 
-            String createdDateTime = detail.getCreatedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
-            returnDTO.setCreatedDateTime(createdDateTime);
+                    returnDTO.setReturnId(detail.getId());
 
-            returnDTO.setOrderId(detail.getOrderId().getOrderId());
-            returnDTO.setStatus(detail.getStatus());
+                    String createdDateTime = detail.getCreatedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+                    returnDTO.setCreatedDateTime(createdDateTime);
 
-            returnDTOList.add(returnDTO);
+                    returnDTO.setOrderId(detail.getOrderId().getOrderId());
+                    returnDTO.setStatus(detail.getStatus());
+
+                    returnDTOList.add(returnDTO);
+                } else {
+                    returnDTOList.add(null);
+                }
+            }
+
+        } else {
+            returnDTOList.add(null);
         }
+        return returnDTOList;
+    }
 
+    @Override
+    public List<ReturnDTO> readAllAssignReturnsDetailsByCustomerId(String id) {
+        Optional<CustomerUser> optionalCustomerUser = customerUserRepository.findById(id);
+        List<ReturnDTO> returnDTOList = new ArrayList<>();
+
+        if (optionalCustomerUser.isPresent()) {
+            List<Return> returnList = returnRepository.findAll();
+
+            for (Return detail : returnList) {
+                if (detail.getOrderId().getCustomerUser().equals(optionalCustomerUser.get())) {
+                    ReturnDTO returnDTO = new ReturnDTO();
+
+                    returnDTO.setReturnId(detail.getId());
+
+                    String createdDateTime = detail.getCreatedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+                    returnDTO.setCreatedDateTime(createdDateTime);
+
+                    returnDTO.setOrderId(detail.getOrderId().getShop().getShopName());
+                    returnDTO.setStatus(detail.getStatus());
+
+                    returnDTOList.add(returnDTO);
+                }else {
+                    returnDTOList.add(null);
+                }
+            }
+        } else {
+            returnDTOList.add(null);
+        }
         return returnDTOList;
     }
 
@@ -388,6 +438,114 @@ public class ReturnBOImpl implements ReturnBO {
     @Override
     public int readATotalCompleteReturnsCount() {
         return completeReturnRepository.readAllCompleteReturnCount(LocalDate.now().toString());
+    }
+
+    @Override
+    public List<ReturnTM> readAllReturnDetailsByDateRange(String startDate, String endDate) {
+        List<Return> returnList = returnRepository.readAllByStatusCancel();
+        List<ReturnTM> returnTMList = new ArrayList<>();
+
+        for (Return returnRepo : returnList) {
+            ReturnTM returnTM = new ReturnTM();
+
+            LocalDate localDate = returnRepo.getCreatedDateTime().toLocalDate();
+            if (localDate.isEqual(LocalDate.parse(startDate)) || localDate.isEqual(LocalDate.parse(endDate)) ||
+                    (localDate.isAfter(LocalDate.parse(startDate)) && localDate.isBefore(LocalDate.parse(endDate)))) {
+
+                returnTM.setReturnId(returnRepo.getId());
+
+                String createdDateTime = returnRepo.getCreatedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+                returnTM.setCreatedDateTime(createdDateTime);
+
+                returnTM.setOrderId(returnRepo.getOrderId().getOrderId());
+
+                OrderInvoice orderInvoice = orderInvoiceRepository.findById(returnRepo.getOrderId().getOrderId()).get();
+                returnTM.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+                returnTM.setCustomer(orderInvoice.getCustomerUser().getCustomerFirstName() + " " + orderInvoice.getCustomerUser().getCustomerLastName());
+
+                returnTMList.add(returnTM);
+            }
+        }
+
+        return returnTMList;
+    }
+
+    @Override
+    public List<AssignReturnTM> readReturnDetailsByStatusCompleteAndCreateDateRange(String startDate, String endDate) {
+        List<Return> returnList = returnRepository.readAllByStatusComplete();
+        List<AssignReturnTM> assignReturnDetails = new ArrayList<>();
+
+        for (Return returnDetail : returnList) {
+            AssignReturnTM assignReturnTM = new AssignReturnTM();
+
+            LocalDate localDate = returnDetail.getCreatedDateTime().toLocalDate();
+            if (localDate.isEqual(LocalDate.parse(startDate)) || localDate.isEqual(LocalDate.parse(endDate)) ||
+                    (localDate.isAfter(LocalDate.parse(startDate)) && localDate.isBefore(LocalDate.parse(endDate)))) {
+
+                assignReturnTM.setReturnId(returnDetail.getId());
+                assignReturnTM.setOrderId(returnDetail.getOrderId().getOrderId());
+
+                String createdDateTime = returnDetail.getCreatedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+                assignReturnTM.setCreatedDateTime(createdDateTime);
+
+                OrderInvoice orderInvoice = orderInvoiceRepository.findById(returnDetail.getOrderId().getOrderId()).get();
+                assignReturnTM.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+                assignReturnTM.setCustomerName(orderInvoice.getCustomerUser().getCustomerFirstName() + " " + orderInvoice.getCustomerUser().getCustomerLastName());
+
+                AssignReturn assignReturn = assignReturnRepository.readAssignReturnDetailByReturnId(returnDetail.getId());
+                CompleteReturn completeReturn = completeReturnRepository.readCompleteReturnByAssignReturnId(assignReturn.getId());
+
+                SystemUser systemUser = systemUserRepository.findById(assignReturn.getAssigneeId().getId()).get();
+                assignReturnTM.setAssignTo(systemUser.getFirstName() + " " + systemUser.getLastName());
+
+                String returnDateTime = completeReturn.getDeliveredDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+                assignReturnTM.setAssignedDateTime(returnDateTime);
+
+                assignReturnDetails.add(assignReturnTM);
+            }
+
+        }
+
+        return assignReturnDetails;
+    }
+
+    @Override
+    public List<AssignReturnTM> readReturnDetailsByStatusCompleteAndReturnDateRange(String startDate, String endDate) {
+        List<Return> returnList = returnRepository.readAllByStatusComplete();
+        List<AssignReturnTM> assignReturnDetails = new ArrayList<>();
+
+        for (Return returnDetail : returnList) {
+            AssignReturnTM assignReturnTM = new AssignReturnTM();
+
+                assignReturnTM.setReturnId(returnDetail.getId());
+                assignReturnTM.setOrderId(returnDetail.getOrderId().getOrderId());
+
+                String createdDateTime = returnDetail.getCreatedDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+                assignReturnTM.setCreatedDateTime(createdDateTime);
+
+                OrderInvoice orderInvoice = orderInvoiceRepository.findById(returnDetail.getOrderId().getOrderId()).get();
+                assignReturnTM.setCustomerId(orderInvoice.getCustomerUser().getCustomerId());
+                assignReturnTM.setCustomerName(orderInvoice.getCustomerUser().getCustomerFirstName() + " " + orderInvoice.getCustomerUser().getCustomerLastName());
+
+                AssignReturn assignReturn = assignReturnRepository.readAssignReturnDetailByReturnId(returnDetail.getId());
+                CompleteReturn completeReturn = completeReturnRepository.readCompleteReturnByAssignReturnId(assignReturn.getId());
+
+                SystemUser systemUser = systemUserRepository.findById(assignReturn.getAssigneeId().getId()).get();
+                assignReturnTM.setAssignTo(systemUser.getFirstName() + " " + systemUser.getLastName());
+
+                String returnDateTime = completeReturn.getDeliveredDateTime().format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a"));
+                assignReturnTM.setAssignedDateTime(returnDateTime);
+
+            LocalDate localDate = completeReturn.getDeliveredDateTime().toLocalDate();
+            if (localDate.isEqual(LocalDate.parse(startDate)) || localDate.isEqual(LocalDate.parse(endDate)) ||
+                    (localDate.isAfter(LocalDate.parse(startDate)) && localDate.isBefore(LocalDate.parse(endDate)))) {
+
+                assignReturnDetails.add(assignReturnTM);
+            }
+
+        }
+
+        return assignReturnDetails;
     }
 
     private String getNewReturnId() {

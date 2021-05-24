@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
         SystemUser systemUser = systemUserRepository.findSystemUser(invoiceDetails.getUserName());
 
         supplierInvoiceRepository.save(new SupplierInvoice(
-                invoiceDetails.getInvoiceNumber(), invoiceDetails.getDateTime(), systemUser
+                invoiceDetails.getInvoiceNumber(), invoiceDetails.getDateTime(), invoiceDetails.getRemarks(), systemUser
         ));
 
         List<SupplierInvoiceDetailDTO> productDetails = invoiceDetails.getInvoiceDetail();
@@ -64,7 +66,7 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
             String netAmount = String.format("%.2f", new BigDecimal(details.getNetAmount()));
 
             invoiceDetail.add(new InvoiceDetailTM(details.getInvoiceNumber(), details.getDateTime(),
-                    details.getUserId(), details.getUserName(), netAmount));
+                    details.getUserId(), details.getUserName(),details.getRemarks(), netAmount));
         }
         return invoiceDetail;
     }
@@ -86,4 +88,27 @@ public class SupplierInvoiceBOImpl implements SupplierInvoiceBO {
         return invoice;
     }
 
+    @Override
+    public List<InvoiceDetailTM> readAllInvoiceDetailsByDateRange(String startDate, String endDate) {
+        List<CustomEntity3> allInvoiceDetails = supplierInvoiceRepository.getAllInvoiceDetails();
+        List<InvoiceDetailTM> invoiceDetail = new ArrayList<>();
+
+        for (CustomEntity3 detail : allInvoiceDetails) {
+
+            // convert date into some format
+            String date = (detail.getDateTime()).split(" ")[0];
+            LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("MM/d/yyyy"));
+
+            if (localDate.isEqual(LocalDate.parse(startDate)) || localDate.isEqual(LocalDate.parse(endDate)) ||
+                    (localDate.isAfter(LocalDate.parse(startDate)) && localDate.isBefore(LocalDate.parse(endDate)))) {
+
+                String netAmount = String.format("%.2f", new BigDecimal(detail.getNetAmount()));
+
+                invoiceDetail.add(new InvoiceDetailTM(detail.getInvoiceNumber(), detail.getDateTime(),
+                        detail.getUserId(), detail.getUserName(), detail.getRemarks(), netAmount));
+            }
+        }
+
+        return invoiceDetail;
+    }
 }

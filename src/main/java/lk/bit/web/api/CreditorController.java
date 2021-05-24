@@ -4,6 +4,7 @@ import lk.bit.web.business.custom.CreditorBO;
 import lk.bit.web.dto.CreditDetailDTO;
 import lk.bit.web.util.tm.CompleteCreditCollectionTM;
 import lk.bit.web.util.tm.CreditCollectionTM;
+import lk.bit.web.util.tm.ReturnTM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ public class CreditorController {
     @Autowired
     private CreditorBO creditorBO;
 
+    //Today Collections
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     private List<CreditDetailDTO> readAllCreditDetailsByDateAndStatus(){
@@ -69,6 +71,27 @@ public class CreditorController {
     private List<CompleteCreditCollectionTM> readAllCompleteCreditCollectionDetailsByAssignee(@RequestParam("userName") String assignee){
 
         return creditorBO.readAllCompleteCreditCollectionDetailsByAssignee(assignee);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/filterByDates")
+    private List<CreditDetailDTO> readCreditorDetailsByDateRange(@RequestParam("q") int dateType, @RequestParam("startDate") String startDate,
+                                                        @RequestParam("endDate") String endDate){
+        if (startDate == null && endDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return creditorBO.readCreditorDetailsByDateRange(dateType, startDate, endDate);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/filterBy")
+    private List<CompleteCreditCollectionTM> readCompleteCreditorDetailsByDateRange(@RequestParam("q") int dateType, @RequestParam("startDate") String startDate,
+                                                                 @RequestParam("endDate") String endDate){
+                System.out.println(dateType);
+        if (startDate == null && endDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return creditorBO.readCompleteCreditorDetailsByDateRange(dateType, startDate, endDate);
     }
 
     @ResponseStatus(HttpStatus.CREATED)

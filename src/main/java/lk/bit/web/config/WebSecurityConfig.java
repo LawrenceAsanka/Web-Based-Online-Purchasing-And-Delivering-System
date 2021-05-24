@@ -60,14 +60,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/api/*/users/**", "/api/*/supplierInvoices/**",
-                        "/api/*/users/**", "/api/*/supplierInvoices/**", "/api/v1/purchaseDetails/**",
+                        "/api/*/users/**", "/api/*/supplierInvoices/**", "/api/*/purchaseDetails/**",
                         "/api/*/dashboards/**").hasRole("ADMIN")
                 .antMatchers("/api/*/customers/**","/api/*/categories/**",
                         "/api/*/products/**", "/api/v*/shops/**", "/api/*/complains/**"
                         ,"/api/*/solutions/**" , "/api/*/shopCategories/**").hasAnyRole("CUSTOMER", "ADMIN")
-                .antMatchers("/api/v1/authenticate","/api/v1/registers/**", "/files/**", "/api/*/offers/**",
+                .antMatchers("/api/*/authenticate","/api/*/registers/**", "/files/**", "/api/*/offers/**",
                         "/api/*/categories/**", "/api/*/products/**","/api/*/subcategories/**",
-                        "/api/v*/orderInvoices/**","/api/*/advertisements/**", "/api/*/returns/**", "/api/*/creditors/**")
+                        "/api/*/orderInvoices/**","/api/*/advertisements/**", "/api/*/returns/**", "/api/*/creditors/**")
                 .permitAll().anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .and().sessionManagement()

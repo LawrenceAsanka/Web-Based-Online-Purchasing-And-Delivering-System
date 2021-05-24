@@ -17,12 +17,14 @@ public interface ProductRepository extends JpaRepository<Product, String> {
 
     @Query(value = "SELECT p.productId AS productId,p.productName AS productName,c.categoryName AS productCategory, " +
             "p.quantitySellingPrice AS productSellingPrice,p.quantityBuyingPrice AS productBuyingPrice,p.currentQuantity AS productQuantity, " +
-            "p.discountPerUnit AS discountPerUnit,p.offerStatus AS offerStatus,p.status AS productStatus FROM Product p INNER JOIN p.category c ORDER BY p.productId")
+            "p.discountPerUnit AS discountPerUnit,p.offerStatus AS offerStatus,p.status AS productStatus,p.imageOne AS imageOne," +
+            "p.imageTwo AS imageTwo,p.imageThree AS imageThree FROM Product p INNER JOIN p.category c ORDER BY p.productId")
     List<CustomEntity2> getAllProducts();
 
     @Query(value = "SELECT p.productId AS productId,p.productName AS productName,c.categoryName AS productCategory, " +
             "p.quantitySellingPrice AS productSellingPrice,p.quantityBuyingPrice AS productBuyingPrice,p.currentQuantity AS productQuantity, " +
-            "p.discountPerUnit AS discountPerUnit,p.offerStatus AS offerStatus,p.status AS productStatus FROM Product p INNER JOIN p.category c WHERE c.categoryName = ?1 ORDER BY p.productId")
+            "p.discountPerUnit AS discountPerUnit,p.offerStatus AS offerStatus,p.status AS productStatus,p.imageOne AS imageOne, " +
+            "p.imageTwo AS imageTwo,p.imageThree AS imageThree FROM Product p INNER JOIN p.category c WHERE c.categoryName = ?1 ORDER BY p.productId")
     List<CustomEntity2> getGroupedProductDetails(String categoryName);
 
     @Query(value = "SELECT * FROM item WHERE item.status = 'ACTIVE' AND item.current_quantity >= 10 AND item.category_id = ?1 ORDER BY item.id DESC LIMIT 3",

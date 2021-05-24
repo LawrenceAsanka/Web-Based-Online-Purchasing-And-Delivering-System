@@ -16,4 +16,6 @@ public interface SupplierInvoiceBO extends SuperEntity {
     boolean existInvoice(String invoiceNumber);
 
     List<SupplierInvoiceDetailDTO> getInvoiceDetail(String invoiceNumber);
+
+    List<InvoiceDetailTM> readAllInvoiceDetailsByDateRange(String startDate, String endDate);
 }

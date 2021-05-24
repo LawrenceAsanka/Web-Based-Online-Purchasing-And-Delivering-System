@@ -2,6 +2,7 @@ package lk.bit.web.api;
 
 import lk.bit.web.business.custom.OrderInvoiceBO;
 import lk.bit.web.business.custom.ReturnBO;
+import lk.bit.web.dto.OrderInvoiceDTO;
 import lk.bit.web.dto.ReturnDTO;
 import lk.bit.web.util.tm.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,12 +86,52 @@ public class ReturnController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/customers")
-    private List<ReturnDTO> readAllAssignReturnsDetailsByCustomer(@RequestParam String email) {
+    private List<ReturnDTO> readAllAssignReturnsDetailsByCustomerEmail(@RequestParam String email) {
         if (email == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        return returnBO.readAllAssignReturnsDetailsByCustomer(email);
+        return returnBO.readAllAssignReturnsDetailsByCustomerEmail(email);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/customerIds")
+    private List<ReturnDTO> readAllAssignReturnsDetailsByCustomerId(@RequestParam String id) {
+        if (id == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return returnBO.readAllAssignReturnsDetailsByCustomerId(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/filterByDates")
+    private List<ReturnTM> readReturnDetailsByDateRange(@RequestParam("startDate") String startDate,
+                                                         @RequestParam("endDate") String endDate){
+        if (startDate == null && endDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return returnBO.readAllReturnDetailsByDateRange(startDate, endDate);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/filterByCreatedDates")
+    private List<AssignReturnTM> readReturnDetailsByStatusCompleteAndCreateDateRange(@RequestParam("startDate") String startDate,
+                                                                               @RequestParam("endDate") String endDate) {
+        if (startDate == null && endDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return returnBO.readReturnDetailsByStatusCompleteAndCreateDateRange(startDate, endDate);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/filterByReturnedDates")
+    private List<AssignReturnTM> readReturnDetailsByStatusCompleteAndReturnDateRange(@RequestParam("startDate") String startDate,
+                                                                         @RequestParam("endDate") String endDate){
+        if (startDate == null && endDate == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return returnBO.readReturnDetailsByStatusCompleteAndReturnDateRange(startDate, endDate);
+    }
+
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

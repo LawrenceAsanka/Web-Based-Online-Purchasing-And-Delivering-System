@@ -13,5 +13,6 @@ public class InvoiceDetailTM {
     private String dateTime;
     private String userId;
     private String userName;
+    private String remarks;
     private String netAmount;
 }
